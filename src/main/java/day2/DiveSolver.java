@@ -10,29 +10,39 @@ public class DiveSolver extends Solver<Integer> {
 
     @Override
     public Integer solvePartOne() {
-        Position position = new Position(0, 0);
-        for (String puzzleLine : puzzle) {
-            String[] move = puzzleLine.split(" ");
-            switch (Direction.valueOf(move[0].toUpperCase())) {
+        Submarine submarine = new Submarine();
+        puzzle.stream().map(Command::new).forEach(command -> {
+            switch (command.getDirection()) {
                 case UP:
-                    position.rise(Integer.parseInt(move[1]));
+                    submarine.rise(command.getValue());
                     break;
                 case DOWN:
-                    position.sink(Integer.parseInt(move[1]));
+                    submarine.sink(command.getValue());
                     break;
                 case FORWARD:
-                    position.moveForward(Integer.parseInt(move[1]));
+                    submarine.moveForward(command.getValue());
                     break;
             }
-        }
-        return position.getHorizontal() * position.getDepth();
+        });
+        return submarine.getHorizontal() * submarine.getDepth();
     }
 
     @Override
     protected Integer solvePartTwo() {
-        return null;
+        Submarine submarine = new Submarine();
+        puzzle.stream().map(Command::new).forEach(command -> {
+            switch (command.getDirection()) {
+                case UP:
+                    submarine.aimUp(command.getValue());
+                    break;
+                case DOWN:
+                    submarine.aimDown(command.getValue());
+                    break;
+                case FORWARD:
+                    submarine.moveForwardWithAim(command.getValue());
+                    break;
+            }
+        });
+        return submarine.getHorizontal() * submarine.getDepth();
     }
-
 }
-
-

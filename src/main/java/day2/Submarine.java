@@ -1,13 +1,12 @@
 package day2;
 
-public class Position {
+public class Submarine {
 
     private int horizontal;
     private int depth;
+    private int aim;
 
-    public Position(int x, int y) {
-        this.horizontal = x;
-        this.depth = y;
+    public Submarine() {
     }
 
     public int getHorizontal() {
@@ -26,6 +25,14 @@ public class Position {
         this.depth = depth;
     }
 
+    public int getAim() {
+        return aim;
+    }
+
+    public void setAim(int aim) {
+        this.aim = aim;
+    }
+
     public void sink(int value) {
         depth += value;
     }
@@ -36,5 +43,18 @@ public class Position {
 
     public void moveForward(int value) {
         horizontal += value;
+    }
+
+    public void aimUp(int value) {
+        aim -= value;
+    }
+
+    public void aimDown(int value) {
+        aim += value;
+    }
+
+    public void moveForwardWithAim(int value) {
+        horizontal += value;
+        depth += aim * value;
     }
 }
