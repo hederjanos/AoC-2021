@@ -1,8 +1,18 @@
 package util;
 
-public interface Solver<V> {
+import java.util.List;
 
-    V solve();
+public abstract class Solver<V> {
 
-    void printResult();
+    protected List<String> puzzle;
+
+    public Solver(String filename) {
+        PuzzleReader puzzleReader = new PuzzleReader();
+        puzzleReader.readPuzzle(filename);
+        this.puzzle = puzzleReader.getPuzzleLines();
+    }
+
+    protected abstract V solve();
+
+    protected abstract void printResult();
 }

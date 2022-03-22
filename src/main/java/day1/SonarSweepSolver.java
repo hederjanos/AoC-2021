@@ -1,19 +1,13 @@
 package day1;
 
-import util.PuzzleReader;
 import util.Solver;
 
-import java.util.List;
 import java.util.stream.IntStream;
 
-public class SonarSweepSolver<V> implements Solver<Integer> {
-
-    List<String> puzzle;
+public class SonarSweepSolver<V> extends Solver<Integer> {
 
     public SonarSweepSolver(String filename) {
-        PuzzleReader puzzleReader = new PuzzleReader();
-        puzzleReader.readPuzzle(filename);
-        this.puzzle = puzzleReader.getPuzzleLines();
+        super(filename);
     }
 
     @Override
