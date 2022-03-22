@@ -4,7 +4,7 @@ import util.Solver;
 
 import java.util.stream.IntStream;
 
-public class SonarSweepSolver<V> extends Solver<Integer> {
+public class SonarSweepSolver extends Solver<Integer> {
 
     public SonarSweepSolver(String filename) {
         super(filename);
