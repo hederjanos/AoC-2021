@@ -9,7 +9,7 @@ public class DiveSolver extends Solver<Integer> {
     }
 
     @Override
-    public Integer solve() {
+    public Integer solvePartOne() {
         Position position = new Position(0, 0);
         for (String puzzleLine : puzzle) {
             String[] move = puzzleLine.split(" ");
@@ -29,9 +29,10 @@ public class DiveSolver extends Solver<Integer> {
     }
 
     @Override
-    public void printResult() {
-        System.out.println(solve());
+    protected Integer solvePartTwo() {
+        return null;
     }
+
 }
 
 

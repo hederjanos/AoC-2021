@@ -11,14 +11,23 @@ public class SonarSweepSolver extends Solver<Integer> {
     }
 
     @Override
-    public Integer solve() {
-        return (int) IntStream.iterate(puzzle.size() - 1, i -> i > 0, i -> i - 1)
-                .filter(i -> Integer.parseInt(puzzle.get(i - 1)) < Integer.parseInt(puzzle.get(i)))
-                .count();
+    public Integer solvePartOne() {
+        return solve(1);
     }
 
     @Override
-    public void printResult() {
-        System.out.println(solve());
+    protected Integer solvePartTwo() {
+        return solve(3);
     }
+
+    private Integer solve(int range) {
+        return (int) IntStream.iterate(puzzle.size() - 1, i -> i > range - 1, i -> i - 1)
+                .filter(i -> getSumByRange(i - 1, range) < getSumByRange(i, range))
+                .count();
+    }
+
+    private int getSumByRange(int head, int range) {
+        return puzzle.subList(head - range + 1, head + 1).stream().mapToInt(Integer::valueOf).sum();
+    }
+
 }
