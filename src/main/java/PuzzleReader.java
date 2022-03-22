@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -6,7 +7,7 @@ import java.util.List;
 
 public class PuzzleReader {
 
-    public static List<String> createListFromInput(Path path) {
+    public static List<String> readPuzzle(Path path) {
         try {
             return Files.readAllLines(path);
         } catch (IOException io) {
