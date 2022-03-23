@@ -1,9 +1,6 @@
 package day4;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -11,7 +8,7 @@ public class Bingo {
 
     public static int bingoSize = 5;
 
-    private final int[][] board = new int[bingoSize][bingoSize];
+    private final BingoCell[][] board = new BingoCell[bingoSize][bingoSize];
 
     public Bingo(List<String> bingoParts) {
         IntStream.range(0, bingoSize)
@@ -20,7 +17,7 @@ public class Bingo {
                             .map(Integer::parseInt)
                             .collect(Collectors.toList());
                     IntStream.range(0, bingoSize)
-                            .forEach(j -> board[i][j] = numbers.get(j));
+                            .forEach(j -> board[i][j] = new BingoCell(numbers.get(j)));
                 });
     }
 
@@ -33,7 +30,41 @@ public class Bingo {
         return strings;
     }
 
-    public void print() {
-        System.out.println(Arrays.deepToString(board));
+    public void markRandomNumberInBingoIfExists(Integer randomNumber) {
+        Arrays.stream(board)
+                .forEach(bingoCells -> Arrays.stream(bingoCells)
+                        .filter(bingoCell -> Objects.equals(bingoCell.getNumber(), randomNumber))
+                        .forEach(BingoCell::setMarked));
+    }
+
+    public boolean isWin() {
+        boolean isWin = false;
+        int[] verticalCounter = new int[Bingo.bingoSize];
+        for (BingoCell[] bingoCells : board) {
+            int horizontalCounter = 0;
+            for (int i = 0; i < bingoCells.length; i++) {
+                if (bingoCells[i].isMarked()) {
+                    horizontalCounter++;
+                    verticalCounter[i]++;
+                }
+            }
+            if (horizontalCounter == Bingo.bingoSize) {
+                isWin = true;
+                break;
+            }
+        }
+        if (!isWin && Arrays.stream(verticalCounter)
+                .anyMatch(number -> number == Bingo.bingoSize)) {
+            isWin = true;
+        }
+        return isWin;
+    }
+
+    public Integer getSumOfUnMarkedNumbers() {
+        return Arrays.stream(board)
+                .flatMap(bingoCells -> Arrays.stream(bingoCells)
+                        .filter(bingoCell -> !bingoCell.isMarked())
+                        .map(BingoCell::getNumber))
+                .reduce(0, Integer::sum);
     }
 }

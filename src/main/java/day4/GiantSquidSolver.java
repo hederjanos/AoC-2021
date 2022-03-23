@@ -5,6 +5,7 @@ import util.Solver;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class GiantSquidSolver extends Solver<Integer> {
@@ -15,11 +16,24 @@ public class GiantSquidSolver extends Solver<Integer> {
 
     @Override
     protected Integer solvePartOne() {
+        List<Integer> randomNumbers = parseRandomNumbers();
         List<Bingo> bingoList = parseBingos();
-        for (Bingo bingo : bingoList) {
-            bingo.print();
+        return getResult(randomNumbers, bingoList).orElse(null);
+    }
+
+    private Optional<Integer> getResult(List<Integer> randomNumbers, List<Bingo> bingoList) {
+        Optional<Integer> result = Optional.empty();
+        outer:
+        for (Integer number : randomNumbers) {
+            for (Bingo bingo : bingoList) {
+                bingo.markRandomNumberInBingoIfExists(number);
+                if (bingo.isWin()) {
+                    result = Optional.of(number * bingo.getSumOfUnMarkedNumbers());
+                    break outer;
+                }
+            }
         }
-        return null;
+        return result;
     }
 
     private List<Integer> parseRandomNumbers() {
@@ -30,7 +44,7 @@ public class GiantSquidSolver extends Solver<Integer> {
     private List<Bingo> parseBingos() {
         List<Bingo> bingoList = new ArrayList<>();
         int head = 2;
-        while (head <= puzzle.size() - Bingo.bingoSize ) {
+        while (head <= puzzle.size() - Bingo.bingoSize) {
             bingoList.add(new Bingo(puzzle.subList(head, head + Bingo.bingoSize)));
             head += Bingo.bingoSize + 1;
         }
