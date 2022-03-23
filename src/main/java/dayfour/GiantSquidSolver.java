@@ -71,7 +71,8 @@ public class GiantSquidSolver extends Solver<Integer> {
             lastRandomNumber = randomNumbers.get(i);
             for (Bingo bingo : bingoList) {
                 bingo.markRandomNumberInBingoIfExists(lastRandomNumber);
-                if (bingo.isWin()) {
+                if (!bingo.isAlreadyWon() && bingo.isWin()) {
+                    bingo.setAlreadyWon();
                     lastBingo = bingo;
                     winBingoCounter++;
                 }

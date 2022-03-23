@@ -9,6 +9,7 @@ public class Bingo {
     public static final int BINGO_SIZE = 5;
 
     private final BingoCell[][] board = new BingoCell[BINGO_SIZE][BINGO_SIZE];
+    private boolean isAlreadyWon;
 
     public Bingo(List<String> bingoParts) {
         IntStream.range(0, BINGO_SIZE)
@@ -74,12 +75,20 @@ public class Bingo {
                         .forEach(BingoCell::setUnMarked));
     }
 
-    public void printBingoNumbers() {
-        for (BingoCell[] bingoCells : board) {
-            for (BingoCell bingoCell : bingoCells) {
-                System.out.print(bingoCell.getNumber() + "\t");
-            }
+    public void printBingo() {
+        Arrays.stream(board).forEach(bingoCells -> {
+            Arrays.stream(bingoCells)
+                    .map(bingoCell -> bingoCell.getNumber() + (bingoCell.isMarked() ? "X" : "O") + "\t")
+                    .forEach(System.out::print);
             System.out.println();
-        }
+        });
+    }
+
+    public boolean isAlreadyWon() {
+        return isAlreadyWon;
+    }
+
+    public void setAlreadyWon() {
+        isAlreadyWon = true;
     }
 }
