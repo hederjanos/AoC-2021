@@ -1,8 +1,8 @@
-package day4;
+package dayone;
 
 public class Application {
 
     public static void main(String[] args) {
-        new GiantSquidSolver("day4-test.txt").printResults();
+        new SonarSweepSolver("day1.txt").printResults();
     }
 }

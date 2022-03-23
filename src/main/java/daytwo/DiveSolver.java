@@ -1,4 +1,4 @@
-package day2;
+package daytwo;
 
 import util.Solver;
 

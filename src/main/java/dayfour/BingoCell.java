@@ -1,4 +1,4 @@
-package day4;
+package dayfour;
 
 public class BingoCell {
 

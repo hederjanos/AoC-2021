@@ -1,8 +1,8 @@
-package day3;
+package daytwo;
 
 public class Application {
 
     public static void main(String[] args) {
-        new BinaryDiagnosticSolver("day3.txt").printResults();
+        new DiveSolver("day2.txt").printResults();
     }
 }

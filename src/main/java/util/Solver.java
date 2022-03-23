@@ -6,7 +6,7 @@ public abstract class Solver<V> {
 
     protected List<String> puzzle;
 
-    public Solver(String filename) {
+    protected Solver(String filename) {
         PuzzleReader puzzleReader = new PuzzleReader();
         puzzleReader.readPuzzle(filename);
         this.puzzle = puzzleReader.getPuzzleLines();

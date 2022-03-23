@@ -1,13 +1,10 @@
-package day2;
+package daytwo;
 
 public class Submarine {
 
     private int horizontal;
     private int depth;
     private int aim;
-
-    public Submarine() {
-    }
 
     public int getHorizontal() {
         return horizontal;

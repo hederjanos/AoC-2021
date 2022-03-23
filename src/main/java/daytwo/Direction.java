@@ -1,17 +1,17 @@
-package day2;
+package daytwo;
 
 public enum Direction {
     UP("up"),
     DOWN("down"),
     FORWARD("forward");
 
-    private final String direction;
+    private final String dir;
 
     Direction(String direction) {
-        this.direction = direction;
+        this.dir = direction;
     }
 
     public String getDisplayedDirection() {
-        return direction;
+        return dir;
     }
 }

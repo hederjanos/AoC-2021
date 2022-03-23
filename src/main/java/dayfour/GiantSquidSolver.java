@@ -1,4 +1,4 @@
-package day4;
+package dayfour;
 
 import util.Solver;
 
@@ -25,13 +25,13 @@ public class GiantSquidSolver extends Solver<Integer> {
     }
 
     private List<Bingo> parseBingos() {
-        List<Bingo> bingoList = new ArrayList<>();
+        List<Bingo> bingoArrayList = new ArrayList<>();
         int head = 2;
-        while (head <= puzzle.size() - Bingo.bingoSize) {
-            bingoList.add(new Bingo(puzzle.subList(head, head + Bingo.bingoSize)));
-            head += Bingo.bingoSize + 1;
+        while (head <= puzzle.size() - Bingo.BINGO_SIZE) {
+            bingoArrayList.add(new Bingo(puzzle.subList(head, head + Bingo.BINGO_SIZE)));
+            head += Bingo.BINGO_SIZE + 1;
         }
-        return bingoList;
+        return bingoArrayList;
     }
 
     @Override
@@ -41,13 +41,15 @@ public class GiantSquidSolver extends Solver<Integer> {
 
     private Optional<Integer> getResultByFirstWinner() {
         Optional<Integer> result = Optional.empty();
-        outer:
-        for (Integer number : randomNumbers) {
+        boolean isDrawInProgress = true;
+        for (int i = 0; i < randomNumbers.size() && isDrawInProgress; i++) {
+            Integer number = randomNumbers.get(i);
             for (Bingo bingo : bingoList) {
                 bingo.markRandomNumberInBingoIfExists(number);
                 if (bingo.isWin()) {
                     result = Optional.of(number * bingo.getSumOfUnMarkedNumbers());
-                    break outer;
+                    isDrawInProgress = false;
+                    break;
                 }
             }
         }
@@ -61,23 +63,22 @@ public class GiantSquidSolver extends Solver<Integer> {
     }
 
     private Optional<Integer> getResultByLastWinner() {
-        Optional<Integer> result;
+        Optional<Integer> result = Optional.empty();
         int winBingoCounter = 0;
-        outer:
-        while (true) {
-            for (Integer number : randomNumbers) {
-                for (Bingo bingo : bingoList) {
-                    bingo.markRandomNumberInBingoIfExists(number);
-                    if (bingo.isWin()) {
-                        winBingoCounter++;
-                    }
-                    if (winBingoCounter == bingoList.size()) {
-                        bingo.printBingoNumbers();
-                        result = Optional.of(number * bingo.getSumOfUnMarkedNumbers());
-                        break outer;
-                    }
+        Integer lastRandomNumber = randomNumbers.get(0);
+        Bingo lastBingo = bingoList.get(0);
+        for (int i = 0; i < randomNumbers.size() && winBingoCounter < bingoList.size(); i++) {
+            lastRandomNumber = randomNumbers.get(i);
+            for (Bingo bingo : bingoList) {
+                bingo.markRandomNumberInBingoIfExists(lastRandomNumber);
+                if (bingo.isWin()) {
+                    lastBingo = bingo;
+                    winBingoCounter++;
                 }
             }
+        }
+        if (winBingoCounter == bingoList.size()) {
+            result = Optional.of(lastRandomNumber * lastBingo.getSumOfUnMarkedNumbers());
         }
         return result;
     }

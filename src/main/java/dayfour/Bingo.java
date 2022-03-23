@@ -1,4 +1,4 @@
-package day4;
+package dayfour;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -6,17 +6,17 @@ import java.util.stream.IntStream;
 
 public class Bingo {
 
-    public static int bingoSize = 5;
+    public static final int BINGO_SIZE = 5;
 
-    private final BingoCell[][] board = new BingoCell[bingoSize][bingoSize];
+    private final BingoCell[][] board = new BingoCell[BINGO_SIZE][BINGO_SIZE];
 
     public Bingo(List<String> bingoParts) {
-        IntStream.range(0, bingoSize)
+        IntStream.range(0, BINGO_SIZE)
                 .forEach(i -> {
                     List<Integer> numbers = tokenizeBingoPart(bingoParts.get(i)).stream()
                             .map(Integer::parseInt)
                             .collect(Collectors.toList());
-                    IntStream.range(0, bingoSize)
+                    IntStream.range(0, BINGO_SIZE)
                             .forEach(j -> board[i][j] = new BingoCell(numbers.get(j)));
                 });
     }
@@ -39,7 +39,7 @@ public class Bingo {
 
     public boolean isWin() {
         boolean isWin = false;
-        int[] verticalCounter = new int[Bingo.bingoSize];
+        int[] verticalCounter = new int[Bingo.BINGO_SIZE];
         for (BingoCell[] bingoCells : board) {
             int horizontalCounter = 0;
             for (int i = 0; i < bingoCells.length; i++) {
@@ -48,13 +48,13 @@ public class Bingo {
                     verticalCounter[i]++;
                 }
             }
-            if (horizontalCounter == Bingo.bingoSize) {
+            if (horizontalCounter == Bingo.BINGO_SIZE) {
                 isWin = true;
                 break;
             }
         }
         if (!isWin && Arrays.stream(verticalCounter)
-                .anyMatch(number -> number == Bingo.bingoSize)) {
+                .anyMatch(number -> number == Bingo.BINGO_SIZE)) {
             isWin = true;
         }
         return isWin;

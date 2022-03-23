@@ -1,8 +1,8 @@
-package day2;
+package dayfour;
 
 public class Application {
 
     public static void main(String[] args) {
-        new DiveSolver("day2.txt").printResults();
+        new GiantSquidSolver("day4-test.txt").printResults();
     }
 }

@@ -1,4 +1,4 @@
-package day3;
+package daythree;
 
 import util.Solver;
 
@@ -68,14 +68,25 @@ public class BinaryDiagnosticSolver extends Solver<Integer> {
             int[] mostCommonBits = getMostCommonBitsByPosition(diagnosticReport);
             int finalIndex = index;
             diagnosticReport = diagnosticReport.stream()
-                    .filter(line -> {
-                        int filterOption = bitCriteria ? mostCommonBits[finalIndex] : (mostCommonBits[finalIndex] == 1) ? 0 : 1;
-                        return Character.getNumericValue(line.charAt(finalIndex)) == filterOption;
-                    })
+                    .filter(line -> isRemainingLine(bitCriteria, mostCommonBits, finalIndex, line))
                     .collect(Collectors.toList());
             index++;
         }
         return diagnosticReport.stream().findFirst().orElse(null);
+    }
+
+    private boolean isRemainingLine(boolean bitCriteria, int[] mostCommonBits, int finalIndex, String line) {
+        int filterOption;
+        if (bitCriteria) {
+            filterOption = mostCommonBits[finalIndex];
+        } else {
+            if (mostCommonBits[finalIndex] == 1) {
+                filterOption = 0;
+            } else {
+                filterOption = 1;
+            }
+        }
+        return Character.getNumericValue(line.charAt(finalIndex)) == filterOption;
     }
 
     private List<String> copyPuzzle() {
