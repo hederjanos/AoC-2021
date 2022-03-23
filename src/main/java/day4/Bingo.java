@@ -67,4 +67,19 @@ public class Bingo {
                         .map(BingoCell::getNumber))
                 .reduce(0, Integer::sum);
     }
+
+    public void resetBingo() {
+        Arrays.stream(board)
+                .forEach(bingoCells -> Arrays.stream(bingoCells)
+                        .forEach(BingoCell::setUnMarked));
+    }
+
+    public void printBingoNumbers() {
+        for (BingoCell[] bingoCells : board) {
+            for (BingoCell bingoCell : bingoCells) {
+                System.out.print(bingoCell.getNumber() + "\t");
+            }
+            System.out.println();
+        }
+    }
 }

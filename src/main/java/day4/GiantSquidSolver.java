@@ -10,30 +10,13 @@ import java.util.stream.Collectors;
 
 public class GiantSquidSolver extends Solver<Integer> {
 
+    private final List<Integer> randomNumbers;
+    private final List<Bingo> bingoList;
+
     public GiantSquidSolver(String filename) {
         super(filename);
-    }
-
-    @Override
-    protected Integer solvePartOne() {
-        List<Integer> randomNumbers = parseRandomNumbers();
-        List<Bingo> bingoList = parseBingos();
-        return getResult(randomNumbers, bingoList).orElse(null);
-    }
-
-    private Optional<Integer> getResult(List<Integer> randomNumbers, List<Bingo> bingoList) {
-        Optional<Integer> result = Optional.empty();
-        outer:
-        for (Integer number : randomNumbers) {
-            for (Bingo bingo : bingoList) {
-                bingo.markRandomNumberInBingoIfExists(number);
-                if (bingo.isWin()) {
-                    result = Optional.of(number * bingo.getSumOfUnMarkedNumbers());
-                    break outer;
-                }
-            }
-        }
-        return result;
+        this.randomNumbers = parseRandomNumbers();
+        this.bingoList = parseBingos();
     }
 
     private List<Integer> parseRandomNumbers() {
@@ -52,7 +35,50 @@ public class GiantSquidSolver extends Solver<Integer> {
     }
 
     @Override
+    protected Integer solvePartOne() {
+        return getResultByFirstWinner().orElse(null);
+    }
+
+    private Optional<Integer> getResultByFirstWinner() {
+        Optional<Integer> result = Optional.empty();
+        outer:
+        for (Integer number : randomNumbers) {
+            for (Bingo bingo : bingoList) {
+                bingo.markRandomNumberInBingoIfExists(number);
+                if (bingo.isWin()) {
+                    result = Optional.of(number * bingo.getSumOfUnMarkedNumbers());
+                    break outer;
+                }
+            }
+        }
+        return result;
+    }
+
+    @Override
     protected Integer solvePartTwo() {
-        return null;
+        bingoList.forEach(Bingo::resetBingo);
+        return getResultByLastWinner().orElse(null);
+    }
+
+    private Optional<Integer> getResultByLastWinner() {
+        Optional<Integer> result;
+        int winBingoCounter = 0;
+        outer:
+        while (true) {
+            for (Integer number : randomNumbers) {
+                for (Bingo bingo : bingoList) {
+                    bingo.markRandomNumberInBingoIfExists(number);
+                    if (bingo.isWin()) {
+                        winBingoCounter++;
+                    }
+                    if (winBingoCounter == bingoList.size()) {
+                        bingo.printBingoNumbers();
+                        result = Optional.of(number * bingo.getSumOfUnMarkedNumbers());
+                        break outer;
+                    }
+                }
+            }
+        }
+        return result;
     }
 }
