@@ -1,6 +1,5 @@
 package coordinate;
 
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -10,17 +9,23 @@ public class Coordinate {
     private int x;
     private int y;
 
-    protected Coordinate(int x, int y) {
+    public Coordinate(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
-    protected Coordinate(Coordinate coordinate) {
+    public Coordinate(Coordinate coordinate) {
         if (coordinate == null) {
             throw new IllegalArgumentException();
         }
         setX(coordinate.getX());
         setY(coordinate.getY());
+    }
+
+    public Coordinate(String coordinate) {
+        String[] input = coordinate.split(",");
+        this.x = Integer.parseInt(input[0]);
+        this.y = Integer.parseInt(input[1]);
     }
 
     public Coordinate copy() {
@@ -73,30 +78,34 @@ public class Coordinate {
         return adjacentCoordinates;
     }
 
-    public Set<Coordinate> getCoordinatesInLineBetweenCoordinates(Coordinate start, Coordinate end) {
+    public Set<Coordinate> getCoordinatesInLineBetweenCoordinates(Coordinate end) {
         Set<Coordinate> coordinatesInLine = new HashSet<>();
-        coordinatesInLine.add(start);
+        coordinatesInLine.add(this);
         coordinatesInLine.add(end);
-        if (start.getX() == end.getX()) {
-            createCoordinatesInHorizontalDirection(coordinatesInLine, start, Math.min(start.getY(), end.getY()));
-        } else {
-            createCoordinatesInVerticalDirection(coordinatesInLine, start, Math.min(start.getX(), end.getX()));
+        if (this.getX() == end.getX()) {
+            createCoordinatesInVerticalDirection(coordinatesInLine, end, Math.min(this.getY(), end.getY()));
+        } else if (this.getY() == end.getY()) {
+            createCoordinatesInHorizontalDirection(coordinatesInLine, end, Math.min(this.getX(), end.getX()));
         }
         return coordinatesInLine;
     }
 
-    private void createCoordinatesInVerticalDirection(Set<Coordinate> coordinatesInLine, Coordinate start, int head) {
-        while (head < start.getX()) {
-            coordinatesInLine.add(new Coordinate(head + 1, start.getY()));
+    private void createCoordinatesInVerticalDirection(Set<Coordinate> coordinatesInLine, Coordinate end, int head) {
+        while (head < end.getY()) {
+            coordinatesInLine.add(new Coordinate(end.getX(), head + 1));
             head++;
         }
     }
 
-    private void createCoordinatesInHorizontalDirection(Set<Coordinate> coordinatesInLine, Coordinate start, int head) {
-        while (head < start.getY()) {
-            coordinatesInLine.add(new Coordinate(start.getX(), head + 1));
+    private void createCoordinatesInHorizontalDirection(Set<Coordinate> coordinatesInLine, Coordinate end, int head) {
+        while (head < end.getX()) {
+            coordinatesInLine.add(new Coordinate(head + 1, end.getY()));
             head++;
         }
+    }
+
+    public boolean isInHorizontalOrVerticalLineWith(Coordinate end) {
+        return this.getX() == end.getX() || this.getY() == end.getY();
     }
 
     @Override
@@ -132,4 +141,5 @@ public class Coordinate {
     public void setY(int y) {
         this.y = y;
     }
+
 }
