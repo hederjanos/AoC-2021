@@ -1,6 +1,5 @@
 package coordinate;
 
-import java.awt.*;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Objects;
@@ -88,6 +87,10 @@ public class Coordinate {
             createCoordinatesInVerticalDirection(this, end, coordinatesInLine);
         } else if (this.getY() == end.getY()) {
             createCoordinatesInHorizontalDirection(this, end, coordinatesInLine);
+        } else if ((this.getX() < end.getX() && this.getY() < end.getY()) || (this.getX() > end.getX() && this.getY() > end.getY())) {
+            createCoordinatesInFallingDiagonal(this, end, coordinatesInLine);
+        } else if ((this.getX() < end.getX() && this.getY() > end.getY()) || (this.getX() > end.getX() && this.getY() < end.getY())) {
+            createCoordinatesInGrowingDiagonal(this, end, coordinatesInLine);
         }
         return coordinatesInLine;
     }
@@ -107,6 +110,26 @@ public class Coordinate {
         while (head < newEnd.getX()) {
             coordinatesInLine.add(new Coordinate(head + 1, newEnd.getY()));
             head++;
+        }
+    }
+
+    private void createCoordinatesInFallingDiagonal(Coordinate start, Coordinate end, Set<Coordinate> coordinatesInLine) {
+        Coordinate head = (start.getX() < end.getX()) ? start : end;
+        Coordinate tail = (start.getX() > end.getX()) ? start : end;
+        while (head.getX() != tail.getX() - 1) {
+            Coordinate newHead = new Coordinate(head.getX() + 1, head.getY() + 1);
+            coordinatesInLine.add(newHead);
+            head = newHead;
+        }
+    }
+
+    private void createCoordinatesInGrowingDiagonal(Coordinate start, Coordinate end, Set<Coordinate> coordinatesInLine) {
+        Coordinate head = (start.getX() < end.getX() && start.getY() > end.getY()) ? start : end;
+        Coordinate tail = (start.getX() > end.getX() && start.getY() < end.getY()) ? start : end;
+        while (head.getX() != tail.getX() - 1) {
+            Coordinate newHead = new Coordinate(head.getX() + 1, head.getY() - 1);
+            coordinatesInLine.add(newHead);
+            head = newHead;
         }
     }
 
