@@ -22,11 +22,20 @@ public class LanternFishSolver extends Solver<Long> {
 
     @Override
     protected Long solvePartOne() {
+        return solve(80);
+    }
+
+    @Override
+    protected Long solvePartTwo() {
+        return solve(256);
+    }
+
+    private Long solve(int cycle) {
         long[] counterArray = new long[9];
         for (Integer age : lanternFishAges) {
             counterArray[age]++;
         }
-        for (int i = 0; i < 80; i++) {
+        for (int i = 0; i < cycle; i++) {
             long firstElement = counterArray[0];
             counterArray = shiftArray(counterArray);
             counterArray[6] += firstElement;
@@ -41,10 +50,4 @@ public class LanternFishSolver extends Solver<Long> {
         shiftedArray[shiftedArray.length - 1] = firstElement;
         return shiftedArray;
     }
-
-    @Override
-    protected Long solvePartTwo() {
-        return null;
-    }
-
 }
