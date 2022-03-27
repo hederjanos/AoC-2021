@@ -1,5 +1,7 @@
 package coordinate;
 
+import java.awt.*;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -83,29 +85,49 @@ public class Coordinate {
         coordinatesInLine.add(this);
         coordinatesInLine.add(end);
         if (this.getX() == end.getX()) {
-            createCoordinatesInVerticalDirection(coordinatesInLine, end, Math.min(this.getY(), end.getY()));
+            createCoordinatesInVerticalDirection(this, end, coordinatesInLine);
         } else if (this.getY() == end.getY()) {
-            createCoordinatesInHorizontalDirection(coordinatesInLine, end, Math.min(this.getX(), end.getX()));
+            createCoordinatesInHorizontalDirection(this, end, coordinatesInLine);
         }
         return coordinatesInLine;
     }
 
-    private void createCoordinatesInVerticalDirection(Set<Coordinate> coordinatesInLine, Coordinate end, int head) {
-        while (head < end.getY()) {
-            coordinatesInLine.add(new Coordinate(end.getX(), head + 1));
+    private void createCoordinatesInVerticalDirection(Coordinate start, Coordinate end, Set<Coordinate> coordinatesInLine) {
+        int head = Math.min(start.getY(), end.getY());
+        Coordinate newEnd = (end.getY() == head) ? start : end;
+        while (head < newEnd.getY()) {
+            coordinatesInLine.add(new Coordinate(newEnd.getX(), head + 1));
             head++;
         }
     }
 
-    private void createCoordinatesInHorizontalDirection(Set<Coordinate> coordinatesInLine, Coordinate end, int head) {
-        while (head < end.getX()) {
-            coordinatesInLine.add(new Coordinate(head + 1, end.getY()));
+    private void createCoordinatesInHorizontalDirection(Coordinate start, Coordinate end, Set<Coordinate> coordinatesInLine) {
+        int head = Math.min(start.getX(), end.getX());
+        Coordinate newEnd = (end.getX() == head) ? start : end;
+        while (head < newEnd.getX()) {
+            coordinatesInLine.add(new Coordinate(head + 1, newEnd.getY()));
             head++;
         }
     }
 
     public boolean isInHorizontalOrVerticalLineWith(Coordinate end) {
         return this.getX() == end.getX() || this.getY() == end.getY();
+    }
+
+    public static Comparator<Coordinate> getXOrderComparator() {
+        return new XOrder();
+    }
+
+    private static class XOrder implements Comparator<Coordinate> {
+        public int compare(Coordinate c1, Coordinate c2) {
+            if (c1.getX() < c2.getX()) {
+                return -1;
+            }
+            if (c1.getX() > c2.getX()) {
+                return +1;
+            }
+            return Integer.compare(c1.getY(), c2.getY());
+        }
     }
 
     @Override

@@ -15,8 +15,22 @@ public class HydrothermalVentureSolver extends Solver<Integer> {
     @Override
     protected Integer solvePartOne() {
         List<Coordinate> coordinates = getInLineCoordinates();
-        Collections.sort(coordinates, (o1, o2) -> o1.getX().compareTo(o2.getX());
-        return null;
+        coordinates.sort(Coordinate.getXOrderComparator());
+        int numberOfOverlappingCoordinates = 0;
+        for (int i = 0; i < coordinates.size() - 1; i++) {
+            boolean isOverlapping = nextCoordinateIsOverlapping(coordinates, i);
+            if (isOverlapping) {
+                numberOfOverlappingCoordinates++;
+                while (i + 1 < coordinates.size() && nextCoordinateIsOverlapping(coordinates, i)) {
+                    i++;
+                }
+            }
+        }
+        return numberOfOverlappingCoordinates;
+    }
+
+    private boolean nextCoordinateIsOverlapping(List<Coordinate> coordinates, int i) {
+        return coordinates.get(i).equals(coordinates.get(i + 1));
     }
 
     private List<Coordinate> getInLineCoordinates() {
