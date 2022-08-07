@@ -1,31 +1,31 @@
 package graph;
 
-public interface Graph<V> {
+public interface Graph<N> {
 
-    int getNumberOfVertices();
+    int getNumberOfNodes();
 
     int getNumberOfEdges();
 
-    void connect(V vertex1, V vertex2);
+    void connect(N node1, N mode2);
 
-    Iterable<V> getNeighbours(V vertex);
+    Iterable<N> getNeighbours(N node);
 
-    V getVertex(V vertex);
+    N getNode(N node);
 
-    Graph<V> copy();
+    Graph<N> copy();
 
-    Iterable<V> getAllVertices();
+    Iterable<N> getAllNodes();
 
     String toString();
 
-    Integer encodeVertex(V vertex);
+    Integer encodeNode(N node);
 
-    V decodeVertex(Integer index);
+    N decodeNode(Integer index);
 
-    boolean isStartSet();
+    boolean isStartNodeSet();
 
-    V getStart();
+    N getStartNode();
 
-    void setStart(V start);
+    void setStartNode(N start);
 
 }

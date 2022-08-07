@@ -2,10 +2,10 @@ package graph.path;
 
 import graph.Graph;
 
-public interface PathFinder<V> {
+public interface PathFinder<N> {
 
-    void findAllPath(Graph<V> graph, V start);
+    void findAllPath(Graph<N> graph, N start);
 
-    Path<V> pathTo(V target);
+    Path<N> pathTo(N target);
 
 }

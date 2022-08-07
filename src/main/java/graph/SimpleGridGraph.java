@@ -32,7 +32,7 @@ public class SimpleGridGraph implements Graph<GridCell> {
             for (int j = 0; j < width; j++) {
                 GridCell cell = new GridCell(j, i);
                 cells.add(cell);
-                int indexOfCell = encodeVertex(cell);
+                int indexOfCell = encodeNode(cell);
                 Integer[] neighbours = fourWayDirection ? new Integer[4] : new Integer[8];
                 connections.put(indexOfCell, neighbours);
                 setConnections(cell);
@@ -41,12 +41,12 @@ public class SimpleGridGraph implements Graph<GridCell> {
     }
 
     @Override
-    public Integer encodeVertex(GridCell vertex) {
-        return calculateCellIndex(vertex.getPosition().getX(), vertex.getPosition().getY());
+    public Integer encodeNode(GridCell cell) {
+        return calculateCellIndex(cell.getPosition().getX(), cell.getPosition().getY());
     }
 
     @Override
-    public GridCell decodeVertex(Integer index) {
+    public GridCell decodeNode(Integer index) {
         return findCellByIndex(index).orElse(null);
     }
 
@@ -62,7 +62,7 @@ public class SimpleGridGraph implements Graph<GridCell> {
             int newX = cell.getPosition().getX() + direction.getX();
             int newY = cell.getPosition().getY() + direction.getY();
             if (areCoordinatesInBounds(newX, newY)) {
-                int indexOfCell = encodeVertex(cell);
+                int indexOfCell = encodeNode(cell);
                 int indexOfNeighbour = calculateCellIndex(newX, newY);
                 if (findCellByIndex(indexOfNeighbour).isPresent()) {
                     connectNeighbours(indexOfCell, indexOfNeighbour, direction);
@@ -88,7 +88,7 @@ public class SimpleGridGraph implements Graph<GridCell> {
     private Optional<GridCell> findCell(GridCell cell) {
         Optional<GridCell> optionalCell;
         try {
-            optionalCell = Optional.ofNullable(cells.get(encodeVertex(cell)));
+            optionalCell = Optional.ofNullable(cells.get(encodeNode(cell)));
         } catch (IndexOutOfBoundsException exception) {
             optionalCell = Optional.empty();
         }
@@ -127,7 +127,7 @@ public class SimpleGridGraph implements Graph<GridCell> {
                     start = cell;
                 }
                 cells.add(cell);
-                int indexOfCell = encodeVertex(cell);
+                int indexOfCell = encodeNode(cell);
                 Integer[] neighbours = fourWayDirection ? new Integer[4] : new Integer[8];
                 connections.put(indexOfCell, neighbours);
                 setConnections(cell);
@@ -158,7 +158,7 @@ public class SimpleGridGraph implements Graph<GridCell> {
     }
 
     @Override
-    public int getNumberOfVertices() {
+    public int getNumberOfNodes() {
         return cells.size();
     }
 
@@ -169,15 +169,15 @@ public class SimpleGridGraph implements Graph<GridCell> {
 
 
     @Override
-    public void connect(GridCell vertex1, GridCell vertex2) {
+    public void connect(GridCell node1, GridCell node2) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Iterable<GridCell> getNeighbours(GridCell vertex) {
-        Optional<GridCell> gridCell = findCell(vertex);
+    public Iterable<GridCell> getNeighbours(GridCell cell) {
+        Optional<GridCell> gridCell = findCell(cell);
         if (gridCell.isPresent()) {
-            Integer indexOfCell = encodeVertex(vertex);
+            Integer indexOfCell = encodeNode(cell);
             return Arrays.stream(connections.get(indexOfCell))
                     .filter(Objects::nonNull)
                     .map(integer -> findCellByIndex(integer).get())
@@ -188,8 +188,8 @@ public class SimpleGridGraph implements Graph<GridCell> {
     }
 
     @Override
-    public GridCell getVertex(GridCell vertex) {
-        return cells.stream().filter(cell -> cell.equals(vertex)).findFirst().orElse(null);
+    public GridCell getNode(GridCell gridCell) {
+        return cells.stream().filter(cell -> cell.equals(gridCell)).findFirst().orElse(null);
     }
 
     @Override
@@ -198,7 +198,7 @@ public class SimpleGridGraph implements Graph<GridCell> {
     }
 
     @Override
-    public Iterable<GridCell> getAllVertices() {
+    public Iterable<GridCell> getAllNodes() {
         return cells;
     }
 
@@ -262,15 +262,18 @@ public class SimpleGridGraph implements Graph<GridCell> {
         return height;
     }
 
-    public boolean isStartSet() {
-        return start != null;
-    }
-
-    public GridCell getStart() {
+    @Override
+    public GridCell getStartNode() {
         return start;
     }
 
-    public void setStart(GridCell start) {
+    @Override
+    public void setStartNode(GridCell start) {
         this.start = start;
+    }
+
+    @Override
+    public boolean isStartNodeSet() {
+        return start != null;
     }
 }
