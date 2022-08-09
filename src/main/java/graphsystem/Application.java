@@ -1,8 +1,10 @@
-package graph;
+package graphsystem;
 
-import graph.grid.GridCell;
-import graph.path.BreadthSearchPathFinder;
-import graph.path.PathFinder;
+import graphsystem.graph.Graph;
+import graphsystem.graph.SimpleGridGraph;
+import graphsystem.grid.GridCell;
+import graphsystem.path.BreadthSearchPathFinder;
+import graphsystem.path.PathFinder;
 import util.PuzzleReader;
 
 
@@ -15,7 +17,7 @@ public class Application {
         Graph<GridCell> graph = new SimpleGridGraph(puzzleReader.getPuzzleLines());
 
         PathFinder<GridCell> pathFinder = new BreadthSearchPathFinder<>();
-        pathFinder.findAllPath(graph, new GridCell(0, 0));
-        pathFinder.pathTo(new GridCell(10, 10)).forEach(System.out::println);
+        pathFinder.findAllPath(graph);
+        pathFinder.pathTo(new GridCell(13, 9)).forEach(System.out::println);
     }
 }

@@ -1,8 +1,8 @@
-package graph.grid;
+package graphsystem.grid;
 
 import java.util.Objects;
 
-import static graph.grid.GridCellType.EMPTY;
+import static graphsystem.grid.GridCellType.EMPTY;
 
 public class GridCell {
 

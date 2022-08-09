@@ -1,4 +1,6 @@
-package graph;
+package graphsystem.graph;
+
+import java.util.Optional;
 
 public interface Graph<N> {
 
@@ -6,26 +8,24 @@ public interface Graph<N> {
 
     int getNumberOfEdges();
 
-    void connect(N node1, N mode2);
+    boolean connect(N node1, N mode2);
 
     Iterable<N> getNeighbours(N node);
 
-    N getNode(N node);
+    Optional<N> getNode(N node);
 
     Graph<N> copy();
 
     Iterable<N> getAllNodes();
 
-    String toString();
-
     Integer encodeNode(N node);
 
     N decodeNode(Integer index);
 
-    boolean isStartNodeSet();
+    Optional<N> getStartNode();
 
-    N getStartNode();
+    boolean setStartNode(N start);
 
-    void setStartNode(N start);
+    String toString();
 
 }

@@ -1,4 +1,4 @@
-package graph.grid;
+package graphsystem.grid;
 
 public enum Direction {
     UP(0, -1),

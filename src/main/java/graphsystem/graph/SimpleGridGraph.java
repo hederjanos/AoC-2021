@@ -1,12 +1,12 @@
-package graph;
+package graphsystem.graph;
 
-import graph.grid.Direction;
-import graph.grid.GridCell;
+import graphsystem.grid.Direction;
+import graphsystem.grid.GridCell;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static graph.grid.GridCellType.*;
+import static graphsystem.grid.GridCellType.*;
 
 public class SimpleGridGraph implements Graph<GridCell> {
 
@@ -32,37 +32,27 @@ public class SimpleGridGraph implements Graph<GridCell> {
             for (int j = 0; j < width; j++) {
                 GridCell cell = new GridCell(j, i);
                 cells.add(cell);
-                int indexOfCell = encodeNode(cell);
+                int indexOfCell = calculateCellIndex(j, i);
                 Integer[] neighbours = fourWayDirection ? new Integer[4] : new Integer[8];
                 connections.put(indexOfCell, neighbours);
-                setConnections(cell);
+                setConnections(j, i);
             }
         }
-    }
-
-    @Override
-    public Integer encodeNode(GridCell cell) {
-        return calculateCellIndex(cell.getPosition().getX(), cell.getPosition().getY());
-    }
-
-    @Override
-    public GridCell decodeNode(Integer index) {
-        return findCellByIndex(index).orElse(null);
     }
 
     private int calculateCellIndex(int x, int y) {
         return x + y * width;
     }
 
-    private void setConnections(GridCell cell) {
+    private void setConnections(int x, int y) {
         for (Direction direction : Direction.values()) {
             if (fourWayDirection && direction.ordinal() % 2 != 0) {
                 continue;
             }
-            int newX = cell.getPosition().getX() + direction.getX();
-            int newY = cell.getPosition().getY() + direction.getY();
+            int newX = x + direction.getX();
+            int newY = y + direction.getY();
             if (areCoordinatesInBounds(newX, newY)) {
-                int indexOfCell = encodeNode(cell);
+                int indexOfCell = calculateCellIndex(x, y);
                 int indexOfNeighbour = calculateCellIndex(newX, newY);
                 if (findCellByIndex(indexOfNeighbour).isPresent()) {
                     connectNeighbours(indexOfCell, indexOfNeighbour, direction);
@@ -83,16 +73,6 @@ public class SimpleGridGraph implements Graph<GridCell> {
             cell = Optional.empty();
         }
         return cell;
-    }
-
-    private Optional<GridCell> findCell(GridCell cell) {
-        Optional<GridCell> optionalCell;
-        try {
-            optionalCell = Optional.ofNullable(cells.get(encodeNode(cell)));
-        } catch (IndexOutOfBoundsException exception) {
-            optionalCell = Optional.empty();
-        }
-        return optionalCell;
     }
 
     private void connectNeighbours(Integer cell, Integer neighbour, Direction direction) {
@@ -127,10 +107,10 @@ public class SimpleGridGraph implements Graph<GridCell> {
                     start = cell;
                 }
                 cells.add(cell);
-                int indexOfCell = encodeNode(cell);
+                int indexOfCell = calculateCellIndex(j, i - 1);
                 Integer[] neighbours = fourWayDirection ? new Integer[4] : new Integer[8];
                 connections.put(indexOfCell, neighbours);
-                setConnections(cell);
+                setConnections(j, i - 1);
             }
         }
     }
@@ -167,29 +147,39 @@ public class SimpleGridGraph implements Graph<GridCell> {
         return numberOfEdges;
     }
 
-
     @Override
-    public void connect(GridCell node1, GridCell node2) {
+    public boolean connect(GridCell node1, GridCell node2) {
         throw new UnsupportedOperationException();
     }
 
     @Override
     public Iterable<GridCell> getNeighbours(GridCell cell) {
-        Optional<GridCell> gridCell = findCell(cell);
-        if (gridCell.isPresent()) {
+        Optional<GridCell> gridCell = getNode(cell);
+        if (gridCell.isEmpty()) {
+            throw new IllegalArgumentException();
+        } else {
             Integer indexOfCell = encodeNode(cell);
             return Arrays.stream(connections.get(indexOfCell))
                     .filter(Objects::nonNull)
                     .map(integer -> findCellByIndex(integer).get())
+                    .map(GridCell::copy)
                     .collect(Collectors.toUnmodifiableList());
-        } else {
-            throw new IllegalArgumentException();
         }
     }
 
     @Override
-    public GridCell getNode(GridCell gridCell) {
-        return cells.stream().filter(cell -> cell.equals(gridCell)).findFirst().orElse(null);
+    public Optional<GridCell> getNode(GridCell cell) {
+        return findCell(cell);
+    }
+
+    private Optional<GridCell> findCell(GridCell cell) {
+        Optional<GridCell> optionalCell;
+        try {
+            optionalCell = Optional.ofNullable(cells.get(encodeNode(cell)).copy());
+        } catch (IndexOutOfBoundsException exception) {
+            optionalCell = Optional.empty();
+        }
+        return optionalCell;
     }
 
     @Override
@@ -199,7 +189,40 @@ public class SimpleGridGraph implements Graph<GridCell> {
 
     @Override
     public Iterable<GridCell> getAllNodes() {
-        return cells;
+        return cells.stream()
+                .map(GridCell::copy)
+                .collect(Collectors.toUnmodifiableList());
+    }
+
+    @Override
+    public Integer encodeNode(GridCell cell) {
+        return calculateCellIndex(cell.getPosition().getX(), cell.getPosition().getY());
+    }
+
+    @Override
+    public GridCell decodeNode(Integer index) {
+        Optional<GridCell> cell = findCellByIndex(index);
+        if (cell.isEmpty()) {
+            throw new IllegalArgumentException();
+        } else {
+            return cell.get().copy();
+        }
+    }
+
+    @Override
+    public Optional<GridCell> getStartNode() {
+        return Optional.of(start.copy());
+    }
+
+    @Override
+    public boolean setStartNode(GridCell gridCell) {
+        boolean startNodeSet = false;
+        Optional<GridCell> cell = getNode(gridCell);
+        if (cell.isPresent()) {
+            start = cell.get();
+            startNodeSet = true;
+        }
+        return startNodeSet;
     }
 
     public String getGridString() {
@@ -254,26 +277,4 @@ public class SimpleGridGraph implements Graph<GridCell> {
         return stringBuilder.toString();
     }
 
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    @Override
-    public GridCell getStartNode() {
-        return start;
-    }
-
-    @Override
-    public void setStartNode(GridCell start) {
-        this.start = start;
-    }
-
-    @Override
-    public boolean isStartNodeSet() {
-        return start != null;
-    }
 }

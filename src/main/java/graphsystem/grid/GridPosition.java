@@ -1,4 +1,4 @@
-package graph.grid;
+package graphsystem.grid;
 
 import java.util.Objects;
 

@@ -1,4 +1,4 @@
-package graph.path;
+package graphsystem.path;
 
 import java.util.LinkedList;
 
