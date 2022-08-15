@@ -15,8 +15,8 @@ public class SimpleGridGraph implements Graph<GridCell> {
     private final int height;
     private int numberOfEdges;
     private GridCell start;
-    private final List<GridCell> cells;
-    private final Map<Integer, Integer[]> connections;
+    private List<GridCell> cells;
+    private Map<Integer, Integer[]> connections;
 
     public SimpleGridGraph(int width, int height) {
         this(width, height, true);
@@ -184,7 +184,18 @@ public class SimpleGridGraph implements Graph<GridCell> {
 
     @Override
     public Graph<GridCell> copy() {
-        return null;
+        SimpleGridGraph newGraph = new SimpleGridGraph(width, height, fourWayDirection);
+        newGraph.setStartNode(getStartNode().orElse(null));
+        ArrayList<GridCell> gridCells = (ArrayList<GridCell>) getAllNodes();
+        Map<Integer, Integer[]> connectionMap = new HashMap<>();
+        for (int i = 0; i < gridCells.size(); i++) {
+            Integer[] neighbours = fourWayDirection ? new Integer[4] : new Integer[8];
+            connectionMap.put(i, neighbours);
+            setConnections(gridCells.get(i).getPosition().getX(), gridCells.get(i).getPosition().getY());
+        }
+        newGraph.setCells(gridCells);
+        newGraph.setConnections(connectionMap);
+        return newGraph;
     }
 
     @Override
@@ -277,4 +288,11 @@ public class SimpleGridGraph implements Graph<GridCell> {
         return stringBuilder.toString();
     }
 
+    private void setCells(List<GridCell> cells) {
+        this.cells = cells;
+    }
+
+    private void setConnections(Map<Integer, Integer[]> connections) {
+        this.connections = connections;
+    }
 }
