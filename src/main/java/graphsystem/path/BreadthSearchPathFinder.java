@@ -33,7 +33,7 @@ public class BreadthSearchPathFinder<N> implements PathFinder<N> {
                 N lastNode = graph.decodeNode(lastNodeIndex);
                 for (N neighbour : graph.getNeighbours(lastNode)) {
                     int neighbourIndex = graph.encodeNode(neighbour);
-                    if (!isVisited[neighbourIndex]) {
+                    if (graph.nodeIsPassable(neighbour) && !isVisited[neighbourIndex]) {
                         pathMemory[neighbourIndex] = lastNodeIndex;
                         numberOfMoves[neighbourIndex] = numberOfMoves[lastNodeIndex] + 1;
                         isVisited[neighbourIndex] = true;

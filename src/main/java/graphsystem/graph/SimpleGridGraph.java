@@ -2,6 +2,7 @@ package graphsystem.graph;
 
 import graphsystem.grid.Direction;
 import graphsystem.grid.GridCell;
+import graphsystem.grid.GridCellType;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -170,6 +171,16 @@ public class SimpleGridGraph implements Graph<GridCell> {
     @Override
     public Optional<GridCell> getNode(GridCell cell) {
         return findCell(cell);
+    }
+
+    @Override
+    public boolean nodeIsPassable(GridCell cell) {
+        boolean cellIsPassable = false;
+        Optional<GridCell> gridCell = getNode(cell);
+        if (gridCell.isPresent() && !gridCell.get().getType().equals(WALL)) {
+            cellIsPassable = true;
+        }
+        return cellIsPassable;
     }
 
     private Optional<GridCell> findCell(GridCell cell) {

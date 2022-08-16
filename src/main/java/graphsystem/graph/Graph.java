@@ -14,6 +14,8 @@ public interface Graph<N> {
 
     Optional<N> getNode(N node);
 
+    boolean nodeIsPassable(N node);
+
     Graph<N> copy();
 
     Iterable<N> getAllNodes();
