@@ -8,4 +8,8 @@ public interface PathFinder<N> {
 
     Path<N> pathTo(N target);
 
+    boolean nodeIsReachable(N target);
+
+    int getNumberOfMovesTo(N target);
+
 }
