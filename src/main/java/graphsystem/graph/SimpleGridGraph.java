@@ -2,7 +2,6 @@ package graphsystem.graph;
 
 import graphsystem.grid.Direction;
 import graphsystem.grid.GridCell;
-import graphsystem.grid.GridCellType;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,6 +16,7 @@ public class SimpleGridGraph implements Graph<GridCell> {
     private int numberOfEdges;
     private GridCell start;
     private List<GridCell> cells;
+    private List<GridCell> mustBeVisitedCells;
     private Map<Integer, Integer[]> connections;
 
     public SimpleGridGraph(int width, int height) {
@@ -24,6 +24,9 @@ public class SimpleGridGraph implements Graph<GridCell> {
     }
 
     public SimpleGridGraph(int width, int height, boolean fourWayDirection) {
+        if (width <= 0 || height <= 0) {
+            throw new IllegalArgumentException();
+        }
         this.fourWayDirection = fourWayDirection;
         this.width = width;
         this.height = height;
@@ -93,19 +96,26 @@ public class SimpleGridGraph implements Graph<GridCell> {
     }
 
     public SimpleGridGraph(List<String> lines, boolean fourWayDirection) {
+        if (lines.size() <= 1) {
+            throw new IllegalArgumentException();
+        }
         this.fourWayDirection = fourWayDirection;
         String[] dimensions = lines.get(0).split(" ");
         this.width = Integer.parseInt(dimensions[0]);
         this.height = Integer.parseInt(dimensions[1]);
         this.cells = new ArrayList<>();
+        this.mustBeVisitedCells = new ArrayList<>();
         this.connections = new HashMap<>();
         for (int i = 1; i < lines.size(); i++) {
             String line = lines.get(i);
             for (int j = 0; j < line.length(); j++) {
                 GridCell cell = new GridCell(j, i - 1);
                 setType(cell, line.charAt(j));
-                if (cell.getType().equals(START)) {
+                if (START.equals(cell.getType())) {
                     start = cell;
+                }
+                if (MUST_BE_VISITED.equals(cell.getType()) || START.equals(cell.getType())) {
+                    mustBeVisitedCells.add(cell);
                 }
                 cells.add(cell);
                 int indexOfCell = calculateCellIndex(j, i - 1);
@@ -119,7 +129,7 @@ public class SimpleGridGraph implements Graph<GridCell> {
     private void setType(GridCell cell, char charAt) {
         switch (charAt) {
             case 'c':
-                cell.setType(COIN);
+                cell.setType(MUST_BE_VISITED);
                 break;
             case '.':
                 cell.setType(EMPTY);
@@ -128,7 +138,7 @@ public class SimpleGridGraph implements Graph<GridCell> {
                 cell.setType(START);
                 break;
             case '#':
-                cell.setType(WALL);
+                cell.setType(IMPASSABLE);
                 break;
             case 't':
                 cell.setType(TARGET);
@@ -177,7 +187,7 @@ public class SimpleGridGraph implements Graph<GridCell> {
     public boolean nodeIsPassable(GridCell cell) {
         boolean cellIsPassable = false;
         Optional<GridCell> gridCell = getNode(cell);
-        if (gridCell.isPresent() && !gridCell.get().getType().equals(WALL)) {
+        if (gridCell.isPresent() && !IMPASSABLE.equals(gridCell.get().getType())) {
             cellIsPassable = true;
         }
         return cellIsPassable;
@@ -254,7 +264,7 @@ public class SimpleGridGraph implements Graph<GridCell> {
                 Optional<GridCell> currentCell = findCellByIndex(calculateCellIndex(j, i));
                 if (currentCell.isPresent()) {
                     switch (currentCell.get().getType()) {
-                        case COIN:
+                        case MUST_BE_VISITED:
                             gridBuilder.append("c");
                             break;
                         case EMPTY:
@@ -263,7 +273,7 @@ public class SimpleGridGraph implements Graph<GridCell> {
                         case START:
                             gridBuilder.append("s");
                             break;
-                        case WALL:
+                        case IMPASSABLE:
                             gridBuilder.append("#");
                             break;
                         case TARGET:
@@ -281,7 +291,7 @@ public class SimpleGridGraph implements Graph<GridCell> {
 
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("Number of vertices: ")
+        stringBuilder.append("Number of nodes: ")
                 .append(cells.size())
                 .append(". Number of edges: ")
                 .append(numberOfEdges)
@@ -290,7 +300,7 @@ public class SimpleGridGraph implements Graph<GridCell> {
             stringBuilder.append(findCellByIndex(key).toString()).append(": ");
             for (Integer gridCell : value) {
                 if (gridCell != null) {
-                    stringBuilder.append(findCellByIndex(gridCell).toString()).append(" ");
+                    stringBuilder.append(findCellByIndex(gridCell).toString()).append(", ");
                 }
             }
             stringBuilder.deleteCharAt(stringBuilder.length() - 1);
@@ -305,5 +315,9 @@ public class SimpleGridGraph implements Graph<GridCell> {
 
     private void setConnections(Map<Integer, Integer[]> connections) {
         this.connections = connections;
+    }
+
+    public List<GridCell> getMustBeVisitedCells() {
+        return mustBeVisitedCells.stream().map(GridCell::copy).collect(Collectors.toList());
     }
 }

@@ -32,7 +32,7 @@ public class GridCell {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         GridCell cell = (GridCell) o;
-        return cell.getPosition().equals(((GridCell) o).getPosition());
+        return getPosition().equals(cell.getPosition());
     }
 
     @Override
