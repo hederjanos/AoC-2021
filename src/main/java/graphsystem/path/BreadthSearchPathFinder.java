@@ -19,7 +19,20 @@ public class BreadthSearchPathFinder<N> implements PathFinder<N> {
             throw new IllegalArgumentException();
         }
         this.graph = graph;
+    }
+
+    @Override
+    public void findAllPathsFromDefaultStartNode() {
+        findAllPaths(graph.getStartNode());
+    }
+
+    @Override
+    public void findAllPathsFromNode(N start) {
+        if (graph.getNode(start).isEmpty()) {
+            throw new IllegalArgumentException();
+        }
         initializeAuxiliaryArrays();
+        findAllPaths(start);
     }
 
     private void initializeAuxiliaryArrays() {
@@ -28,25 +41,8 @@ public class BreadthSearchPathFinder<N> implements PathFinder<N> {
         pathMemory = new int[graph.getNumberOfNodes()];
     }
 
-    @Override
-    public void findAllPathsFromDefaultStartNode() {
-        if (graph.getStartNode().isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-        findAllPaths(graph.getStartNode().get());
-    }
-
-    @Override
-    public void findAllPathsFromNode(N start) {
-        if (graph.getNode(start).isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-        findAllPaths(start);
-    }
-
     private void findAllPaths(N start) {
         pathCalculatedFrom = start;
-        initializeAuxiliaryArrays();
         Queue<Integer> nodes = new ArrayDeque<>();
         int startNodeIndex = graph.encodeNode(start);
         nodes.offer(startNodeIndex);
@@ -67,17 +63,17 @@ public class BreadthSearchPathFinder<N> implements PathFinder<N> {
         }
     }
 
-    public Path<N> pathTo(N node) {
+    public Path<N> pathTo(N target) {
         if (pathCalculatedFrom == null) {
             throw new IllegalArgumentException();
         }
         Path<N> route = new Path<>();
-        int x = graph.encodeNode(node);
-        while (numberOfMoves[x] != 0) {
-            route.offer(graph.decodeNode(x));
-            x = pathMemory[x];
+        int indexOfNode = graph.encodeNode(target);
+        while (numberOfMoves[indexOfNode] != 0) {
+            route.offer(graph.decodeNode(indexOfNode));
+            indexOfNode = pathMemory[indexOfNode];
         }
-        route.offer(graph.decodeNode(x));
+        route.offer(graph.decodeNode(indexOfNode));
         Collections.reverse(route);
         return route;
     }
