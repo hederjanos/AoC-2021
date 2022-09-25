@@ -8,8 +8,6 @@ public interface Graph<N> {
 
     int getNumberOfEdges();
 
-    boolean connect(N node1, N mode2);
-
     Iterable<N> getNeighbours(N node);
 
     Optional<N> getNode(N node);
@@ -24,10 +22,6 @@ public interface Graph<N> {
 
     N decodeNode(Integer index);
 
-    Optional<N> getStartNode();
-
-    boolean setStartNode(N start);
-
-    String toString();
+    N getStartNode();
 
 }

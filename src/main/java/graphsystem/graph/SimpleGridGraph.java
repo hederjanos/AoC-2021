@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 import static graphsystem.grid.GridCellType.*;
 
-public class SimpleGridGraph implements Graph<GridCell> {
+public final class SimpleGridGraph implements Graph<GridCell> {
 
     private final boolean fourWayDirection;
     private final int width;
@@ -159,11 +159,6 @@ public class SimpleGridGraph implements Graph<GridCell> {
     }
 
     @Override
-    public boolean connect(GridCell node1, GridCell node2) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public Iterable<GridCell> getNeighbours(GridCell cell) {
         Optional<GridCell> gridCell = getNode(cell);
         if (gridCell.isEmpty()) {
@@ -206,7 +201,7 @@ public class SimpleGridGraph implements Graph<GridCell> {
     @Override
     public Graph<GridCell> copy() {
         SimpleGridGraph newGraph = new SimpleGridGraph(width, height, fourWayDirection);
-        newGraph.setStartNode(getStartNode().orElse(null));
+        newGraph.setStartNode(getStartNode());
         ArrayList<GridCell> gridCells = (ArrayList<GridCell>) getAllNodes();
         Map<Integer, Integer[]> connectionMap = new HashMap<>();
         for (int i = 0; i < gridCells.size(); i++) {
@@ -217,6 +212,10 @@ public class SimpleGridGraph implements Graph<GridCell> {
         newGraph.setCells(gridCells);
         newGraph.setConnections(connectionMap);
         return newGraph;
+    }
+
+    private void setStartNode(GridCell cell) {
+        start = cell;
     }
 
     @Override
@@ -242,19 +241,8 @@ public class SimpleGridGraph implements Graph<GridCell> {
     }
 
     @Override
-    public Optional<GridCell> getStartNode() {
-        return Optional.of(start.copy());
-    }
-
-    @Override
-    public boolean setStartNode(GridCell gridCell) {
-        boolean startNodeSet = false;
-        Optional<GridCell> cell = getNode(gridCell);
-        if (cell.isPresent()) {
-            start = cell.get();
-            startNodeSet = true;
-        }
-        return startNodeSet;
+    public GridCell getStartNode() {
+        return start.copy();
     }
 
     public String getGridString() {

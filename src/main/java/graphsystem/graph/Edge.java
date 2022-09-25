@@ -1,47 +1,56 @@
 package graphsystem.graph;
 
-public class Edge<N, W extends Number> {
 
-    private N node1;
-    private N node2;
-    private W weight;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+public final class Edge<N, W extends Number> {
+
+    private final List<N> nodes = new ArrayList<>();
+    private final W weight;
 
     public Edge(N node1, N node2, W weight) {
-        this.node1 = node1;
-        this.node2 = node2;
+        nodes.add(node1);
+        nodes.add(node2);
         this.weight = weight;
     }
 
     public N getNode1() {
-        return node1;
-    }
-
-    public void setNode1(N node1) {
-        this.node1 = node1;
+        return nodes.get(0);
     }
 
     public N getNode2() {
-        return node2;
-    }
-
-    public void setNode2(N node2) {
-        this.node2 = node2;
+        return nodes.get(1);
     }
 
     public W getWeight() {
         return weight;
     }
 
-    public void setWeight(W weight) {
-        this.weight = weight;
+    public boolean containsNode(N node) {
+        return nodes.contains(node);
     }
 
     @Override
     public String toString() {
         return "Edge{" +
-               "node1=" + node1 +
-               ", node2=" + node2 +
-               ", weight=" + weight +
-               '}';
+                "nodes=" + nodes +
+                ", weight=" + weight +
+                '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Edge<?, ?> edge = (Edge<?, ?>) o;
+        return nodes.equals(edge.nodes);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nodes);
+    }
+
 }

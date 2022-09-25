@@ -5,10 +5,13 @@ import graphsystem.path.BreadthSearchPathFinder;
 import graphsystem.path.PathFinder;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
-public class WeightedIntegerGraph implements Graph<Integer> {
+public final class WeightedIntegerGraph implements GraphWithEdges<Integer, Double> {
 
-    private Map<Integer, List<Edge<Integer, Integer>>> connections;
+    private Integer start;
+    private List<Edge<Integer, Double>> edges;
+    private Map<Integer, List<Integer>> connections;
 
     public WeightedIntegerGraph(Graph<?> graph) {
         if (graph == null) {
@@ -20,22 +23,41 @@ public class WeightedIntegerGraph implements Graph<Integer> {
             if (mustBeVisitedCells.isEmpty()) {
                 throw new IllegalArgumentException();
             }
-            PathFinder<GridCell> pathFinder = new BreadthSearchPathFinder<>(gridGraph);
+            start = gridGraph.encodeNode(gridGraph.getStartNode());
+            edges = new ArrayList<>();
             connections = new HashMap<>();
+            PathFinder<GridCell> pathFinder = new BreadthSearchPathFinder<>(gridGraph);
             for (GridCell startCell : mustBeVisitedCells) {
                 pathFinder.findAllPathsFromNode(startCell);
-                int startIndex = gridGraph.encodeNode(startCell);
-                connections.put(startIndex, new ArrayList<>());
+                int node1 = gridGraph.encodeNode(startCell);
                 for (GridCell targetCell : mustBeVisitedCells) {
                     if (!targetCell.equals(startCell) && pathFinder.nodeIsReachable(targetCell)) {
-                        int endIndex = gridGraph.encodeNode(targetCell);
-                        int weight = pathFinder.getNumberOfMovesTo(targetCell);
-                        Edge<Integer, Integer> edge = new Edge<>(startIndex, endIndex, weight);
-                        connections.get(startIndex).add(edge);
+                        int node2 = gridGraph.encodeNode(targetCell);
+                        Double weight = (double) pathFinder.getNumberOfMovesTo(targetCell);
+                        setEdge(node1, node2, weight);
                     }
                 }
             }
         }
+    }
+
+    private void setEdge(int node1, int node2, Double weight) {
+        Edge<Integer, Double> newEdge = new Edge<>(node1, node2, weight);
+        int indexOfEdge;
+        if (edges.contains(newEdge)) {
+            indexOfEdge = edges.indexOf(newEdge);
+        } else {
+            indexOfEdge = edges.size();
+            edges.add(newEdge);
+        }
+        List<Integer> edgeIndexes;
+        if (!connections.containsKey(node1)) {
+            edgeIndexes = new ArrayList<>();
+            connections.put(node1, edgeIndexes);
+        } else {
+            edgeIndexes = connections.get(node1);
+        }
+        edgeIndexes.add(indexOfEdge);
     }
 
     @Override
@@ -45,57 +67,7 @@ public class WeightedIntegerGraph implements Graph<Integer> {
 
     @Override
     public int getNumberOfEdges() {
-        return 0;
-    }
-
-    @Override
-    public boolean connect(Integer node1, Integer mode2) {
-        return false;
-    }
-
-    @Override
-    public Iterable<Integer> getNeighbours(Integer node) {
-        return null;
-    }
-
-    @Override
-    public Optional<Integer> getNode(Integer node) {
-        return Optional.empty();
-    }
-
-    @Override
-    public boolean nodeIsPassable(Integer node) {
-        return false;
-    }
-
-    @Override
-    public Graph<Integer> copy() {
-        return null;
-    }
-
-    @Override
-    public Iterable<Integer> getAllNodes() {
-        return null;
-    }
-
-    @Override
-    public Integer encodeNode(Integer node) {
-        return null;
-    }
-
-    @Override
-    public Integer decodeNode(Integer index) {
-        return null;
-    }
-
-    @Override
-    public Optional<Integer> getStartNode() {
-        return Optional.empty();
-    }
-
-    @Override
-    public boolean setStartNode(Integer start) {
-        return false;
+        return edges.size();
     }
 
     @Override
@@ -104,16 +76,68 @@ public class WeightedIntegerGraph implements Graph<Integer> {
         stringBuilder.append("Number of nodes: ")
                 .append(connections.size())
                 .append(". Number of edges: ")
-                .append("0")
+                .append(edges.size())
                 .append(".\n");
         connections.forEach((key, value) -> {
             stringBuilder.append("Node=").append(key).append(": ");
-            for (Edge<Integer, Integer> edge : value) {
-                stringBuilder.append(edge.toString()).append(", ");
+            for (Integer index : value) {
+                stringBuilder.append(edges.get(index).toString()).append(", ");
             }
             stringBuilder.deleteCharAt(stringBuilder.length() - 1);
             stringBuilder.append("\n");
         });
         return stringBuilder.toString();
     }
+
+    @Override
+    public Iterable<Integer> getNeighbours(Integer node) {
+        return connections.get(node);
+    }
+
+    @Override
+    public Optional<Integer> getNode(Integer node) {
+        Optional<Integer> optional = Optional.empty();
+        if (connections.containsKey(node)) {
+            optional = Optional.of(node);
+        }
+        return optional;
+    }
+
+    @Override
+    public boolean nodeIsPassable(Integer node) {
+        return true;
+    }
+
+    @Override
+    public Graph<Integer> copy() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Iterable<Integer> getAllNodes() {
+        return connections.keySet();
+    }
+
+    @Override
+    public Integer encodeNode(Integer node) {
+        return node;
+    }
+
+    @Override
+    public Integer decodeNode(Integer index) {
+        return index;
+    }
+
+    @Override
+    public Integer getStartNode() {
+        return start;
+    }
+
+    @Override
+    public Iterable<Edge<Integer, Double>> getEdges(Integer node) {
+        return connections.get(node).stream()
+                .map(integer -> edges.get(integer))
+                .collect(Collectors.toList());
+    }
+
 }
