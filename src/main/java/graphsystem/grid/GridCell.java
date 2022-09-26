@@ -4,7 +4,7 @@ import java.util.Objects;
 
 import static graphsystem.grid.GridCellType.EMPTY;
 
-public class GridCell {
+public class GridCell implements Comparable<GridCell> {
 
     private GridPosition position;
     private GridCellType type;
@@ -64,4 +64,8 @@ public class GridCell {
         this.type = type;
     }
 
+    @Override
+    public int compareTo(GridCell other) {
+        return this.getPosition().compareTo(other.getPosition());
+    }
 }

@@ -2,7 +2,7 @@ package graphsystem.grid;
 
 import java.util.Objects;
 
-public class GridPosition {
+public class GridPosition implements Comparable<GridPosition> {
 
     private int x;
     private int y;
@@ -58,6 +58,17 @@ public class GridPosition {
 
     public void setY(int col) {
         this.y = col;
+    }
+
+    @Override
+    public int compareTo(GridPosition other) {
+        if (this.getX() < other.getX()) {
+            return -1;
+        }
+        if (this.getX() > other.getX()) {
+            return +1;
+        }
+        return Integer.compare(this.getY(), other.getY());
     }
 
 }
