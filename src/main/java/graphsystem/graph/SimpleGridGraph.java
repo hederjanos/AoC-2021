@@ -306,6 +306,9 @@ public final class SimpleGridGraph implements Graph<GridCell> {
     }
 
     public List<GridCell> getMustBeVisitedCells() {
-        return mustBeVisitedCells.stream().map(GridCell::copy).collect(Collectors.toList());
+        return mustBeVisitedCells.stream()
+                .map(GridCell::copy)
+                .sorted()
+                .collect(Collectors.toList());
     }
 }

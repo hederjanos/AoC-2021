@@ -6,24 +6,23 @@ import graphsystem.graph.GraphWithEdges;
 
 import java.util.*;
 
-public class DijkstraPathFinder<N, W extends Number> implements PathFinder<N> {
+public class DijkstraPathFinder<N, W extends Number> extends PathFinder<N> {
 
     private double[] weights;
-    private int[] pathMemory;
-    private final GraphWithEdges<N, W> graph;
-    private N pathCalculatedFrom;
 
     public DijkstraPathFinder(Graph<N> graph) {
         if (!(graph instanceof GraphWithEdges)) {
             throw new IllegalArgumentException();
         }
-        this.graph = (GraphWithEdges<N, W>) graph;
+        this.graph = graph;
         initializeAuxiliaryArrays();
     }
 
-    private void initializeAuxiliaryArrays() {
-        weights = new double[100 * graph.getNumberOfNodes()];
-        pathMemory = new int[100 * graph.getNumberOfNodes()];
+    @Override
+    protected void initializeAuxiliaryArrays() {
+        super.initializeAuxiliaryArrays();
+        weights = new double[graph.getNumberOfNodes()];
+        Arrays.fill(weights, Double.MAX_VALUE);
     }
 
     @Override
@@ -36,6 +35,7 @@ public class DijkstraPathFinder<N, W extends Number> implements PathFinder<N> {
         if (graph.getNode(start).isEmpty()) {
             throw new IllegalArgumentException();
         }
+        initializeAuxiliaryArrays();
         findAllPaths(start);
     }
 
@@ -43,18 +43,19 @@ public class DijkstraPathFinder<N, W extends Number> implements PathFinder<N> {
         pathCalculatedFrom = start;
         Integer startNode = graph.encodeNode(start);
         weights[startNode] = 0d;
-        initializeAuxiliaryArrays();
+        numberOfMoves[startNode] = 0;
         Queue<NodeWithPriority<Integer>> nodes = new PriorityQueue<>();
         NodeWithPriority<Integer> nodeWithPriority = new NodeWithPriority<>(startNode, weights[startNode]);
         nodes.offer(nodeWithPriority);
         while (!nodes.isEmpty()) {
             NodeWithPriority<Integer> minPriorityNode = nodes.poll();
-            for (Edge<N, W> edge : graph.getEdges(graph.decodeNode(minPriorityNode.getNode()))) {
-                Integer source = graph.encodeNode(edge.getNode1());
-                Integer target = graph.encodeNode(edge.getNode2());
+            for (Edge<N, W> edge : ((GraphWithEdges<N, W>) graph).getEdges(graph.decodeNode(minPriorityNode.getNode()))) {
+                Integer source = graph.encodeNode(edge.getSource());
+                Integer target = graph.encodeNode(edge.getTarget());
                 double weight = (double) edge.getWeight();
                 if (weights[target] > weights[source] + weight) {
                     weights[target] = weights[source] + weight;
+                    numberOfMoves[target] = numberOfMoves[source] + 1;
                     pathMemory[target] = source;
                     Optional<NodeWithPriority<Integer>> optionalNodeWithPriority = nodes.stream()
                             .filter(node -> node.equals(new NodeWithPriority<>(target)))
@@ -70,24 +71,8 @@ public class DijkstraPathFinder<N, W extends Number> implements PathFinder<N> {
     }
 
     @Override
-    public Path<N> pathTo(N target) {
-        if (pathCalculatedFrom == null) {
-            throw new IllegalArgumentException();
-        }
-        Path<N> route = new Path<>();
-        int indexOfNode = graph.encodeNode(target);
-        while (pathMemory[indexOfNode] != 0) {
-            route.offer(graph.decodeNode(indexOfNode));
-            indexOfNode = pathMemory[indexOfNode];
-        }
-        route.offer(graph.decodeNode(indexOfNode));
-        Collections.reverse(route);
-        return route;
-    }
-
-    @Override
     public boolean nodeIsReachable(N target) {
-        return false;
+        return true;
     }
 
     @Override

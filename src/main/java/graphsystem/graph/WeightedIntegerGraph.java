@@ -6,10 +6,12 @@ import graphsystem.path.PathFinder;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public final class WeightedIntegerGraph implements GraphWithEdges<Integer, Double> {
 
     private Integer start;
+    private Integer[] order;
     private List<Edge<Integer, Double>> edges;
     private Map<Integer, List<Integer>> connections;
 
@@ -24,25 +26,28 @@ public final class WeightedIntegerGraph implements GraphWithEdges<Integer, Doubl
                 throw new IllegalArgumentException();
             }
             start = gridGraph.encodeNode(gridGraph.getStartNode());
+            order = new Integer[gridGraph.getMustBeVisitedCells().size()];
             edges = new ArrayList<>();
             connections = new HashMap<>();
             PathFinder<GridCell> pathFinder = new BreadthSearchPathFinder<>(gridGraph);
-            for (GridCell startCell : mustBeVisitedCells) {
+            for (int i = 0; i < mustBeVisitedCells.size(); i++) {
+                GridCell startCell = mustBeVisitedCells.get(i);
                 pathFinder.findAllPathsFromNode(startCell);
-                int node1 = gridGraph.encodeNode(startCell);
+                int source = gridGraph.encodeNode(startCell);
+                order[i] = source;
                 for (GridCell targetCell : mustBeVisitedCells) {
                     if (!targetCell.equals(startCell) && pathFinder.nodeIsReachable(targetCell)) {
-                        int node2 = gridGraph.encodeNode(targetCell);
+                        int target = gridGraph.encodeNode(targetCell);
                         Double weight = (double) pathFinder.getNumberOfMovesTo(targetCell);
-                        setEdge(node1, node2, weight);
+                        setEdge(source, target, weight);
                     }
                 }
             }
         }
     }
 
-    private void setEdge(int node1, int node2, Double weight) {
-        Edge<Integer, Double> newEdge = new Edge<>(node1, node2, weight);
+    private void setEdge(int source, int target, Double weight) {
+        Edge<Integer, Double> newEdge = new Edge<>(source, target, weight);
         int indexOfEdge;
         if (edges.contains(newEdge)) {
             indexOfEdge = edges.indexOf(newEdge);
@@ -51,11 +56,11 @@ public final class WeightedIntegerGraph implements GraphWithEdges<Integer, Doubl
             edges.add(newEdge);
         }
         List<Integer> edgeIndexes;
-        if (!connections.containsKey(node1)) {
+        if (!connections.containsKey(source)) {
             edgeIndexes = new ArrayList<>();
-            connections.put(node1, edgeIndexes);
+            connections.put(source, edgeIndexes);
         } else {
-            edgeIndexes = connections.get(node1);
+            edgeIndexes = connections.get(source);
         }
         edgeIndexes.add(indexOfEdge);
     }
@@ -120,12 +125,22 @@ public final class WeightedIntegerGraph implements GraphWithEdges<Integer, Doubl
 
     @Override
     public Integer encodeNode(Integer node) {
-        return node;
+        OptionalInt optionalIndex = IntStream.range(0, order.length)
+                .filter(i -> Objects.equals(order[i], node))
+                .findFirst();
+
+        if (optionalIndex.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        return optionalIndex.getAsInt();
     }
 
     @Override
     public Integer decodeNode(Integer index) {
-        return index;
+        if (index < 0 || index >= order.length) {
+            throw new IllegalArgumentException();
+        }
+        return order[index];
     }
 
     @Override

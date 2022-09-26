@@ -1,15 +1,42 @@
 package graphsystem.path;
 
-public interface PathFinder<N> {
+import graphsystem.graph.Graph;
 
-    void findAllPathsFromDefaultStartNode();
+import java.util.Collections;
 
-    void findAllPathsFromNode(N start);
+public abstract class PathFinder<N> {
 
-    Path<N> pathTo(N target);
+    protected int[] numberOfMoves;
+    protected int[] pathMemory;
+    protected Graph<N> graph;
+    protected N pathCalculatedFrom;
 
-    boolean nodeIsReachable(N target);
+    protected void initializeAuxiliaryArrays() {
+        numberOfMoves = new int[graph.getNumberOfNodes()];
+        pathMemory = new int[graph.getNumberOfNodes()];
+    }
 
-    int getNumberOfMovesTo(N target);
+    public Path<N> pathTo(N target) {
+        if (pathCalculatedFrom == null) {
+            throw new IllegalArgumentException();
+        }
+        Path<N> path = new Path<>();
+        int indexOfNode = graph.encodeNode(target);
+        while (pathMemory[indexOfNode] != 0) {
+            path.add(graph.decodeNode(indexOfNode));
+            indexOfNode = pathMemory[indexOfNode];
+        }
+        path.add(graph.decodeNode(indexOfNode));
+        Collections.reverse(path);
+        return path;
+    }
+
+    public abstract void findAllPathsFromDefaultStartNode();
+
+    public abstract void findAllPathsFromNode(N start);
+
+    public abstract boolean nodeIsReachable(N target);
+
+    public abstract int getNumberOfMovesTo(N target);
 
 }

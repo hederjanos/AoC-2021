@@ -3,16 +3,11 @@ package graphsystem.path;
 import graphsystem.graph.Graph;
 
 import java.util.ArrayDeque;
-import java.util.Collections;
 import java.util.Queue;
 
-public class BreadthSearchPathFinder<N> implements PathFinder<N> {
+public class BreadthSearchPathFinder<N> extends PathFinder<N> {
 
     private boolean[] isVisited;
-    private int[] numberOfMoves;
-    private int[] pathMemory;
-    private final Graph<N> graph;
-    private N pathCalculatedFrom;
 
     public BreadthSearchPathFinder(Graph<N> graph) {
         if (graph == null) {
@@ -35,10 +30,10 @@ public class BreadthSearchPathFinder<N> implements PathFinder<N> {
         findAllPaths(start);
     }
 
-    private void initializeAuxiliaryArrays() {
+    @Override
+    protected void initializeAuxiliaryArrays() {
+        super.initializeAuxiliaryArrays();
         isVisited = new boolean[graph.getNumberOfNodes()];
-        numberOfMoves = new int[graph.getNumberOfNodes()];
-        pathMemory = new int[graph.getNumberOfNodes()];
     }
 
     private void findAllPaths(N start) {
@@ -61,21 +56,6 @@ public class BreadthSearchPathFinder<N> implements PathFinder<N> {
                 }
             }
         }
-    }
-
-    public Path<N> pathTo(N target) {
-        if (pathCalculatedFrom == null) {
-            throw new IllegalArgumentException();
-        }
-        Path<N> route = new Path<>();
-        int indexOfNode = graph.encodeNode(target);
-        while (numberOfMoves[indexOfNode] != 0) {
-            route.offer(graph.decodeNode(indexOfNode));
-            indexOfNode = pathMemory[indexOfNode];
-        }
-        route.offer(graph.decodeNode(indexOfNode));
-        Collections.reverse(route);
-        return route;
     }
 
     @Override
