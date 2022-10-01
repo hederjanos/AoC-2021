@@ -1,14 +1,11 @@
 package graphsystem;
 
-import graphsystem.graph.Graph;
-import graphsystem.graph.GraphWithEdges;
 import graphsystem.graph.SimpleGridGraph;
 import graphsystem.graph.WeightedIntegerGraph;
 import graphsystem.grid.GridCell;
+import graphsystem.path.DijkstraPathFinder;
 import graphsystem.path.Path;
 import util.PuzzleReader;
-
-import java.util.List;
 
 public class Application {
 
@@ -16,16 +13,21 @@ public class Application {
 
         PuzzleReader puzzleReader = new PuzzleReader();
         puzzleReader.readPuzzle("simple.in");
-        SimpleGridGraph graph = new SimpleGridGraph(puzzleReader.getPuzzleLines());
-        System.out.println(graph);
+        SimpleGridGraph simpleGridGraph = new SimpleGridGraph(puzzleReader.getPuzzleLines());
+        System.out.println(simpleGridGraph);
         System.out.println("-------------------------------------------------------------");
-        GraphWithEdges<Integer, Double> weightedIntegerGraph = new WeightedIntegerGraph(graph);
+        WeightedIntegerGraph weightedIntegerGraph = new WeightedIntegerGraph();
+        weightedIntegerGraph.transFormSimpleGridGraphByCriticalNodes(simpleGridGraph, 4);
         System.out.println(weightedIntegerGraph);
         System.out.println("-------------------------------------------------------------");
-        List<GridCell> nodes = graph.getMustBeVisitedCells();
-        List<Path<GridCell>> permutations = Path.findPermutations(nodes);
-        permutations.forEach(System.out::println);
-
+        DijkstraPathFinder<Integer, Double> pathFinder = new DijkstraPathFinder<>(weightedIntegerGraph);
+        pathFinder.findAllPathsFromDefaultStartNode();
+        for (GridCell node : simpleGridGraph.getCriticalNodes()) {
+            Path<Integer> integers = pathFinder.pathTo(simpleGridGraph.encodeNode(node));
+            System.out.println(simpleGridGraph.getStartNode());
+            integers.stream().map(simpleGridGraph::decodeNode).forEach(System.out::println);
+            System.out.println("-------------------------------------------------------------");
+        }
     }
 
 }

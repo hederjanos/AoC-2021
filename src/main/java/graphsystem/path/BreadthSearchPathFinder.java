@@ -2,8 +2,8 @@ package graphsystem.path;
 
 import graphsystem.graph.Graph;
 
-import java.util.ArrayDeque;
-import java.util.Queue;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class BreadthSearchPathFinder<N> extends PathFinder<N> {
 
@@ -72,6 +72,31 @@ public class BreadthSearchPathFinder<N> extends PathFinder<N> {
             throw new IllegalArgumentException();
         }
         return numberOfMoves[graph.encodeNode(target)];
+    }
+
+    public Iterable<N> getClosestCriticalNodesByCost(N source, int numberOfNeighbours) {
+        if (pathCalculatedFrom == null) {
+            throw new IllegalArgumentException();
+        }
+        if (!pathCalculatedFrom.equals(source)) {
+            findAllPathsFromNode(source);
+        }
+        TreeSet<NodeWithPriority<N>> nodes = new TreeSet<>();
+        for (N node : graph.getCriticalNodes()) {
+            if (!node.equals(source) && nodeIsReachable(node)) {
+                int moveCostFromSource = numberOfMoves[graph.encodeNode(node)];
+                if (nodes.size() >= numberOfNeighbours) {
+                    NodeWithPriority<N> lowestPriorityNode = nodes.last();
+                    if (lowestPriorityNode.getPriority() > moveCostFromSource) {
+                        nodes.pollLast();
+                        nodes.add(new NodeWithPriority<>(node, moveCostFromSource));
+                    }
+                } else {
+                    nodes.add(new NodeWithPriority<>(node, moveCostFromSource));
+                }
+            }
+        }
+        return nodes.stream().map(NodeWithPriority::getNode).collect(Collectors.toList());
     }
 
 }

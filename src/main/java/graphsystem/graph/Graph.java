@@ -24,4 +24,6 @@ public interface Graph<N> {
 
     N getStartNode();
 
+    Iterable<N> getCriticalNodes();
+
 }

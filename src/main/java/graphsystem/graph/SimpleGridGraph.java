@@ -16,7 +16,7 @@ public final class SimpleGridGraph implements Graph<GridCell> {
     private int numberOfEdges;
     private GridCell start;
     private List<GridCell> cells;
-    private List<GridCell> mustBeVisitedCells;
+    private List<GridCell> criticalCells;
     private Map<Integer, Integer[]> connections;
 
     public SimpleGridGraph(int width, int height) {
@@ -104,7 +104,7 @@ public final class SimpleGridGraph implements Graph<GridCell> {
         this.width = Integer.parseInt(dimensions[0]);
         this.height = Integer.parseInt(dimensions[1]);
         this.cells = new ArrayList<>();
-        this.mustBeVisitedCells = new ArrayList<>();
+        this.criticalCells = new ArrayList<>();
         this.connections = new HashMap<>();
         for (int i = 1; i < lines.size(); i++) {
             String line = lines.get(i);
@@ -115,7 +115,7 @@ public final class SimpleGridGraph implements Graph<GridCell> {
                     start = cell;
                 }
                 if (MUST_BE_VISITED.equals(cell.getType()) || START.equals(cell.getType())) {
-                    mustBeVisitedCells.add(cell);
+                    criticalCells.add(cell);
                 }
                 cells.add(cell);
                 int indexOfCell = calculateCellIndex(j, i - 1);
@@ -305,10 +305,10 @@ public final class SimpleGridGraph implements Graph<GridCell> {
         this.connections = connections;
     }
 
-    public List<GridCell> getMustBeVisitedCells() {
-        return mustBeVisitedCells.stream()
+    @Override
+    public List<GridCell> getCriticalNodes() {
+        return criticalCells.stream()
                 .map(GridCell::copy)
-                .sorted()
                 .collect(Collectors.toList());
     }
 }

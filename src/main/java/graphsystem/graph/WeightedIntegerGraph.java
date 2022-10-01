@@ -15,35 +15,39 @@ public final class WeightedIntegerGraph implements GraphWithEdges<Integer, Doubl
     private List<Edge<Integer, Double>> edges;
     private Map<Integer, List<Integer>> connections;
 
-    public WeightedIntegerGraph(Graph<?> graph) {
-        if (graph == null) {
+    public void transFormSimpleGridGraphByCriticalNodes(SimpleGridGraph graph, int numberOfNeighbours) {
+        List<GridCell> mustBeVisitedCells = graph.getCriticalNodes();
+        if (mustBeVisitedCells.isEmpty()) {
             throw new IllegalArgumentException();
         }
-        if (graph instanceof SimpleGridGraph) {
-            SimpleGridGraph gridGraph = (SimpleGridGraph) graph;
-            List<GridCell> mustBeVisitedCells = gridGraph.getMustBeVisitedCells();
-            if (mustBeVisitedCells.isEmpty()) {
-                throw new IllegalArgumentException();
+        start = graph.encodeNode(graph.getStartNode());
+        order = new Integer[graph.getCriticalNodes().size()];
+        edges = new ArrayList<>();
+        connections = new HashMap<>();
+        PathFinder<GridCell> pathFinder = new BreadthSearchPathFinder<>(graph);
+        for (int i = 0; i < mustBeVisitedCells.size(); i++) {
+            GridCell startCell = mustBeVisitedCells.get(i);
+            pathFinder.findAllPathsFromNode(startCell);
+            int source = graph.encodeNode(startCell);
+            order[i] = source;
+            List<GridCell> closestCells;
+            if (numberOfNeighbours == mustBeVisitedCells.size()) {
+                closestCells = mustBeVisitedCells;
+            } else {
+                closestCells = (List<GridCell>) pathFinder.getClosestCriticalNodesByCost(startCell, numberOfNeighbours);
             }
-            start = gridGraph.encodeNode(gridGraph.getStartNode());
-            order = new Integer[gridGraph.getMustBeVisitedCells().size()];
-            edges = new ArrayList<>();
-            connections = new HashMap<>();
-            PathFinder<GridCell> pathFinder = new BreadthSearchPathFinder<>(gridGraph);
-            for (int i = 0; i < mustBeVisitedCells.size(); i++) {
-                GridCell startCell = mustBeVisitedCells.get(i);
-                pathFinder.findAllPathsFromNode(startCell);
-                int source = gridGraph.encodeNode(startCell);
-                order[i] = source;
-                for (GridCell targetCell : mustBeVisitedCells) {
-                    if (!targetCell.equals(startCell) && pathFinder.nodeIsReachable(targetCell)) {
-                        int target = gridGraph.encodeNode(targetCell);
-                        Double weight = (double) pathFinder.getNumberOfMovesTo(targetCell);
-                        setEdge(source, target, weight);
-                    }
+            for (GridCell targetCell : closestCells) {
+                if (!targetCell.equals(startCell) && pathFinder.nodeIsReachable(targetCell)) {
+                    int target = graph.encodeNode(targetCell);
+                    Double weight = (double) pathFinder.getNumberOfMovesTo(targetCell);
+                    setEdge(source, target, weight);
                 }
             }
         }
+    }
+
+    public void transFormSimpleGridGraphByCriticalNodes(SimpleGridGraph graph) {
+        this.transFormSimpleGridGraphByCriticalNodes(graph, graph.getCriticalNodes().size());
     }
 
     private void setEdge(int source, int target, Double weight) {
@@ -146,6 +150,11 @@ public final class WeightedIntegerGraph implements GraphWithEdges<Integer, Doubl
     @Override
     public Integer getStartNode() {
         return start;
+    }
+
+    @Override
+    public Iterable<Integer> getCriticalNodes() {
+        throw new UnsupportedOperationException();
     }
 
     @Override
