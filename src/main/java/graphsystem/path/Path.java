@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Path<N> extends ArrayList<N> {
+public class Path<N> extends ArrayList<N> implements Comparable<Path<N>> {
+
+    private double weight = Double.MAX_VALUE;
 
     public static <N> List<Path<N>> findPermutations(List<N> nodes) {
         if (nodes == null || nodes.isEmpty()) {
@@ -30,4 +32,21 @@ public class Path<N> extends ArrayList<N> {
         return permutations;
     }
 
+    public double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(double weight) {
+        this.weight = weight;
+    }
+
+    @Override
+    public int compareTo(Path<N> o) {
+        if (this.getWeight() < o.getWeight()) {
+            return -1;
+        } else if (this.getWeight() > o.getWeight()) {
+            return 1;
+        }
+        return 0;
+    }
 }
