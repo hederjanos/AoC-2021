@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Path<N> extends ArrayList<N> implements Comparable<Path<N>> {
 
-    private double weight = Double.MAX_VALUE;
+    private final List<Double> weightIncrements = new ArrayList<>();
 
     public static <N> List<Path<N>> findPermutations(List<N> nodes) {
         if (nodes == null || nodes.isEmpty()) {
@@ -33,11 +33,17 @@ public class Path<N> extends ArrayList<N> implements Comparable<Path<N>> {
     }
 
     public double getWeight() {
-        return weight;
+        return weightIncrements.stream().mapToDouble(Double::doubleValue).sum();
     }
 
-    public void setWeight(double weight) {
-        this.weight = weight;
+    public void addNode(N node, Double weight) {
+        weightIncrements.add(weight);
+        add(node);
+    }
+
+    public N removeNode(int index) {
+        weightIncrements.remove(index);
+        return remove(index);
     }
 
     @Override
@@ -49,4 +55,13 @@ public class Path<N> extends ArrayList<N> implements Comparable<Path<N>> {
         }
         return 0;
     }
+
+    public Path<N> copy() {
+        Path<N> newPath = new Path<>();
+        for (int i = 0; i < weightIncrements.size(); i++) {
+            newPath.addNode(this.get(i), weightIncrements.get(i));
+        }
+        return newPath;
+    }
+
 }

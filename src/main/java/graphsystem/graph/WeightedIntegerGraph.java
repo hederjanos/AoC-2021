@@ -31,11 +31,13 @@ public final class WeightedIntegerGraph implements GraphWithEdges<Integer, Doubl
             int source = graph.encodeNode(startCell);
             order[i] = source;
             List<GridCell> closestCells;
+            System.out.println("closest nodes of " + source + ": ");
             if (numberOfNeighbours == mustBeVisitedCells.size()) {
                 closestCells = mustBeVisitedCells;
             } else {
                 closestCells = (List<GridCell>) pathFinder.getClosestCriticalNodesByCost(startCell, numberOfNeighbours);
             }
+            closestCells.stream().map(graph::encodeNode).forEach(System.out::println);
             for (GridCell targetCell : closestCells) {
                 if (!targetCell.equals(startCell) && pathFinder.nodeIsReachable(targetCell)) {
                     int target = graph.encodeNode(targetCell);
@@ -100,7 +102,18 @@ public final class WeightedIntegerGraph implements GraphWithEdges<Integer, Doubl
 
     @Override
     public Iterable<Integer> getNeighbours(Integer node) {
-        return connections.get(node);
+        List<Integer> edgeIndexes = connections.get(node);
+        if (edgeIndexes == null) {
+            throw new IllegalArgumentException();
+        }
+        return edgeIndexes.stream().map(edgeIndex -> {
+            Edge<Integer, Double> edge = edges.get(edgeIndex);
+            if (edge.getSource().equals(node)) {
+                return edge.getTarget();
+            } else {
+                return edge.getSource();
+            }
+        }).collect(Collectors.toUnmodifiableList());
     }
 
     @Override
