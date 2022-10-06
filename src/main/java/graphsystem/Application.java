@@ -22,59 +22,52 @@ public class Application {
         weightedIntegerGraph.transFormSimpleGridGraphByCriticalNodes(simpleGridGraph, 4);
 
         //trial
-        Optional<Path<Integer>> min = calculate(simpleGridGraph, weightedIntegerGraph);
-
         System.out.println("-------------------------------------------------------------");
-        System.out.println("solution");
-        System.out.println("-------------------------------------------------------------");
-
-        //System.out.println(simpleGridGraph);
+        System.out.println("WeightedIntegerGraph representation of input: ");
         System.out.println("-------------------------------------------------------------");
         System.out.println(weightedIntegerGraph);
         System.out.println("-------------------------------------------------------------");
-        System.out.println("start: " + simpleGridGraph.encodeNode(simpleGridGraph.getStartNode()));
-        System.out.println("cost: " + min.get().getWeight());
+        System.out.println("Solution:");
+        System.out.println("-------------------------------------------------------------");
+        Optional<Path<Integer, Integer>> min = calculate(simpleGridGraph, weightedIntegerGraph);
+        System.out.println("Start node: " + simpleGridGraph.encodeNode(simpleGridGraph.getStartNode()));
+        System.out.println("Cost: " + min.get().getWeight());
+        System.out.println("Path: ");
         min.get().stream().map(simpleGridGraph::decodeNode).forEach(System.out::println);
-
     }
 
-    private static Optional<Path<Integer>> calculate(SimpleGridGraph simpleGridGraph, WeightedIntegerGraph weightedIntegerGraph) {
-        List<Path<Integer>> solutions = new ArrayList<>();
-        Deque<Path<Integer>> paths = new ArrayDeque<>();
+    private static Optional<Path<Integer, Integer>> calculate(SimpleGridGraph simpleGridGraph, WeightedIntegerGraph weightedIntegerGraph) {
+        List<Path<Integer, Integer>> solutions = new ArrayList<>();
+        Deque<Path<Integer, Integer>> paths = new ArrayDeque<>();
         Deque<List<Integer>> pathHelpers = new ArrayDeque<>();
-        Path<Integer> startPath = new Path<>();
+        Path<Integer, Integer> startPath = new Path<>();
         List<Integer> startHelper = new ArrayList<>();
         startHelper.add(weightedIntegerGraph.getStartNode());
-        startPath.addNode(weightedIntegerGraph.getStartNode(), 0d);
+        startPath.addNode(weightedIntegerGraph.getStartNode(), 0);
         paths.push(startPath);
         pathHelpers.push(startHelper);
         while (!paths.isEmpty()) {
-            Path<Integer> path = paths.pop();
+            Path<Integer, Integer> path = paths.pop();
             List<Integer> pathHelper = pathHelpers.pop();
-            System.out.print("current path length: " + path.size());
-            System.out.println(", remaining paths: " + paths.size());
-
             if (path.size() == simpleGridGraph.getCriticalNodes().size()) {
-                Path<Integer> newPath = path.copy();
+                Path<Integer, Integer> newPath = path.copy();
                 solutions.add(newPath);
             }
-            Integer last = path.get(path.size() - 1);
-            int counter = 0;
-
-            Iterable<Edge<Integer, Double>> edges = weightedIntegerGraph.getEdges(last);
-            List<Edge<Integer, Double>> targets = new ArrayList<>();
-            for (Edge<Integer, Double> edge : edges) {
-                if (edge.getSource().equals(last)) {
+            Integer lastNode = path.get(path.size() - 1);
+            int numberOfUnVisitedNeighbours = 0;
+            Iterable<Edge<Integer, Integer>> edges = weightedIntegerGraph.getEdges(lastNode);
+            List<Edge<Integer, Integer>> targets = new ArrayList<>();
+            for (Edge<Integer, Integer> edge : edges) {
+                if (edge.getSource().equals(lastNode)) {
                     targets.add(new Edge<>(edge.getSource(), edge.getTarget(), edge.getWeight()));
                 } else {
                     targets.add(new Edge<>(edge.getTarget(), edge.getSource(), edge.getWeight()));
                 }
             }
-
-            for (Edge<Integer, Double> edge : targets) {
+            for (Edge<Integer, Integer> edge : targets) {
                 if (!path.contains(edge.getTarget()) && !pathHelper.contains(edge.getTarget())) {
-                    counter++;
-                    Path<Integer> newPath = path.copy();
+                    numberOfUnVisitedNeighbours++;
+                    Path<Integer, Integer> newPath = path.copy();
                     newPath.addNode(edge.getTarget(), edge.getWeight());
                     paths.push(newPath);
                     List<Integer> help = new ArrayList<>(pathHelper);
@@ -82,10 +75,11 @@ public class Application {
                     pathHelpers.push(help);
                 }
             }
-            if (counter == 0) {
+            if (numberOfUnVisitedNeighbours == 0 && path.size() != simpleGridGraph.getCriticalNodes().size()) {
+                Integer node;
                 List<Integer> neighbours;
                 do {
-                    Integer node = path.removeNode(path.size() - 1);
+                    node = path.removeNode(path.size() - 1);
                     neighbours = ((List<Integer>) weightedIntegerGraph.getNeighbours(node));
                 } while (!path.isEmpty() && neighbours.stream().anyMatch(integer -> !path.contains(integer)));
                 if (!path.isEmpty()) {
