@@ -8,52 +8,63 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public final class WeightedIntegerGraph implements GraphWithEdges<Integer, Double> {
+public final class WeightedIntegerGraph implements GraphWithEdges<Integer, Integer> {
 
     private Integer start;
     private Integer[] order;
-    private List<Edge<Integer, Double>> edges;
-    private Map<Integer, List<Integer>> connections;
+    private List<Edge<Integer, Integer>> edges;
+    private Map<Integer, Set<Integer>> connections;
 
     public void transFormSimpleGridGraphByCriticalNodes(SimpleGridGraph graph, int numberOfNeighbours) {
-        List<GridCell> mustBeVisitedCells = graph.getCriticalNodes();
-        if (mustBeVisitedCells.isEmpty()) {
+        List<GridCell> criticalNodes = graph.getCriticalNodes();
+        if (criticalNodes.isEmpty()) {
             throw new IllegalArgumentException();
         }
-        start = graph.encodeNode(graph.getStartNode());
-        order = new Integer[graph.getCriticalNodes().size()];
-        edges = new ArrayList<>();
-        connections = new HashMap<>();
-        PathFinder<GridCell> pathFinder = new BreadthSearchPathFinder<>(graph);
-        for (int i = 0; i < mustBeVisitedCells.size(); i++) {
-            GridCell startCell = mustBeVisitedCells.get(i);
+        initializeGraph(graph);
+        PathFinder<GridCell, Integer> pathFinder = new BreadthSearchPathFinder<>(graph);
+        for (int i = 0; i < criticalNodes.size(); i++) {
+            GridCell startCell = criticalNodes.get(i);
             pathFinder.findAllPathsFromNode(startCell);
             int source = graph.encodeNode(startCell);
             order[i] = source;
-            List<GridCell> closestCells;
-            System.out.println("closest nodes of " + source + ": ");
-            if (numberOfNeighbours == mustBeVisitedCells.size()) {
-                closestCells = mustBeVisitedCells;
-            } else {
-                closestCells = (List<GridCell>) pathFinder.getClosestCriticalNodesByCost(startCell, numberOfNeighbours);
-            }
-            closestCells.stream().map(graph::encodeNode).forEach(System.out::println);
+            List<GridCell> closestCells = setClosestCells(startCell, criticalNodes, pathFinder, numberOfNeighbours);
             for (GridCell targetCell : closestCells) {
                 if (!targetCell.equals(startCell) && pathFinder.nodeIsReachable(targetCell)) {
                     int target = graph.encodeNode(targetCell);
-                    Double weight = (double) pathFinder.getNumberOfMovesTo(targetCell);
+                    Integer weight = pathFinder.getNumberOfMovesTo(targetCell);
                     setEdge(source, target, weight);
                 }
             }
         }
     }
 
+    private void initializeGraph(SimpleGridGraph graph) {
+        start = graph.encodeNode(graph.getStartNode());
+        order = new Integer[graph.getCriticalNodes().size()];
+        edges = new ArrayList<>();
+        connections = new HashMap<>();
+        for (GridCell criticalCell : graph.getCriticalNodes()) {
+            Set<Integer> edgeIndexesForCell = new HashSet<>();
+            connections.put(graph.encodeNode(criticalCell), edgeIndexesForCell);
+        }
+    }
+
+    private List<GridCell> setClosestCells(GridCell cell, List<GridCell> criticalNodes, PathFinder<GridCell, Integer> pathFinder, int numberOfNeighbours) {
+        List<GridCell> closestCells;
+        if (numberOfNeighbours == criticalNodes.size()) {
+            closestCells = criticalNodes;
+        } else {
+            closestCells = (List<GridCell>) pathFinder.getClosestCriticalNodesByCost(cell, numberOfNeighbours);
+        }
+        return closestCells;
+    }
+
     public void transFormSimpleGridGraphByCriticalNodes(SimpleGridGraph graph) {
         this.transFormSimpleGridGraphByCriticalNodes(graph, graph.getCriticalNodes().size());
     }
 
-    private void setEdge(int source, int target, Double weight) {
-        Edge<Integer, Double> newEdge = new Edge<>(source, target, weight);
+    private void setEdge(int source, int target, Integer weight) {
+        Edge<Integer, Integer> newEdge = new Edge<>(source, target, weight);
         int indexOfEdge;
         if (edges.contains(newEdge)) {
             indexOfEdge = edges.indexOf(newEdge);
@@ -61,14 +72,8 @@ public final class WeightedIntegerGraph implements GraphWithEdges<Integer, Doubl
             indexOfEdge = edges.size();
             edges.add(newEdge);
         }
-        List<Integer> edgeIndexes;
-        if (!connections.containsKey(source)) {
-            edgeIndexes = new ArrayList<>();
-            connections.put(source, edgeIndexes);
-        } else {
-            edgeIndexes = connections.get(source);
-        }
-        edgeIndexes.add(indexOfEdge);
+        connections.get(source).add(indexOfEdge);
+        connections.get(target).add(indexOfEdge);
     }
 
     @Override
@@ -82,32 +87,13 @@ public final class WeightedIntegerGraph implements GraphWithEdges<Integer, Doubl
     }
 
     @Override
-    public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("Number of nodes: ")
-                .append(connections.size())
-                .append(". Number of edges: ")
-                .append(edges.size())
-                .append(".\n");
-        connections.forEach((key, value) -> {
-            stringBuilder.append("Node=").append(key).append(": ");
-            for (Integer index : value) {
-                stringBuilder.append(edges.get(index).toString()).append(", ");
-            }
-            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-            stringBuilder.append("\n");
-        });
-        return stringBuilder.toString();
-    }
-
-    @Override
     public Iterable<Integer> getNeighbours(Integer node) {
-        List<Integer> edgeIndexes = connections.get(node);
+        Set<Integer> edgeIndexes = connections.get(node);
         if (edgeIndexes == null) {
             throw new IllegalArgumentException();
         }
         return edgeIndexes.stream().map(edgeIndex -> {
-            Edge<Integer, Double> edge = edges.get(edgeIndex);
+            Edge<Integer, Integer> edge = edges.get(edgeIndex);
             if (edge.getSource().equals(node)) {
                 return edge.getTarget();
             } else {
@@ -171,10 +157,37 @@ public final class WeightedIntegerGraph implements GraphWithEdges<Integer, Doubl
     }
 
     @Override
-    public Iterable<Edge<Integer, Double>> getEdges(Integer node) {
+    public Iterable<Edge<Integer, Integer>> getEdges(Integer node) {
         return connections.get(node).stream()
                 .map(integer -> edges.get(integer))
+                .map(Edge::copy)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Iterable<Edge<Integer, Integer>> getAllEdges(Integer node) {
+        return edges.stream()
+                .map(Edge::copy)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Number of nodes: ")
+                .append(connections.size())
+                .append(". Number of edges: ")
+                .append(edges.size())
+                .append(".\n");
+        connections.forEach((key, value) -> {
+            stringBuilder.append("Node=").append(key).append(": ");
+            for (Integer index : value) {
+                stringBuilder.append(edges.get(index).toString()).append(", ");
+            }
+            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+            stringBuilder.append("\n");
+        });
+        return stringBuilder.toString().trim();
     }
 
 }

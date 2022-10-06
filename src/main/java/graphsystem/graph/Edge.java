@@ -2,7 +2,7 @@ package graphsystem.graph;
 
 import java.util.Objects;
 
-public final class Edge<N, W extends Number> {
+public final class Edge<N, W extends Number> implements Comparable<Edge<N, W>> {
 
     private final N source;
     private final N target;
@@ -26,6 +26,10 @@ public final class Edge<N, W extends Number> {
         return weight;
     }
 
+    public Edge<N, W> copy() {
+        return new Edge<>(this.getSource(), this.getTarget(), this.getWeight());
+    }
+
     @Override
     public String toString() {
         return "Edge{" +
@@ -46,6 +50,11 @@ public final class Edge<N, W extends Number> {
     @Override
     public int hashCode() {
         return Objects.hash(source) + Objects.hash(target);
+    }
+
+    @Override
+    public int compareTo(Edge<N, W> o) {
+        return Double.compare(this.getWeight().doubleValue(), o.getWeight().doubleValue());
     }
 
 }

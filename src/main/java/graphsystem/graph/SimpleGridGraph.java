@@ -225,6 +225,14 @@ public final class SimpleGridGraph implements Graph<GridCell> {
                 .collect(Collectors.toUnmodifiableList());
     }
 
+    private void setCells(List<GridCell> cells) {
+        this.cells = cells;
+    }
+
+    private void setConnections(Map<Integer, Integer[]> connections) {
+        this.connections = connections;
+    }
+
     @Override
     public Integer encodeNode(GridCell cell) {
         return calculateCellIndex(cell.getPosition().getX(), cell.getPosition().getY());
@@ -243,6 +251,13 @@ public final class SimpleGridGraph implements Graph<GridCell> {
     @Override
     public GridCell getStartNode() {
         return start.copy();
+    }
+
+    @Override
+    public List<GridCell> getCriticalNodes() {
+        return criticalCells.stream()
+                .map(GridCell::copy)
+                .collect(Collectors.toList());
     }
 
     public String getGridString() {
@@ -277,6 +292,7 @@ public final class SimpleGridGraph implements Graph<GridCell> {
         return gridBuilder.toString();
     }
 
+    @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Number of nodes: ")
@@ -294,21 +310,7 @@ public final class SimpleGridGraph implements Graph<GridCell> {
             stringBuilder.deleteCharAt(stringBuilder.length() - 1);
             stringBuilder.append("\n");
         });
-        return stringBuilder.toString();
+        return stringBuilder.toString().trim();
     }
 
-    private void setCells(List<GridCell> cells) {
-        this.cells = cells;
-    }
-
-    private void setConnections(Map<Integer, Integer[]> connections) {
-        this.connections = connections;
-    }
-
-    @Override
-    public List<GridCell> getCriticalNodes() {
-        return criticalCells.stream()
-                .map(GridCell::copy)
-                .collect(Collectors.toList());
-    }
 }

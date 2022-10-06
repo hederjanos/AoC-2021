@@ -68,4 +68,5 @@ public class GridCell implements Comparable<GridCell> {
     public int compareTo(GridCell other) {
         return this.getPosition().compareTo(other.getPosition());
     }
+
 }
