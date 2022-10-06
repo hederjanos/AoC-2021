@@ -6,7 +6,7 @@ import graphsystem.graph.GraphWithEdges;
 
 import java.util.*;
 
-public class DijkstraPathFinder<N, W extends Number> extends PathFinder<N> {
+public class DijkstraPathFinder<N, W extends Number, P extends Comparable<P>> extends PathFinder<N, W> {
 
     private double[] weights;
 
@@ -44,11 +44,11 @@ public class DijkstraPathFinder<N, W extends Number> extends PathFinder<N> {
         Integer startNode = graph.encodeNode(start);
         weights[startNode] = 0d;
         numberOfMoves[startNode] = 0;
-        Queue<NodeWithPriority<Integer>> nodes = new PriorityQueue<>();
-        NodeWithPriority<Integer> nodeWithPriority = new NodeWithPriority<>(startNode, weights[startNode]);
+        Queue<PriorityNode<Integer, Double>> nodes = new PriorityQueue<>();
+        PriorityNode<Integer, Double> nodeWithPriority = new PriorityNode<>(startNode, weights[startNode]);
         nodes.offer(nodeWithPriority);
         while (!nodes.isEmpty()) {
-            NodeWithPriority<Integer> minPriorityNode = nodes.poll();
+            PriorityNode<Integer, Double> minPriorityNode = nodes.poll();
             for (Edge<N, W> edge : ((GraphWithEdges<N, W>) graph).getEdges(graph.decodeNode(minPriorityNode.getNode()))) {
                 Integer source = graph.encodeNode(edge.getSource());
                 Integer target = graph.encodeNode(edge.getTarget());
@@ -57,13 +57,13 @@ public class DijkstraPathFinder<N, W extends Number> extends PathFinder<N> {
                     weights[target] = weights[source] + weight;
                     numberOfMoves[target] = numberOfMoves[source] + 1;
                     pathMemory[target] = source;
-                    Optional<NodeWithPriority<Integer>> optionalNodeWithPriority = nodes.stream()
-                            .filter(node -> node.equals(new NodeWithPriority<>(target)))
+                    Optional<PriorityNode<Integer, Double>> priorityNode = nodes.stream()
+                            .filter(node -> node.getNode().equals(target))
                             .findFirst();
-                    if (optionalNodeWithPriority.isPresent()) {
-                        optionalNodeWithPriority.get().setPriority(weights[target]);
+                    if (priorityNode.isPresent()) {
+                        priorityNode.get().setPriority(weights[target]);
                     } else {
-                        nodes.offer(new NodeWithPriority<>(target, weights[target]));
+                        nodes.offer(new PriorityNode<>(target, weights[target]));
                     }
                 }
             }

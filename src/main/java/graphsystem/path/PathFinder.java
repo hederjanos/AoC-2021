@@ -4,7 +4,7 @@ import graphsystem.graph.Graph;
 
 import java.util.Collections;
 
-public abstract class PathFinder<N> {
+public abstract class PathFinder<N, W extends Number> {
 
     protected int[] numberOfMoves;
     protected int[] pathMemory;
@@ -16,11 +16,11 @@ public abstract class PathFinder<N> {
         pathMemory = new int[graph.getNumberOfNodes()];
     }
 
-    public Path<N> pathTo(N target) {
+    public Path<N, W> pathTo(N target) {
         if (pathCalculatedFrom == null) {
             throw new IllegalArgumentException();
         }
-        Path<N> path = new Path<>();
+        Path<N, W> path = new Path<>();
         int indexOfNode = graph.encodeNode(target);
         while (pathMemory[indexOfNode] != 0) {
             path.add(graph.decodeNode(indexOfNode));

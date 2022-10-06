@@ -1,12 +1,11 @@
 package graphsystem.path;
 
 import graphsystem.graph.Graph;
-import graphsystem.grid.GridCell;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class BreadthSearchPathFinder<N> extends PathFinder<N> {
+public class BreadthSearchPathFinder<N, W extends Number, P extends Comparable<P>> extends PathFinder<N, W> {
 
     private boolean[] isVisited;
 
@@ -82,42 +81,23 @@ public class BreadthSearchPathFinder<N> extends PathFinder<N> {
         if (!pathCalculatedFrom.equals(source)) {
             findAllPathsFromNode(source);
         }
-        Queue<NodeWithPriority<N>> nodes = new PriorityQueue<>((o1, o2) -> {
-            if (o1.getPriority() < o2.getPriority()) {
-                return 1;
-            } else if (o1.getPriority() > o2.getPriority()) {
-                return -1;
-            }
-            return 0;
-        });
+        Queue<PriorityNode<N, Integer>> nodes = new PriorityQueue<>((o1, o2) -> Integer.compare(0, o1.compareTo(o2)));
         for (N node : graph.getCriticalNodes()) {
             if (!node.equals(source) && nodeIsReachable(node)) {
-                int moveCostFromSource = numberOfMoves[graph.encodeNode(node)];
-                System.out.println("node " + moveCostFromSource);
+                Integer moveCostFromSource = numberOfMoves[graph.encodeNode(node)];
                 if (nodes.size() >= numberOfNeighbours) {
-                    System.out.println("nodes " + nodes.stream().map(NodeWithPriority::getPriority).collect(Collectors.toUnmodifiableList()));
-                    NodeWithPriority<N> lowestPriorityNode = nodes.poll();
-                    System.out.println("polled " + lowestPriorityNode.getPriority());
-                    if (lowestPriorityNode.getPriority() > moveCostFromSource) {
-                        nodes.offer(new NodeWithPriority<>(node, moveCostFromSource));
-                   /* } else if (lowestPriorityNode.getPriority() == moveCostFromSource) {
-                        GridCell source2 = (GridCell) source;
-                        GridCell node1 = (GridCell) node;
-                        GridCell node2 = (GridCell) lowestPriorityNode.getNode();
-                        if (source2.getPosition().calculateSquareDistance(node1.getPosition()) < source2.getPosition().calculateSquareDistance(node2.getPosition())) {
-                            nodes.offer(new NodeWithPriority<>((N) node1, moveCostFromSource));
-                        } else {
-                            nodes.offer(new NodeWithPriority<>((N) node2, moveCostFromSource));
-                        }*/
+                    PriorityNode<N, Integer> maxPriorityNode = nodes.poll();
+                    if (maxPriorityNode.getPriority() > moveCostFromSource) {
+                        nodes.offer(new PriorityNode<>(node, moveCostFromSource));
                     } else {
-                        nodes.offer(lowestPriorityNode);
+                        nodes.offer(maxPriorityNode);
                     }
                 } else {
-                    nodes.offer((new NodeWithPriority<>(node, moveCostFromSource)));
+                    nodes.offer((new PriorityNode<>(node, moveCostFromSource)));
                 }
             }
         }
-        return nodes.stream().map(NodeWithPriority::getNode).collect(Collectors.toList());
+        return nodes.stream().map(PriorityNode::getNode).collect(Collectors.toList());
     }
 
 }
