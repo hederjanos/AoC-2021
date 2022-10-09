@@ -11,12 +11,12 @@ import java.util.*;
 public class Application {
 
     public static void main(String[] args) {
-        //simple (No.: 11) 4 full
-        //level1 (No.: 25) 6 break
+        //simple (No.: 11, OK)
+        //level1 (No.: 25)
         //level2 (No.: 43)
         //level3 (No.: 100)
         PuzzleReader puzzleReader = new PuzzleReader();
-        puzzleReader.readPuzzle("simple.in");
+        puzzleReader.readPuzzle("level1.in");
         SimpleGridGraph simpleGridGraph = new SimpleGridGraph(puzzleReader.getPuzzleLines());
         WeightedIntegerGraph weightedIntegerGraph = new WeightedIntegerGraph();
         weightedIntegerGraph.transFormSimpleGridGraphByCriticalNodes(simpleGridGraph, 4);
@@ -39,17 +39,17 @@ public class Application {
     private static Optional<Path<Integer, Integer>> calculate(SimpleGridGraph simpleGridGraph, WeightedIntegerGraph weightedIntegerGraph) {
         List<Path<Integer, Integer>> solutions = new ArrayList<>();
         Deque<Path<Integer, Integer>> paths = new ArrayDeque<>();
-        Deque<List<Integer>> pathHelpers = new ArrayDeque<>();
+        Deque<int[]> visitedNodeRegisters = new ArrayDeque<>();
         Path<Integer, Integer> startPath = new Path<>();
-        List<Integer> startHelper = new ArrayList<>();
-        startHelper.add(weightedIntegerGraph.getStartNode());
+        int[] startBook = new int[simpleGridGraph.getCriticalNodes().size()];
+        startBook[weightedIntegerGraph.encodeNode(weightedIntegerGraph.getStartNode())] = 1;
         startPath.addNode(weightedIntegerGraph.getStartNode(), 0);
         paths.push(startPath);
-        pathHelpers.push(startHelper);
+        visitedNodeRegisters.push(startBook);
         while (!paths.isEmpty()) {
             Path<Integer, Integer> path = paths.pop();
-            List<Integer> pathHelper = pathHelpers.pop();
-            if (path.size() == simpleGridGraph.getCriticalNodes().size()) {
+            int[] nodeRegister = visitedNodeRegisters.pop();
+            if (Arrays.stream(nodeRegister).filter(g -> g > 0).count() == simpleGridGraph.getCriticalNodes().size()) {
                 Path<Integer, Integer> newPath = path.copy();
                 solutions.add(newPath);
             }
@@ -65,26 +65,35 @@ public class Application {
                 }
             }
             for (Edge<Integer, Integer> edge : targets) {
-                if (!path.contains(edge.getTarget()) && !pathHelper.contains(edge.getTarget())) {
+                if (!path.contains(edge.getTarget())) {
                     numberOfUnVisitedNeighbours++;
                     Path<Integer, Integer> newPath = path.copy();
                     newPath.addNode(edge.getTarget(), edge.getWeight());
                     paths.push(newPath);
-                    List<Integer> help = new ArrayList<>(pathHelper);
-                    help.add(edge.getTarget());
-                    pathHelpers.push(help);
+                    int[] newNodeRegister = Arrays.copyOf(nodeRegister, nodeRegister.length);
+                    newNodeRegister[weightedIntegerGraph.encodeNode(edge.getTarget())] += 1;
+                    visitedNodeRegisters.push(newNodeRegister);
                 }
             }
-            if (numberOfUnVisitedNeighbours == 0 && path.size() != simpleGridGraph.getCriticalNodes().size()) {
-                Integer node;
+            boolean pathIsUpdatable = true;
+            if (numberOfUnVisitedNeighbours == 0) {
+                Path<Integer, Integer> modifiedPath = path.copy();
+                path.removeNode(path.size() - 1);
                 List<Integer> neighbours;
                 do {
-                    node = path.removeNode(path.size() - 1);
-                    neighbours = ((List<Integer>) weightedIntegerGraph.getNeighbours(node));
+                    Integer weight = path.getWeightIncrement(path.size() - 1);
+                    Integer removeNode = path.removeNode(path.size() - 1);
+                    if (removeNode.equals(weightedIntegerGraph.getStartNode())) {
+                        pathIsUpdatable = false;
+                        break;
+                    }
+                    modifiedPath.addNode(removeNode, weight);
+                    nodeRegister[weightedIntegerGraph.encodeNode(removeNode)] += 1;
+                    neighbours = ((List<Integer>) weightedIntegerGraph.getNeighbours(removeNode));
                 } while (!path.isEmpty() && neighbours.stream().anyMatch(integer -> !path.contains(integer)));
-                if (!path.isEmpty()) {
-                    paths.push(path);
-                    pathHelpers.push(pathHelper);
+                if (pathIsUpdatable) {
+                    paths.push(modifiedPath);
+                    visitedNodeRegisters.push(nodeRegister);
                 }
             }
         }
