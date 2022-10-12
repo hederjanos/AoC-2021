@@ -26,6 +26,11 @@ public class GridPosition implements Comparable<GridPosition> {
                 (y - position.getY()) * (y - position.getY());
     }
 
+    public int calculateDistance(GridPosition position) {
+        return (int) Math.sqrt((x - position.getX()) * (x - position.getX()) +
+                (y - position.getY()) * (y - position.getY()));
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

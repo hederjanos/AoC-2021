@@ -81,7 +81,7 @@ public class BreadthSearchPathFinder<N, W extends Number, P extends Comparable<P
         if (!pathCalculatedFrom.equals(source)) {
             findAllPathsFromNode(source);
         }
-        Queue<PriorityNode<N, Integer>> nodes = new PriorityQueue<>((o1, o2) -> Integer.compare(0, o1.compareTo(o2)));
+        Queue<PriorityNode<N, Integer>> nodes = new PriorityQueue<>();
         for (N node : graph.getCriticalNodes()) {
             if (!node.equals(source) && nodeIsReachable(node)) {
                 Integer moveCostFromSource = numberOfMoves[graph.encodeNode(node)];
@@ -97,7 +97,27 @@ public class BreadthSearchPathFinder<N, W extends Number, P extends Comparable<P
                 }
             }
         }
-        return nodes.stream().map(PriorityNode::getNode).collect(Collectors.toList());
+        List<PriorityNode<N, Integer>> k = new ArrayList<>();
+        while (!nodes.isEmpty()) {
+            k.add(nodes.poll());
+        }
+        return k.stream().map(PriorityNode::getNode).collect(Collectors.toList());
+    }
+
+    public N getFurthestNode(N source) {
+        if (pathCalculatedFrom == null) {
+            throw new IllegalArgumentException();
+        }
+        if (!pathCalculatedFrom.equals(source)) {
+            findAllPathsFromNode(source);
+        }
+        N furthestNode = graph.getStartNode();
+        for (N criticalNode : graph.getCriticalNodes()) {
+            if (getNumberOfMovesTo(criticalNode) > getNumberOfMovesTo(furthestNode)) {
+                furthestNode = criticalNode;
+            }
+        }
+        return furthestNode;
     }
 
 }

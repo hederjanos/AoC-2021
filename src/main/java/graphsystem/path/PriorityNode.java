@@ -42,4 +42,11 @@ public final class PriorityNode<N, P extends Comparable<P>> implements Comparabl
        return this.getPriority().compareTo(o.getPriority());
     }
 
+    @Override
+    public String toString() {
+        return "PriorityNode{" +
+                "node=" + node +
+                ", priority=" + priority +
+                '}';
+    }
 }

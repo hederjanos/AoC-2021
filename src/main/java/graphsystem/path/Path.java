@@ -34,6 +34,9 @@ public class Path<N, W extends Number> extends ArrayList<N> implements Comparabl
     }
 
     public double getWeight() {
+        if (weightIncrements.isEmpty()) {
+            return Double.MAX_VALUE;
+        }
         return weightIncrements.stream().mapToDouble(Number::doubleValue).sum();
     }
 
