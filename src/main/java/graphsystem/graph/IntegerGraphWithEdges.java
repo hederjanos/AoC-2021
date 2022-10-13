@@ -16,7 +16,7 @@ public final class IntegerGraphWithEdges implements GraphWithEdges<Integer, Inte
     private Map<Integer, Set<Integer>> connections;
 
     public void transFormSimpleGridGraphByCriticalNodes(SimpleGridGraph graph, int numberOfNeighbours, boolean isAscending) {
-        List<GridCell> criticalNodes = graph.getCriticalNodes();
+        List<GridCell> criticalNodes = (List<GridCell>) graph.getCriticalNodes();
         if (criticalNodes.isEmpty()) {
             throw new IllegalArgumentException();
         }
@@ -40,7 +40,7 @@ public final class IntegerGraphWithEdges implements GraphWithEdges<Integer, Inte
 
     private void initializeGraph(SimpleGridGraph graph) {
         start = graph.encodeNode(graph.getStartNode());
-        order = new Integer[graph.getCriticalNodes().size()];
+        order = new Integer[graph.getNumberOfCriticalNodes()];
         edges = new ArrayList<>();
         connections = new HashMap<>();
         for (GridCell criticalCell : graph.getCriticalNodes()) {
@@ -60,7 +60,7 @@ public final class IntegerGraphWithEdges implements GraphWithEdges<Integer, Inte
     }
 
     public void transFormSimpleGridGraphByCriticalNodes(SimpleGridGraph graph) {
-        this.transFormSimpleGridGraphByCriticalNodes(graph, graph.getCriticalNodes().size(), true);
+        this.transFormSimpleGridGraphByCriticalNodes(graph, graph.getNumberOfCriticalNodes(), true);
     }
 
     private void setEdge(int source, int target, Integer weight) {
