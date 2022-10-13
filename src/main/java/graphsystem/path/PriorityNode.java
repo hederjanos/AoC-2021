@@ -49,4 +49,5 @@ public final class PriorityNode<N, P extends Comparable<P>> implements Comparabl
                 ", priority=" + priority +
                 '}';
     }
+
 }

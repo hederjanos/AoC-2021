@@ -53,12 +53,17 @@ public class DijkstraPathFinder<N, W extends Number, P extends Comparable<P>> ex
                 Integer source = graph.encodeNode(edge.getSource());
                 Integer target = graph.encodeNode(edge.getTarget());
                 double weight = (double) edge.getWeight();
+                if (!graph.encodeNode(edge.getSource()).equals(minPriorityNode.getNode())) {
+                    source = graph.encodeNode(edge.getTarget());
+                    target = graph.encodeNode(edge.getSource());
+                }
                 if (weights[target] > weights[source] + weight) {
                     weights[target] = weights[source] + weight;
                     numberOfMoves[target] = numberOfMoves[source] + 1;
                     pathMemory[target] = source;
+                    Integer finalTarget = target;
                     Optional<PriorityNode<Integer, Double>> priorityNode = nodes.stream()
-                            .filter(node -> node.getNode().equals(target))
+                            .filter(node -> node.getNode().equals(finalTarget))
                             .findFirst();
                     if (priorityNode.isPresent()) {
                         priorityNode.get().setPriority(weights[target]);
@@ -81,7 +86,7 @@ public class DijkstraPathFinder<N, W extends Number, P extends Comparable<P>> ex
     }
 
     @Override
-    public Iterable<N> getClosestCriticalNodesByCost(N source, int numberOfNeighbours) {
+    public Iterable<N> getClosestCriticalNodesByCost(N source, int numberOfNeighbours, boolean isAscending) {
         throw new UnsupportedOperationException();
     }
 
