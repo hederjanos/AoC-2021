@@ -8,7 +8,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public final class WeightedIntegerGraph implements GraphWithEdges<Integer, Integer> {
+public final class IntegerGraphWithEdges implements GraphWithEdges<Integer, Integer> {
 
     private Integer start;
     private Integer[] order;
