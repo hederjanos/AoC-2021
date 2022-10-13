@@ -41,4 +41,6 @@ public abstract class PathFinder<N, W extends Number> {
 
     public abstract Iterable<N> getClosestCriticalNodesByCost(N source, int numberOfNeighbours, boolean isAscending);
 
+    public abstract N getFurthestNode(N source);
+
 }

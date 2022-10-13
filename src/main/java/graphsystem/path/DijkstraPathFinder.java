@@ -77,16 +77,21 @@ public class DijkstraPathFinder<N, W extends Number, P extends Comparable<P>> ex
 
     @Override
     public boolean nodeIsReachable(N target) {
-        return true;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public int getNumberOfMovesTo(N target) {
-        return 0;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Iterable<N> getClosestCriticalNodesByCost(N source, int numberOfNeighbours, boolean isAscending) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public N getFurthestNode(N source) {
         throw new UnsupportedOperationException();
     }
 

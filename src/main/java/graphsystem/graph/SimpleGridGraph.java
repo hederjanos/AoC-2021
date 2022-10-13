@@ -254,10 +254,15 @@ public final class SimpleGridGraph implements Graph<GridCell> {
     }
 
     @Override
-    public List<GridCell> getCriticalNodes() {
+    public Iterable<GridCell> getCriticalNodes() {
         return criticalCells.stream()
                 .map(GridCell::copy)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public int getNumberOfCriticalNodes() {
+        return criticalCells.size();
     }
 
     public String getGridString() {

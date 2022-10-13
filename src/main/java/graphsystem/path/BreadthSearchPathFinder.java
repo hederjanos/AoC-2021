@@ -123,6 +123,7 @@ public class BreadthSearchPathFinder<N, W extends Number, P extends Comparable<P
         return nodes;
     }
 
+    @Override
     public N getFurthestNode(N source) {
         if (pathCalculatedFrom == null) {
             throw new IllegalArgumentException();

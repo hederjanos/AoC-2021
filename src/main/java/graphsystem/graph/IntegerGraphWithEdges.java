@@ -15,7 +15,7 @@ public final class IntegerGraphWithEdges implements GraphWithEdges<Integer, Inte
     private List<Edge<Integer, Integer>> edges;
     private Map<Integer, Set<Integer>> connections;
 
-    public void transFormSimpleGridGraphByCriticalNodes(SimpleGridGraph graph, int numberOfNeighbours) {
+    public void transFormSimpleGridGraphByCriticalNodes(SimpleGridGraph graph, int numberOfNeighbours, boolean isAscending) {
         List<GridCell> criticalNodes = graph.getCriticalNodes();
         if (criticalNodes.isEmpty()) {
             throw new IllegalArgumentException();
@@ -27,7 +27,7 @@ public final class IntegerGraphWithEdges implements GraphWithEdges<Integer, Inte
             pathFinder.findAllPathsFromNode(startCell);
             int source = graph.encodeNode(startCell);
             order[i] = source;
-            List<GridCell> closestCells = setClosestCells(startCell, criticalNodes, pathFinder, numberOfNeighbours);
+            List<GridCell> closestCells = setClosestCells(startCell, criticalNodes, pathFinder, numberOfNeighbours, isAscending);
             for (GridCell targetCell : closestCells) {
                 if (!targetCell.equals(startCell) && pathFinder.nodeIsReachable(targetCell)) {
                     int target = graph.encodeNode(targetCell);
@@ -49,18 +49,18 @@ public final class IntegerGraphWithEdges implements GraphWithEdges<Integer, Inte
         }
     }
 
-    private List<GridCell> setClosestCells(GridCell cell, List<GridCell> criticalNodes, PathFinder<GridCell, Integer> pathFinder, int numberOfNeighbours) {
+    private List<GridCell> setClosestCells(GridCell cell, List<GridCell> criticalNodes, PathFinder<GridCell, Integer> pathFinder, int numberOfNeighbours, boolean isAscending) {
         List<GridCell> closestCells;
         if (numberOfNeighbours == criticalNodes.size()) {
             closestCells = criticalNodes;
         } else {
-            closestCells = (List<GridCell>) pathFinder.getClosestCriticalNodesByCost(cell, numberOfNeighbours);
+            closestCells = (List<GridCell>) pathFinder.getClosestCriticalNodesByCost(cell, numberOfNeighbours, isAscending);
         }
         return closestCells;
     }
 
     public void transFormSimpleGridGraphByCriticalNodes(SimpleGridGraph graph) {
-        this.transFormSimpleGridGraphByCriticalNodes(graph, graph.getCriticalNodes().size());
+        this.transFormSimpleGridGraphByCriticalNodes(graph, graph.getCriticalNodes().size(), true);
     }
 
     private void setEdge(int source, int target, Integer weight) {
@@ -153,6 +153,11 @@ public final class IntegerGraphWithEdges implements GraphWithEdges<Integer, Inte
 
     @Override
     public Iterable<Integer> getCriticalNodes() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public int getNumberOfCriticalNodes() {
         throw new UnsupportedOperationException();
     }
 

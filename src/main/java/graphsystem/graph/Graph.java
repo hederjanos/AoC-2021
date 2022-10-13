@@ -26,4 +26,6 @@ public interface Graph<N> {
 
     Iterable<N> getCriticalNodes();
 
+    int getNumberOfCriticalNodes();
+
 }
