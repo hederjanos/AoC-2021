@@ -140,4 +140,21 @@ public class BreadthSearchPathFinder<N, W extends Number, P extends Comparable<P
         return furthestNode;
     }
 
+    @Override
+    public N getClosestNode(N source) {
+        if (pathCalculatedFrom == null) {
+            throw new IllegalArgumentException();
+        }
+        if (!pathCalculatedFrom.equals(source)) {
+            findAllPathsFromNode(source);
+        }
+        N closestNode = graph.getStartNode();
+        for (N criticalNode : graph.getCriticalNodes()) {
+            if (getNumberOfMovesTo(criticalNode) < getNumberOfMovesTo(closestNode)) {
+                closestNode = criticalNode;
+            }
+        }
+        return closestNode;
+    }
+
 }

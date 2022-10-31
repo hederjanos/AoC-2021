@@ -1,9 +1,5 @@
 package graphsystem.graph;
 
-import graphsystem.graph.Edge;
-import graphsystem.graph.Graph;
-import graphsystem.graph.GraphWithEdges;
-
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;

@@ -43,4 +43,6 @@ public abstract class PathFinder<N, W extends Number> {
 
     public abstract N getFurthestNode(N source);
 
+    public abstract N getClosestNode(N source);
+
 }

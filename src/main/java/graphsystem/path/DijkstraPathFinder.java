@@ -95,4 +95,9 @@ public class DijkstraPathFinder<N, W extends Number, P extends Comparable<P>> ex
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public N getClosestNode(N source) {
+        throw new UnsupportedOperationException();
+    }
+
 }

@@ -2,60 +2,47 @@ package graphsystem.traverse;
 
 import graphsystem.graph.Graph;
 import graphsystem.graph.SimpleGridGraph;
-import graphsystem.grid.GridCell;
 import graphsystem.path.BreadthSearchPathFinder;
 import graphsystem.path.Path;
 import graphsystem.path.PathFinder;
 
 import java.util.List;
 
-public class NearestNeighbourTraverser<N> {
-
-    Path<N, Integer> solution = new Path<>();
+/**
+ * @deprecated
+ * Only works with SimpleGridGraph typed graph object which is small and connected!!!
+ */
+@Deprecated(forRemoval = true)
+public class NearestNeighbourTraverser<N> extends Traverser<N, Integer>{
 
     public NearestNeighbourTraverser(Graph<N> graph) {
         if (!(graph instanceof SimpleGridGraph)) {
-            throw new IllegalArgumentException();
+            throw new UnsupportedOperationException();
         }
-        //TODO Make general
+        this.graph = graph;
+        this.solution = new Path<>();
+    }
+
+    @Override
+    public void explore() {
+        int numberOfCriticalNodes = graph.getNumberOfCriticalNodes();
         PathFinder<N, Integer> pathFinder = new BreadthSearchPathFinder<>(graph);
         pathFinder.findAllPathsFromNode(graph.getStartNode());
-        N startNode = graph.getStartNode();
-        N furthestNodeFromStart = pathFinder.getFurthestNode(startNode);
-        int numberOfCriticalNodes = graph.getNumberOfCriticalNodes();
-        pathFinder.findAllPathsFromNode(furthestNodeFromStart);
-        List<N> closestCellsToFurthest = (List<N>) pathFinder.getClosestCriticalNodesByCost(furthestNodeFromStart, numberOfCriticalNodes, true);
         solution.addNode(graph.getStartNode(), 0);
-        while (solution.size() != numberOfCriticalNodes) {
-            N parent = solution.get(solution.size() - 1);
-            pathFinder.findAllPathsFromNode(parent);
-            List<N> closestCellsToPrev = (List<N>) pathFinder.getClosestCriticalNodesByCost(parent, numberOfCriticalNodes, true);
-
-            N neighbour1;
+        do {
+            N parentNode = solution.get(solution.size() - 1);
+            pathFinder.findAllPathsFromNode(parentNode);
+            List<N> closestCellsToPrev = (List<N>) pathFinder.getClosestCriticalNodesByCost(parentNode, numberOfCriticalNodes, true);
             int i = 0;
             do {
-                neighbour1 = closestCellsToPrev.get(i);
+                N closestNeighbourNode = closestCellsToPrev.get(i);
+                if (!solution.contains(closestNeighbourNode)) {
+                    solution.addNode(closestNeighbourNode, pathFinder.getNumberOfMovesTo(closestNeighbourNode));
+                    break;
+                }
                 i++;
-            } while (i < closestCellsToPrev.size() && solution.contains(neighbour1));
-
-            closestCellsToPrev.sort((n1, n2) -> Integer.compare(closestCellsToFurthest.indexOf(n2), closestCellsToFurthest.indexOf(n1)));
-
-            N neighbour2;
-            i = 0;
-            do {
-                neighbour2 = closestCellsToPrev.get(i);
-                i++;
-            } while (i < closestCellsToPrev.size() && solution.contains(neighbour2));
-
-            int distance1 = ((GridCell) parent).getPosition().calculateDistance(((GridCell) neighbour1).getPosition());
-            int distance2 = ((GridCell) parent).getPosition().calculateDistance(((GridCell) neighbour2).getPosition());
-
-            if (distance1 < distance2 && Math.abs(distance1 - distance2) < numberOfCriticalNodes) {
-                solution.addNode(neighbour1, pathFinder.getNumberOfMovesTo(neighbour1));
-            } else {
-                solution.addNode(neighbour2, pathFinder.getNumberOfMovesTo(neighbour2));
-            }
-        }
+            } while (i < closestCellsToPrev.size());
+        } while (solution.size() != numberOfCriticalNodes);
     }
 
     public Path<N, Integer> getSolution() {
