@@ -1,7 +1,6 @@
 package graphsystem;
 
 import graphsystem.graph.SimpleGridGraph;
-import util.PuzzleReader;
 
 /**
  * simple (No.: 11)
@@ -12,10 +11,8 @@ import util.PuzzleReader;
 public class Application {
 
     public static void main(String[] args) {
-        PuzzleReader puzzleReader = new PuzzleReader();
-        puzzleReader.readPuzzle("simple.in");
-        SimpleGridGraph simpleGridGraph = new SimpleGridGraph(puzzleReader.getPuzzleLines());
+        SimpleGridGraph simpleGridGraph = new SimpleGridGraph("level3.in");
+        System.out.println(simpleGridGraph);
     }
-
 
 }

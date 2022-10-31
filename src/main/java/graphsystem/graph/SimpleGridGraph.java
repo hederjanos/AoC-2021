@@ -2,6 +2,7 @@ package graphsystem.graph;
 
 import graphsystem.grid.Direction;
 import graphsystem.grid.GridCell;
+import util.PuzzleReader;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -91,14 +92,16 @@ public final class SimpleGridGraph implements Graph<GridCell> {
         numberOfEdges++;
     }
 
-    public SimpleGridGraph(List<String> lines) {
-        this(lines, true);
+    public SimpleGridGraph(String fileName) {
+        this(fileName, true);
     }
 
-    public SimpleGridGraph(List<String> lines, boolean fourWayDirection) {
-        if (lines.size() <= 1) {
-            throw new IllegalArgumentException();
-        }
+    public SimpleGridGraph(String filename, boolean fourWayDirection) {
+        PuzzleReader puzzleReader = new PuzzleReader();
+        puzzleReader.readPuzzle(filename);
+        puzzleReader.validateMaze();
+        List<String> lines = puzzleReader.getPuzzleLines();
+
         this.fourWayDirection = fourWayDirection;
         String[] dimensions = lines.get(0).split(" ");
         this.width = Integer.parseInt(dimensions[0]);
