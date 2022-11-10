@@ -49,7 +49,12 @@ public class SevenSegmentSearchSolver extends Solver<Integer> {
 
     @Override
     protected Integer solvePartTwo() {
-        return null;
+        return notes.stream()
+                .mapToInt(note -> {
+                    Decoder decoder = new Decoder(note);
+                    return decoder.decode();
+                })
+                .sum();
     }
 
 }

@@ -33,13 +33,15 @@ public class Decoder {
         return digit;
     }
 
-    public List<Integer> decode() {
+    public Integer decode() {
+        int number = 0;
         initDigitMap();
         handleSixSegmentPatterns();
         handleFiveSegmentPatterns();
-        return note.getOutputs().stream()
-                .map(digitMap::get)
-                .collect(Collectors.toList());
+        for (int i = 0; i < note.getOutputs().size(); i++) {
+            number += digitMap.get(note.getOutputs().get(i)) * Math.pow(10, note.getOutputs().size() - i - 1);
+        }
+        return number;
     }
 
     public Long getNumberOfUniqueDigits() {
