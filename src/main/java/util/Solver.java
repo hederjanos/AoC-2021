@@ -23,4 +23,5 @@ public abstract class Solver<V> {
         System.out.println("First part: " + solvePartOne());
         System.out.println("Second part: " + solvePartTwo());
     }
+
 }
