@@ -3,6 +3,8 @@ package dayseven;
 import util.Solver;
 
 import java.util.List;
+import java.util.OptionalDouble;
+import java.util.function.IntBinaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -26,13 +28,10 @@ public class TheTreacheryOfWhalesSolver extends Solver<Integer> {
     @Override
     protected Integer solvePartOne() {
         Integer medianOfPositions = getMedianOfPositions();
-        return positions.stream()
-                .map(position -> Math.abs(position - medianOfPositions))
-                .mapToInt(Integer::intValue)
-                .sum();
+        return calculateResult(medianOfPositions, (basePosition, position) -> Math.abs(basePosition - position));
     }
 
-    public Integer getMedianOfPositions() {
+    private Integer getMedianOfPositions() {
         Integer median;
         int numberOfPositions = positions.size();
         if (numberOfPositions % 2 != 0) {
@@ -43,9 +42,31 @@ public class TheTreacheryOfWhalesSolver extends Solver<Integer> {
         return median;
     }
 
+    private int calculateResult(Integer basePosition, IntBinaryOperator function) {
+        return positions.stream()
+                .map(position -> function.applyAsInt(basePosition, position))
+                .mapToInt(Integer::intValue)
+                .sum();
+    }
+
     @Override
     protected Integer solvePartTwo() {
-        return null;
+        Integer meanOfPositions = getMeanOfPositions();
+        return calculateResult(meanOfPositions, (basePosition, position) -> {
+            int difference = Math.abs(basePosition - position);
+            return difference * (difference + 1) / 2;
+        });
+    }
+
+    private Integer getMeanOfPositions() {
+        Integer mean = null;
+        OptionalDouble optionalAverage = positions.stream()
+                .mapToInt(Integer::intValue)
+                .average();
+        if (optionalAverage.isPresent()) {
+            mean = (int) Math.floor(optionalAverage.getAsDouble());
+        }
+        return mean;
     }
 
 }
