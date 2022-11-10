@@ -28,4 +28,5 @@ public class BingoCell {
     public void setUnMarked() {
         this.marked = false;
     }
+
 }

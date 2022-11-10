@@ -84,4 +84,5 @@ public class HydrothermalVentureSolver extends Solver<Integer> {
                 });
         return allCoordinates;
     }
+
 }

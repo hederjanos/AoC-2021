@@ -83,4 +83,5 @@ public class GiantSquidSolver extends Solver<Integer> {
         }
         return result;
     }
+
 }

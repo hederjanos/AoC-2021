@@ -92,4 +92,5 @@ public class BinaryDiagnosticSolver extends Solver<Integer> {
     private List<String> copyPuzzle() {
         return new ArrayList<>(puzzle);
     }
+
 }

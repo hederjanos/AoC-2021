@@ -91,4 +91,5 @@ public class Bingo {
     public void setAlreadyWon() {
         isAlreadyWon = true;
     }
+
 }

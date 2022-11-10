@@ -18,4 +18,5 @@ public class Command {
     public Integer getValue() {
         return value;
     }
+
 }

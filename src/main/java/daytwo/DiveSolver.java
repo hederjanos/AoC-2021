@@ -45,4 +45,5 @@ public class DiveSolver extends Solver<Integer> {
         });
         return submarine.getHorizontal() * submarine.getDepth();
     }
+
 }

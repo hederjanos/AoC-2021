@@ -50,4 +50,5 @@ public class LanternFishSolver extends Solver<Long> {
         shiftedArray[shiftedArray.length - 1] = firstElement;
         return shiftedArray;
     }
+
 }

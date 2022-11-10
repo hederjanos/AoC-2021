@@ -54,4 +54,5 @@ public class Submarine {
         horizontal += value;
         depth += aim * value;
     }
+
 }

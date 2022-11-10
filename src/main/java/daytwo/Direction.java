@@ -14,4 +14,5 @@ public enum Direction {
     public String getDisplayedDirection() {
         return dir;
     }
+
 }
