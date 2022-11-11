@@ -1,47 +1,29 @@
 package dayfour;
 
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Function;
 
-public class Bingo {
+public class Bingo extends IntegerGrid {
 
-    public static final int BINGO_SIZE = 5;
-
-    private final BingoCell[][] board = new BingoCell[BINGO_SIZE][BINGO_SIZE];
     private boolean isAlreadyWon;
 
-    public Bingo(List<String> bingoParts) {
-        IntStream.range(0, BINGO_SIZE)
-                .forEach(i -> {
-                    List<Integer> numbers = tokenizeBingoPart(bingoParts.get(i)).stream()
-                            .map(Integer::parseInt)
-                            .collect(Collectors.toList());
-                    IntStream.range(0, BINGO_SIZE)
-                            .forEach(j -> board[i][j] = new BingoCell(numbers.get(j)));
-                });
-    }
-
-    private List<String> tokenizeBingoPart(String bingoPart) {
-        List<String> strings = new ArrayList<>();
-        StringTokenizer stringTokenizer = new StringTokenizer(bingoPart);
-        while (stringTokenizer.hasMoreTokens()) {
-            strings.add(stringTokenizer.nextToken());
-        }
-        return strings;
+    public Bingo(List<String> gridLines, Function<String, List<Integer>> tokenizer) {
+        super(gridLines, tokenizer);
     }
 
     public void markRandomNumberInBingoIfExists(Integer randomNumber) {
         Arrays.stream(board)
                 .forEach(bingoCells -> Arrays.stream(bingoCells)
-                        .filter(bingoCell -> Objects.equals(bingoCell.getNumber(), randomNumber))
-                        .forEach(BingoCell::setMarked));
+                        .filter(bingoCell -> Objects.equals(bingoCell.getValue(), randomNumber))
+                        .forEach(GridCell::setMarked));
     }
 
     public boolean isWin() {
         boolean isWin = false;
-        int[] verticalCounter = new int[Bingo.BINGO_SIZE];
-        for (BingoCell[] bingoCells : board) {
+        int[] verticalCounter = new int[height];
+        for (GridCell<Integer>[] bingoCells : board) {
             int horizontalCounter = 0;
             for (int i = 0; i < bingoCells.length; i++) {
                 if (bingoCells[i].isMarked()) {
@@ -49,13 +31,13 @@ public class Bingo {
                     verticalCounter[i]++;
                 }
             }
-            if (horizontalCounter == Bingo.BINGO_SIZE) {
+            if (horizontalCounter == width) {
                 isWin = true;
                 break;
             }
         }
         if (!isWin && Arrays.stream(verticalCounter)
-                .anyMatch(number -> number == Bingo.BINGO_SIZE)) {
+                .anyMatch(number -> number == height)) {
             isWin = true;
         }
         return isWin;
@@ -65,20 +47,20 @@ public class Bingo {
         return Arrays.stream(board)
                 .flatMap(bingoCells -> Arrays.stream(bingoCells)
                         .filter(bingoCell -> !bingoCell.isMarked())
-                        .map(BingoCell::getNumber))
+                        .map(GridCell::getValue))
                 .reduce(0, Integer::sum);
     }
 
     public void resetBingo() {
         Arrays.stream(board)
                 .forEach(bingoCells -> Arrays.stream(bingoCells)
-                        .forEach(BingoCell::setUnMarked));
+                        .forEach(GridCell::setUnMarked));
     }
 
     public void printBingo() {
         Arrays.stream(board).forEach(bingoCells -> {
             Arrays.stream(bingoCells)
-                    .map(bingoCell -> bingoCell.getNumber() + (bingoCell.isMarked() ? "X" : "O") + "\t")
+                    .map(bingoCell -> bingoCell.getValue() + (bingoCell.isMarked() ? "X" : "O") + "\t")
                     .forEach(System.out::print);
             System.out.println();
         });

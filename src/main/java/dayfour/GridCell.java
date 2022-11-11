@@ -1,20 +1,16 @@
 package dayfour;
 
-public class BingoCell {
+public class GridCell<V> {
 
-    private Integer number;
+    private final V value;
     private boolean marked;
 
-    public BingoCell(Integer number) {
-        this.number = number;
+    public GridCell(V number) {
+        this.value = number;
     }
 
-    public Integer getNumber() {
-        return number;
-    }
-
-    public void setNumber(Integer number) {
-        this.number = number;
+    public V getValue() {
+        return value;
     }
 
     public boolean isMarked() {

@@ -2,14 +2,12 @@ package dayfour;
 
 import util.Solver;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class GiantSquidSolver extends Solver<Integer> {
 
+    public static final int BINGO_SIZE = 5;
     private final List<Integer> randomNumbers;
     private final List<Bingo> bingoList;
 
@@ -27,11 +25,20 @@ public class GiantSquidSolver extends Solver<Integer> {
     private List<Bingo> parseBingos() {
         List<Bingo> bingoArrayList = new ArrayList<>();
         int head = 2;
-        while (head <= puzzle.size() - Bingo.BINGO_SIZE) {
-            bingoArrayList.add(new Bingo(puzzle.subList(head, head + Bingo.BINGO_SIZE)));
-            head += Bingo.BINGO_SIZE + 1;
+        while (head <= puzzle.size() - BINGO_SIZE) {
+            bingoArrayList.add(new Bingo(puzzle.subList(head, head + BINGO_SIZE), this::tokenizeGridLine));
+            head += BINGO_SIZE + 1;
         }
         return bingoArrayList;
+    }
+
+    private List<Integer> tokenizeGridLine(String gridLine) {
+        List<Integer> strings = new ArrayList<>();
+        StringTokenizer stringTokenizer = new StringTokenizer(gridLine);
+        while (stringTokenizer.hasMoreTokens()) {
+            strings.add(Integer.parseInt(stringTokenizer.nextToken()));
+        }
+        return strings;
     }
 
     @Override
