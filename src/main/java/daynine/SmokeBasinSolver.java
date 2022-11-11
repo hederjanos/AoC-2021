@@ -1,12 +1,14 @@
 package daynine;
 
 import util.common.Solver;
+import util.grid.GridCell;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class SmokeBasinSolver extends Solver<Integer> {
 
-    private HeightMap heightMap;
+    private final HeightMap heightMap;
 
     public SmokeBasinSolver(String filename) {
         super(filename);
@@ -14,16 +16,19 @@ public class SmokeBasinSolver extends Solver<Integer> {
     }
 
     private HeightMap parseInput() {
-       return new HeightMap(puzzle,
-               s -> s.chars()
-                       .mapToObj(c -> (char) c)
-                       .map(Character::getNumericValue)
-                       .collect(Collectors.toList()));
+        return new HeightMap(puzzle,
+                s -> s.chars()
+                        .mapToObj(c -> (char) c)
+                        .map(Character::getNumericValue)
+                        .collect(Collectors.toList()));
     }
 
     @Override
     protected Integer solvePartOne() {
-        return null;
+        List<GridCell<Integer>> lowestLocations = heightMap.getLowestLocations();
+        return lowestLocations.stream()
+                .mapToInt(gridCell -> gridCell.getValue() + 1)
+                .sum();
     }
 
     @Override

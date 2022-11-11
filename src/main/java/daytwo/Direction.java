@@ -1,6 +1,7 @@
 package daytwo;
 
 public enum Direction {
+
     UP("up"),
     DOWN("down"),
     FORWARD("forward");
