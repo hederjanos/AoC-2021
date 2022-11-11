@@ -4,7 +4,9 @@ import util.coordinate.Coordinate;
 import util.grid.GridCell;
 import util.grid.IntegerGrid;
 
+import java.util.ArrayDeque;
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -12,6 +14,7 @@ import java.util.stream.Collectors;
 public class HeightMap extends IntegerGrid {
 
     private final boolean fourWayDirection;
+    private static final int MAX_HEIGHT = 9;
 
     protected HeightMap(List<String> gridLines, Function<String, List<Integer>> tokenizer) {
         this(gridLines, tokenizer, true);
@@ -46,6 +49,28 @@ public class HeightMap extends IntegerGrid {
             }
         }
         return isALocalMinimum;
+    }
+
+    public int getSizeOfABasin(GridCell<Integer> gridCell) {
+        int size = 0;
+        Queue<GridCell<Integer>> queue = new ArrayDeque<>();
+        gridCell.setMarked();
+        queue.offer(gridCell);
+        size++;
+        while (!queue.isEmpty()) {
+            GridCell<Integer> lastCell = queue.poll();
+            for (Coordinate coordinate : lastCell.getCoordinate().getOrthogonalAdjacentCoordinates()) {
+                if (isCoordinateInBounds(coordinate)) {
+                    GridCell<Integer> currentNeighbour = board.get(calculateCellIndex(coordinate.getX(), coordinate.getY()));
+                    if (!currentNeighbour.isMarked() && currentNeighbour.getValue() != MAX_HEIGHT) {
+                        currentNeighbour.setMarked();
+                        size++;
+                        queue.offer(currentNeighbour);
+                    }
+                }
+            }
+        }
+        return size;
     }
 
 }
