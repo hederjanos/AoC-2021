@@ -1,4 +1,4 @@
-package dayfour;
+package util.grid;
 
 public class GridCell<V> {
 

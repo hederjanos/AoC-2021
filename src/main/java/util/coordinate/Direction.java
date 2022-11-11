@@ -1,4 +1,4 @@
-package coordinate;
+package util.coordinate;
 
 public enum Direction {
     UP(0, -1),

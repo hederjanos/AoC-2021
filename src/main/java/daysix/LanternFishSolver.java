@@ -1,6 +1,6 @@
 package daysix;
 
-import util.Solver;
+import util.common.Solver;
 
 import java.util.Arrays;
 import java.util.List;

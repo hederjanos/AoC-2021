@@ -1,7 +1,7 @@
 package dayfive;
 
-import coordinate.Coordinate;
-import util.Solver;
+import util.coordinate.Coordinate;
+import util.common.Solver;
 
 import java.util.*;
 import java.util.stream.Collectors;

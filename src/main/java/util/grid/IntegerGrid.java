@@ -1,4 +1,4 @@
-package dayfour;
+package util.grid;
 
 import java.util.ArrayList;
 import java.util.List;

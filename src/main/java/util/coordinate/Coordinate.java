@@ -1,4 +1,4 @@
-package coordinate;
+package util.coordinate;
 
 import java.util.Comparator;
 import java.util.HashSet;

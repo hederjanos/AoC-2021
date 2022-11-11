@@ -1,6 +1,6 @@
 package daynine;
 
-import util.Solver;
+import util.common.Solver;
 
 import java.util.stream.Collectors;
 

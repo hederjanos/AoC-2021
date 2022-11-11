@@ -1,7 +1,7 @@
 package daynine;
 
-import dayfour.GridCell;
-import dayfour.IntegerGrid;
+import util.grid.GridCell;
+import util.grid.IntegerGrid;
 
 import java.util.Arrays;
 import java.util.List;

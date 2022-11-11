@@ -1,5 +1,8 @@
 package dayfour;
 
+import util.grid.GridCell;
+import util.grid.IntegerGrid;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;

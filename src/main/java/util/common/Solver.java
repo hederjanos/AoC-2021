@@ -1,4 +1,4 @@
-package util;
+package util.common;
 
 import java.util.List;
 

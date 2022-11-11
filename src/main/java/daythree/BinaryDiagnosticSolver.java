@@ -1,6 +1,6 @@
 package daythree;
 
-import util.Solver;
+import util.common.Solver;
 
 import java.util.ArrayList;
 import java.util.Arrays;

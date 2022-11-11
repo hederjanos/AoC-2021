@@ -1,6 +1,6 @@
 package daytwo;
 
-import util.Solver;
+import util.common.Solver;
 
 public class DiveSolver extends Solver<Integer> {
 
