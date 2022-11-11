@@ -2,13 +2,14 @@ package daynine;
 
 import util.common.Solver;
 import util.grid.GridCell;
+import util.grid.IntegerGrid;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class SmokeBasinSolver extends Solver<Integer> {
 
-    private final HeightMap heightMap;
+    private final IntegerGrid heightMap;
 
     public SmokeBasinSolver(String filename) {
         super(filename);
@@ -25,7 +26,7 @@ public class SmokeBasinSolver extends Solver<Integer> {
 
     @Override
     protected Integer solvePartOne() {
-        List<GridCell<Integer>> lowestLocations = heightMap.getLowestLocations();
+        List<GridCell<Integer>> lowestLocations = ((HeightMap) heightMap).getLowestLocations();
         return lowestLocations.stream()
                 .mapToInt(gridCell -> gridCell.getValue() + 1)
                 .sum();

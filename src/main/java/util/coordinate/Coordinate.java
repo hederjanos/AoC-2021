@@ -70,11 +70,13 @@ public class Coordinate {
         Set<Coordinate> adjacentCoordinates = new HashSet<>();
         Coordinate neighborCoordinate;
         Direction[] directions = Direction.values();
-        for (int i = 0; i < 4; i++) {
-            neighborCoordinate = copy();
-            neighborCoordinate.setX(neighborCoordinate.getX() + directions[i].getX());
-            neighborCoordinate.setY(neighborCoordinate.getY() + directions[i].getY());
-            adjacentCoordinates.add(neighborCoordinate);
+        for (Direction direction : directions) {
+            if (direction.ordinal() % 2 == 0) {
+                neighborCoordinate = copy();
+                neighborCoordinate.setX(neighborCoordinate.getX() + direction.getX());
+                neighborCoordinate.setY(neighborCoordinate.getY() + direction.getY());
+                adjacentCoordinates.add(neighborCoordinate);
+            }
         }
         return adjacentCoordinates;
     }

@@ -1,6 +1,7 @@
 package dayfour;
 
 import util.common.Solver;
+import util.grid.IntegerGrid;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -9,7 +10,7 @@ public class GiantSquidSolver extends Solver<Integer> {
 
     public static final int BINGO_SIZE = 5;
     private final List<Integer> randomNumbers;
-    private final List<Bingo> bingoList;
+    private final List<IntegerGrid> bingoList;
 
     public GiantSquidSolver(String filename) {
         super(filename);
@@ -22,8 +23,8 @@ public class GiantSquidSolver extends Solver<Integer> {
                 .map(Integer::parseInt).collect(Collectors.toList());
     }
 
-    private List<Bingo> parseBingos() {
-        List<Bingo> bingoArrayList = new ArrayList<>();
+    private List<IntegerGrid> parseBingos() {
+        List<IntegerGrid> bingoArrayList = new ArrayList<>();
         int head = 2;
         while (head <= puzzle.size() - BINGO_SIZE) {
             bingoArrayList.add(new Bingo(puzzle.subList(head, head + BINGO_SIZE), this::tokenizeGridLine));
@@ -51,7 +52,8 @@ public class GiantSquidSolver extends Solver<Integer> {
         boolean isDrawInProgress = true;
         for (int i = 0; i < randomNumbers.size() && isDrawInProgress; i++) {
             Integer number = randomNumbers.get(i);
-            for (Bingo bingo : bingoList) {
+            for (IntegerGrid integerGrid : bingoList) {
+                Bingo bingo = (Bingo) integerGrid;
                 bingo.markRandomNumberInBingoIfExists(number);
                 if (bingo.isWin()) {
                     result = Optional.of(number * bingo.getSumOfUnMarkedNumbers());
@@ -65,7 +67,7 @@ public class GiantSquidSolver extends Solver<Integer> {
 
     @Override
     protected Integer solvePartTwo() {
-        bingoList.forEach(Bingo::resetBingo);
+        bingoList.forEach(IntegerGrid::reset);
         return getResultByLastWinner().orElse(null);
     }
 
@@ -73,10 +75,11 @@ public class GiantSquidSolver extends Solver<Integer> {
         Optional<Integer> result = Optional.empty();
         int winBingoCounter = 0;
         Integer lastRandomNumber = randomNumbers.get(0);
-        Bingo lastBingo = bingoList.get(0);
+        Bingo lastBingo = (Bingo) bingoList.get(0);
         for (int i = 0; i < randomNumbers.size() && winBingoCounter < bingoList.size(); i++) {
             lastRandomNumber = randomNumbers.get(i);
-            for (Bingo bingo : bingoList) {
+            for (IntegerGrid integerGrid : bingoList) {
+                Bingo bingo = (Bingo) integerGrid;
                 bingo.markRandomNumberInBingoIfExists(lastRandomNumber);
                 if (!bingo.isAlreadyWon() && bingo.isWin()) {
                     bingo.setAlreadyWon();

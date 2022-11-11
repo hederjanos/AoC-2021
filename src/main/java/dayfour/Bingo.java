@@ -17,56 +17,44 @@ public class Bingo extends IntegerGrid {
     }
 
     public void markRandomNumberInBingoIfExists(Integer randomNumber) {
-        Arrays.stream(board)
-                .forEach(bingoCells -> Arrays.stream(bingoCells)
-                        .filter(bingoCell -> Objects.equals(bingoCell.getValue(), randomNumber))
-                        .forEach(GridCell::setMarked));
+        board.forEach(gridCell -> {
+            if (Objects.equals(gridCell.getValue(), randomNumber)) {
+                gridCell.setMarked();
+            }
+        });
     }
 
     public boolean isWin() {
         boolean isWin = false;
-        int[] verticalCounter = new int[height];
-        for (GridCell<Integer>[] bingoCells : board) {
-            int horizontalCounter = 0;
-            for (int i = 0; i < bingoCells.length; i++) {
-                if (bingoCells[i].isMarked()) {
-                    horizontalCounter++;
-                    verticalCounter[i]++;
-                }
+        int[] verticalCounters = new int[width];
+        int[] horizontalCounters = new int[height];
+        int horizontalCounter = 0;
+
+        for (int i = 0; i < board.size(); i++) {
+            if (i % width == 0 && i != 0) {
+                horizontalCounter++;
             }
-            if (horizontalCounter == width) {
+            int verticalCounter = i % height;
+            if (board.get(i).isMarked()) {
+                horizontalCounters[horizontalCounter]++;
+                verticalCounters[verticalCounter]++;
+            }
+            if (Arrays.stream(verticalCounters)
+                        .anyMatch(number -> number == height) ||
+                Arrays.stream(horizontalCounters)
+                        .anyMatch(number -> number == width)) {
                 isWin = true;
                 break;
             }
-        }
-        if (!isWin && Arrays.stream(verticalCounter)
-                .anyMatch(number -> number == height)) {
-            isWin = true;
         }
         return isWin;
     }
 
     public Integer getSumOfUnMarkedNumbers() {
-        return Arrays.stream(board)
-                .flatMap(bingoCells -> Arrays.stream(bingoCells)
-                        .filter(bingoCell -> !bingoCell.isMarked())
-                        .map(GridCell::getValue))
+        return board.stream()
+                .filter(bingoCell -> !bingoCell.isMarked())
+                .map(GridCell::getValue)
                 .reduce(0, Integer::sum);
-    }
-
-    public void resetBingo() {
-        Arrays.stream(board)
-                .forEach(bingoCells -> Arrays.stream(bingoCells)
-                        .forEach(GridCell::setUnMarked));
-    }
-
-    public void printBingo() {
-        Arrays.stream(board).forEach(bingoCells -> {
-            Arrays.stream(bingoCells)
-                    .map(bingoCell -> bingoCell.getValue() + (bingoCell.isMarked() ? "X" : "O") + "\t")
-                    .forEach(System.out::print);
-            System.out.println();
-        });
     }
 
     public boolean isAlreadyWon() {
