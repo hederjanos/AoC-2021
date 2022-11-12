@@ -10,9 +10,9 @@ public enum ChunkBoundaries {
     private final char opener;
     private final char closer;
     private final int penalty;
-    private final int bonus;
+    private final long bonus;
 
-    ChunkBoundaries(char opener, char closer, int penalty, int bonus) {
+    ChunkBoundaries(char opener, char closer, int penalty, long bonus) {
         this.opener = opener;
         this.closer = closer;
         this.penalty = penalty;
@@ -31,7 +31,7 @@ public enum ChunkBoundaries {
         return penalty;
     }
 
-    public int getBonus() {
+    public long getBonus() {
         return bonus;
     }
 

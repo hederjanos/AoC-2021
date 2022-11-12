@@ -61,19 +61,19 @@ public class SyntaxScoringSolver extends Solver<Integer> {
 
     @Override
     protected Integer solvePartTwo() {
-        List<Integer> scores = puzzle.stream()
+        List<Long> scores = puzzle.stream()
                 .map(this::processLine)
                 .filter(tuple -> tuple.getFirstElement() == null)
                 .map(tuple -> tuple.getSecondElement().stream()
                         .map(ChunkBoundaries::getBonus)
-                        .reduce(0, (subtotal, current) -> {
+                        .reduce(0L, (subtotal, current) -> {
                             subtotal *= 5;
                             subtotal += current;
                             return subtotal;
                         }))
                 .sorted()
                 .collect(Collectors.toList());
-        return scores.get((scores.size() + 1) / 2);
+        return scores.get((scores.size() - 1) / 2).intValue();
 
     }
 
