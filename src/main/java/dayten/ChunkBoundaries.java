@@ -34,5 +34,15 @@ public enum ChunkBoundaries {
     public int getBonus() {
         return bonus;
     }
+
+    public static ChunkBoundaries get(Character character) {
+        ChunkBoundaries boundaries = null;
+        for (ChunkBoundaries value : values()) {
+            if (value.getOpener() == character) {
+                boundaries = value;
+            }
+        }
+        return boundaries;
+    }
     
 }
