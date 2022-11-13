@@ -26,7 +26,7 @@ public class DumboOctopusSolver extends Solver<Integer> {
 
     @Override
     protected Integer solvePartOne() {
-        EnergyMap map = (EnergyMap) energyMap;
+        EnergyMap map = new EnergyMap(energyMap);
         int stepCounter = 0;
         while (stepCounter < MAX_STEP_COUNTER) {
             map.increase(1);
@@ -41,7 +41,17 @@ public class DumboOctopusSolver extends Solver<Integer> {
 
     @Override
     protected Integer solvePartTwo() {
-        return null;
+        EnergyMap map = new EnergyMap(energyMap);
+        int stepCounter = 0;
+        while (!map.areAllFlashed()) {
+            map.increase(1);
+            boolean flash;
+            do {
+                flash = map.flash(1);
+            } while (flash);
+            stepCounter++;
+        }
+        return stepCounter;
     }
 
 }

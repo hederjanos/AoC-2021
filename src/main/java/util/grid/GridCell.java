@@ -13,6 +13,16 @@ public class GridCell<V> {
         this.value = number;
     }
 
+    public GridCell(GridCell<V> cell) {
+        this.coordinate = cell.getCoordinate().copy();
+        this.value = cell.getValue();
+        this.marked = cell.isMarked();
+    }
+
+    public GridCell<V> copy() {
+        return new GridCell<>(this);
+    }
+
     public Coordinate getCoordinate() {
         return coordinate;
     }

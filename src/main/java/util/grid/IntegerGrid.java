@@ -3,7 +3,6 @@ package util.grid;
 import util.coordinate.Coordinate;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.IntStream;
@@ -27,6 +26,20 @@ public abstract class IntegerGrid extends Grid<Integer> {
                             .forEach(j -> board.add(new GridCell<>(new Coordinate(j, i), numbers.get(j))));
                 });
         this.fourWayDirection = fourWayDirection;
+    }
+
+    protected IntegerGrid(IntegerGrid grid) {
+        super();
+        fourWayDirection = grid.isFourWayDirection();
+        width = grid.getWidth();
+        height = grid.getHeight();
+        board = new ArrayList<>();
+        grid.getBoard().forEach(gridCell -> board.add(gridCell.copy()));
+    }
+
+
+    public boolean isFourWayDirection() {
+        return fourWayDirection;
     }
 
     public void reset() {

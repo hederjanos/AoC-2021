@@ -19,6 +19,10 @@ public class EnergyMap extends IntegerGrid {
         super(gridLines, tokenizer, fourWayDirection);
     }
 
+    public EnergyMap(IntegerGrid grid) {
+        super(grid);
+    }
+
     public void increase(int increment) {
         board.forEach(gridCell -> gridCell.setValue(gridCell.getValue() + increment));
     }
@@ -35,20 +39,28 @@ public class EnergyMap extends IntegerGrid {
                 } else {
                     neighbourCoordinates = gridCell.getCoordinate().getAdjacentCoordinates();
                 }
-                neighbourCoordinates.forEach(coordinate -> {
-                    if (isCoordinateInBounds(coordinate)) {
-                        GridCell<Integer> currentNeighbour = board.get(calculateCellIndex(coordinate.getX(), coordinate.getY()));
-                        if (currentNeighbour.getValue() != MIN_ENERGY) {
-                            currentNeighbour.setValue(currentNeighbour.getValue() + increment);
-                            if (currentNeighbour.getValue() > MAX_ENERGY) {
-                                nextFlash.set(true);
-                            }
-                        }
-                    }
-                });
+                increaseNeighbours(increment, nextFlash, neighbourCoordinates);
             }
         });
         return nextFlash.get();
+    }
+
+    private void increaseNeighbours(int increment, AtomicBoolean nextFlash, Set<Coordinate> neighbourCoordinates) {
+        neighbourCoordinates.forEach(coordinate -> {
+            if (isCoordinateInBounds(coordinate)) {
+                GridCell<Integer> currentNeighbour = board.get(calculateCellIndex(coordinate.getX(), coordinate.getY()));
+                if (currentNeighbour.getValue() != MIN_ENERGY) {
+                    currentNeighbour.setValue(currentNeighbour.getValue() + increment);
+                    if (currentNeighbour.getValue() > MAX_ENERGY) {
+                        nextFlash.set(true);
+                    }
+                }
+            }
+        });
+    }
+
+    public boolean areAllFlashed() {
+        return board.stream().allMatch(gridCell -> gridCell.getValue() == 0);
     }
 
     public int getFlashCounter() {
