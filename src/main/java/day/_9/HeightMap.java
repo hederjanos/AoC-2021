@@ -13,16 +13,10 @@ import java.util.stream.Collectors;
 
 public class HeightMap extends IntegerGrid {
 
-    private final boolean fourWayDirection;
     private static final int MAX_HEIGHT = 9;
 
     protected HeightMap(List<String> gridLines, Function<String, List<Integer>> tokenizer) {
-        this(gridLines, tokenizer, true);
-    }
-
-    protected HeightMap(List<String> gridLines, Function<String, List<Integer>> tokenizer, boolean fourWayDirection) {
         super(gridLines, tokenizer);
-        this.fourWayDirection = fourWayDirection;
     }
 
     public List<GridCell<Integer>> getLowestLocations() {
