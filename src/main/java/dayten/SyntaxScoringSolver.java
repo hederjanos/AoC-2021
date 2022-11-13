@@ -25,13 +25,13 @@ public class SyntaxScoringSolver extends Solver<Integer> {
         return puzzle.stream()
                 .map(this::processLine)
                 .filter(tuple -> tuple.getFirstElement() != null)
-                .map(tuple -> tuple.getFirstElement().getPenalty())
+                .map(tuple -> ChunkBoundaries.values()[tuple.getFirstElement()].getPenalty())
                 .reduce(0, Integer::sum);
     }
 
     private CustomTuple processLine(String codeLine) {
-        ChunkBoundaries boundaries = null;
-        List<ChunkBoundaries> boundariesList = new ArrayList<>();
+        Integer boundaries = null;
+        List<Integer> boundariesList = new ArrayList<>();
         boolean isCorrupted = false;
         Deque<Character> stack = new ArrayDeque<>();
         for (int i = 0; i < codeLine.length(); i++) {
@@ -45,7 +45,7 @@ public class SyntaxScoringSolver extends Solver<Integer> {
                 int indexOfTop = openers.indexOf(top);
                 int indexOfCurrent = closers.indexOf(currentChar);
                 if (indexOfTop != indexOfCurrent) {
-                    boundaries = ChunkBoundaries.values()[indexOfCloser];
+                    boundaries = indexOfCurrent;
                     isCorrupted = true;
                     break;
                 }
@@ -65,7 +65,7 @@ public class SyntaxScoringSolver extends Solver<Integer> {
                 .map(this::processLine)
                 .filter(tuple -> tuple.getFirstElement() == null)
                 .map(tuple -> tuple.getSecondElement().stream()
-                        .map(ChunkBoundaries::getBonus)
+                        .map(index -> ChunkBoundaries.values()[index].getBonus())
                         .reduce(0L, (subtotal, current) -> {
                             subtotal *= 5;
                             subtotal += current;

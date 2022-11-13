@@ -2,9 +2,9 @@ package dayten;
 
 import java.util.List;
 
-public class CustomTuple extends Tuple<ChunkBoundaries, List<ChunkBoundaries>> {
+public class CustomTuple extends Tuple<Integer, List<Integer>> {
 
-    public CustomTuple(ChunkBoundaries firstElement, List<ChunkBoundaries> secondElement) {
+    public CustomTuple(Integer firstElement, List<Integer> secondElement) {
         super(firstElement, secondElement);
     }
 
