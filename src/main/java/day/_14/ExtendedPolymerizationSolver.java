@@ -57,15 +57,15 @@ public class ExtendedPolymerizationSolver extends Solver<Integer> {
     }
 
     private Map<Character, Integer> countCharacters() {
-        Map<Character, Integer> characterMap = new HashMap<>();
+        Map<Character, Integer> map = new HashMap<>();
         for (int i = 0; i < template.length(); i++) {
-            if (!characterMap.containsKey(template.charAt(i))) {
-                characterMap.put(template.charAt(i), 1);
+            if (!map.containsKey(template.charAt(i))) {
+                map.put(template.charAt(i), 1);
             } else {
-                characterMap.put(template.charAt(i), characterMap.get(template.charAt(i)) + 1);
+                map.put(template.charAt(i), map.get(template.charAt(i)) + 1);
             }
         }
-        return characterMap;
+        return map;
     }
 
     private Integer getMostCommonCharacterCount() {
@@ -78,13 +78,7 @@ public class ExtendedPolymerizationSolver extends Solver<Integer> {
 
     @Override
     protected Integer solvePartTwo() {
-        int i = 0;
-        while (i < 40) {
-            step();
-            i++;
-        }
-        characterMap = countCharacters();
-        return getMostCommonCharacterCount() - getLeastCommonCharacterCount();
+      return null;
     }
 
 }

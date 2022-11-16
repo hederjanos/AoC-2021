@@ -4,6 +4,8 @@ import util.coordinate.Coordinate;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Origami {
 
@@ -49,28 +51,23 @@ public class Origami {
 
     @Override
     public String toString() {
-        int maxI = getMaxY();
-        int maxJ = getMaxX();
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i <= maxI; i++) {
-            for (int j = 0; j <= maxJ; j++) {
-                if (currentDots.contains(new Coordinate(j, i))) {
-                    stringBuilder.append("#");
-                } else {
-                    stringBuilder.append(".");
-                }
-            }
-            stringBuilder.append("\n");
-        }
-        return stringBuilder.toString();
+        int height = getHeight();
+        int width = getWidth();
+        return IntStream.range(0, height)
+                .mapToObj(i ->
+                        IntStream.range(0, width)
+                                .mapToObj(j -> new Coordinate(j, i))
+                                .map(coordinate -> currentDots.contains(coordinate) ? "#" : ".")
+                                .collect(Collectors.joining()))
+                .collect(Collectors.joining(System.lineSeparator()));
     }
 
-    private Integer getMaxX() {
-        return currentDots.stream().map(Coordinate::getX).max(Integer::compareTo).orElse(null);
+    private Integer getWidth() {
+        return currentDots.stream().map(Coordinate::getX).max(Integer::compareTo).orElse(0) + 1;
     }
 
-    private Integer getMaxY() {
-        return currentDots.stream().map(Coordinate::getY).max(Integer::compareTo).orElse(null);
+    private Integer getHeight() {
+        return currentDots.stream().map(Coordinate::getY).max(Integer::compareTo).orElse(0) + 1;
     }
 
 }
