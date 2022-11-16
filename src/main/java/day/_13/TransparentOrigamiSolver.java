@@ -37,11 +37,14 @@ public class TransparentOrigamiSolver extends Solver<Integer> {
     @Override
     protected Integer solvePartOne() {
         origami.fold(folds.get(0));
-        return origami.getDots().size();
+        return origami.getCurrentDots().size();
     }
 
     @Override
     protected Integer solvePartTwo() {
+        origami.reset();
+        folds.forEach(origami::fold);
+        System.out.println(origami);
         return null;
     }
 
