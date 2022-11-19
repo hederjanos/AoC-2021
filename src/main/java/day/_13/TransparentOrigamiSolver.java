@@ -4,33 +4,30 @@ import util.common.Solver;
 import util.coordinate.Coordinate;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class TransparentOrigamiSolver extends Solver<Integer> {
 
     private final Origami origami;
-    private final List<Fold> folds = new ArrayList<>();
+    private List<Fold> folds = new ArrayList<>();
 
     public TransparentOrigamiSolver(String filename) {
         super(filename);
-        this.origami = parseInput();
+        origami = parseInput();
     }
 
     private Origami parseInput() {
-        Set<Coordinate> dots = new HashSet<>();
-        String line;
-        int i = 0;
-        while (!(line = puzzle.get(i)).isEmpty()) {
-            dots.add(new Coordinate(line));
-            i++;
-        }
-        i++;
-        while (i < puzzle.size()) {
-            folds.add(new Fold(puzzle.get(i)));
-            i++;
-        }
+        Set<Coordinate> dots = IntStream.range(0, puzzle.size())
+                .takeWhile(i -> !puzzle.get(i).isEmpty())
+                .mapToObj(i -> new Coordinate(puzzle.get(i)))
+                .collect(Collectors.toSet());
+        folds = IntStream.range(0, puzzle.size())
+                .dropWhile(i -> !puzzle.get(i).contains("fold"))
+                .mapToObj(i -> new Fold(puzzle.get(i)))
+                .collect(Collectors.toList());
         return new Origami(dots);
     }
 

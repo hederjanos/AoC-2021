@@ -48,9 +48,7 @@ public class CaveSystem {
 
     private int insertCave(Cave cave) {
         int hashCode = cave.hashCode();
-        if (!caves.containsKey(hashCode)) {
-            caves.put(hashCode, cave);
-        }
+        caves.putIfAbsent(hashCode, cave);
         return hashCode;
     }
 

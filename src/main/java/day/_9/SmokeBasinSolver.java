@@ -6,7 +6,6 @@ import util.grid.IntegerGrid;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class SmokeBasinSolver extends Solver<Integer> {
 
@@ -15,15 +14,11 @@ public class SmokeBasinSolver extends Solver<Integer> {
 
     public SmokeBasinSolver(String filename) {
         super(filename);
-        this.heightMap = parseInput();
+        heightMap = parseInput();
     }
 
     private HeightMap parseInput() {
-        return new HeightMap(puzzle,
-                s -> s.chars()
-                        .mapToObj(c -> (char) c)
-                        .map(Character::getNumericValue)
-                        .collect(Collectors.toList()));
+        return new HeightMap(puzzle, heightMap.convertContiguousIntegersToList());
     }
 
     @Override

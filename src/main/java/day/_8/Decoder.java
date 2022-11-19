@@ -38,7 +38,7 @@ public class Decoder {
         handleSixSegmentPatterns();
         handleFiveSegmentPatterns();
         for (int i = 0; i < note.getOutputs().size(); i++) {
-            number += digitMap.get(note.getOutputs().get(i)) * Math.pow(10, note.getOutputs().size() - i - 1);
+            number += digitMap.get(note.getOutputs().get(i)) * Math.pow(10, note.getOutputs().size() - i - 1d);
         }
         return number;
     }

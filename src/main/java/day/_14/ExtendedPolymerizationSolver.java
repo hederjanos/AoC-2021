@@ -11,7 +11,7 @@ public class ExtendedPolymerizationSolver extends Solver<Long> {
 
     private String template;
     private final Map<String, Character> insertionRules = new HashMap<>();
-    private Map<String, Long> currentPairs = new HashMap<>();
+    private Map<String, Long> currentPairs;
 
     public ExtendedPolymerizationSolver(String filename) {
         super(filename);
@@ -20,7 +20,6 @@ public class ExtendedPolymerizationSolver extends Solver<Long> {
 
     private void parseInput() {
         template = puzzle.get(0);
-        initializePairs();
         IntStream.range(2, puzzle.size()).forEach(i -> {
             String[] rule = puzzle.get(i).split(" -> ");
             insertionRules.putIfAbsent(rule[0], rule[1].charAt(0));
@@ -35,6 +34,7 @@ public class ExtendedPolymerizationSolver extends Solver<Long> {
 
     @Override
     protected Long solvePartOne() {
+        initializePairs();
         solve(10);
         return calculateResult();
     }

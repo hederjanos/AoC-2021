@@ -9,7 +9,7 @@ public abstract class Solver<V> {
     protected Solver(String filename) {
         PuzzleReader puzzleReader = new PuzzleReader();
         puzzleReader.readPuzzle(filename);
-        this.puzzle = puzzleReader.getPuzzleLines();
+        puzzle = puzzleReader.getPuzzleLines();
     }
 
     protected abstract V solvePartOne();

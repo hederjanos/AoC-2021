@@ -2,12 +2,13 @@ package day._8;
 
 import util.common.Solver;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.function.ToIntFunction;
+import java.util.stream.Collectors;
 
 public class SevenSegmentSearchSolver extends Solver<Integer> {
 
-    private final List<Note> notes = new ArrayList<>();
+    private List<Note> notes;
 
     protected SevenSegmentSearchSolver(String filename) {
         super(filename);
@@ -15,7 +16,7 @@ public class SevenSegmentSearchSolver extends Solver<Integer> {
     }
 
     private void parseInput() {
-        this.puzzle.forEach(line -> notes.add(parseNote(line)));
+        notes = puzzle.stream().map(this::parseNote).collect(Collectors.toList());
     }
 
     private Note parseNote(String line) {
@@ -39,22 +40,26 @@ public class SevenSegmentSearchSolver extends Solver<Integer> {
 
     @Override
     protected Integer solvePartOne() {
-        return notes.stream()
-                .mapToInt(note -> {
-                    Decoder decoder = new Decoder(note);
-                    return decoder.getNumberOfUniqueDigits().intValue();
-                })
-                .sum();
+        return solve(this::getNumberOfUniqueDigits);
+    }
+
+    private Integer solve(ToIntFunction<Note> noteMapper) {
+        return notes.stream().mapToInt(noteMapper).sum();
+    }
+
+    private int getNumberOfUniqueDigits(Note note) {
+        Decoder decoder = new Decoder(note);
+        return decoder.getNumberOfUniqueDigits().intValue();
     }
 
     @Override
     protected Integer solvePartTwo() {
-        return notes.stream()
-                .mapToInt(note -> {
-                    Decoder decoder = new Decoder(note);
-                    return decoder.decode();
-                })
-                .sum();
+        return solve(this::getDecodedInt);
+    }
+
+    private int getDecodedInt(Note note) {
+        Decoder decoder = new Decoder(note);
+        return decoder.decode();
     }
 
 }

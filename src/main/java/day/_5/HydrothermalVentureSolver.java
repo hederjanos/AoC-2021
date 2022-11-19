@@ -5,6 +5,7 @@ import util.common.Solver;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class HydrothermalVentureSolver extends Solver<Integer> {
 
@@ -34,19 +35,20 @@ public class HydrothermalVentureSolver extends Solver<Integer> {
     }
 
     private List<Coordinate> getCoordinatesInHorizontalOrVerticalLines() {
-        List<Coordinate> allCoordinates = new ArrayList<>();
-        listOfCoordinatePairs.stream()
+        return listOfCoordinatePairs.stream()
                 .filter(lines -> {
                     Coordinate start = lines.get(0);
                     Coordinate end = lines.get(1);
                     return start.isInHorizontalOrVerticalLineWith(end);
                 })
-                .forEach(lines -> {
-                    Coordinate start = lines.get(0);
-                    Coordinate end = lines.get(1);
-                    allCoordinates.addAll(start.getCoordinatesInLineBetweenCoordinates(end));
-                });
-        return allCoordinates;
+                .flatMap(this::getCoordinatesInLineStream)
+                .collect(Collectors.toList());
+    }
+
+    private Stream<Coordinate> getCoordinatesInLineStream(List<Coordinate> line) {
+        Coordinate start = line.get(0);
+        Coordinate end = line.get(1);
+        return start.getCoordinatesInLineBetweenCoordinates(end).stream();
     }
 
     private int getNumberOfOverlappingCoordinates(List<Coordinate> coordinates) {
@@ -75,14 +77,9 @@ public class HydrothermalVentureSolver extends Solver<Integer> {
     }
 
     private List<Coordinate> getCoordinatesInAllLines() {
-        List<Coordinate> allCoordinates = new ArrayList<>();
-        listOfCoordinatePairs
-                .forEach(lines -> {
-                    Coordinate start = lines.get(0);
-                    Coordinate end = lines.get(1);
-                    allCoordinates.addAll(start.getCoordinatesInLineBetweenCoordinates(end));
-                });
-        return allCoordinates;
+        return listOfCoordinatePairs.stream()
+                .flatMap(this::getCoordinatesInLineStream)
+                .collect(Collectors.toList());
     }
 
 }

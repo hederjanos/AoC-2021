@@ -8,15 +8,15 @@ public class GridCell<V> {
     private V value;
     private boolean marked;
 
-    public GridCell(Coordinate coordinate, V number) {
+    public GridCell(Coordinate coordinate, V value) {
         this.coordinate = coordinate;
-        this.value = number;
+        this.value = value;
     }
 
     public GridCell(GridCell<V> cell) {
-        this.coordinate = cell.getCoordinate().copy();
-        this.value = cell.getValue();
-        this.marked = cell.isMarked();
+        coordinate = cell.getCoordinate().copy();
+        value = cell.getValue();
+        marked = cell.isMarked();
     }
 
     public GridCell<V> copy() {

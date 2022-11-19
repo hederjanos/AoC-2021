@@ -25,8 +25,8 @@ public class Coordinate {
 
     public Coordinate(String coordinate) {
         String[] input = coordinate.split(",");
-        this.x = Integer.parseInt(input[0]);
-        this.y = Integer.parseInt(input[1]);
+        x = Integer.parseInt(input[0]);
+        y = Integer.parseInt(input[1]);
     }
 
     public Coordinate copy() {

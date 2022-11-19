@@ -11,12 +11,11 @@ public class PassagePathingSolver extends Solver<Integer> {
 
     public PassagePathingSolver(String filename) {
         super(filename);
-        this.caveSystem = parseInput();
+        caveSystem = parseInput();
     }
 
     private CaveSystem parseInput() {
-        return new CaveSystem(puzzle,
-                line -> Arrays.stream(line.split("-")).collect((Collectors.toList())));
+        return new CaveSystem(puzzle, line -> Arrays.stream(line.split("-")).collect((Collectors.toList())));
     }
 
     @Override
@@ -79,8 +78,7 @@ public class PassagePathingSolver extends Solver<Integer> {
     private boolean areAllSmallCavesOnceIn(List<Cave> copy) {
         boolean areAllSmallCavesOnceIn = true;
         Map<Cave, Integer> caveMap = new HashMap<>();
-        List<Cave> smallCaves = copy.stream()
-                .filter(cave -> !cave.isBig()).collect(Collectors.toList());
+        List<Cave> smallCaves = copy.stream().filter(cave -> !cave.isBig()).collect(Collectors.toList());
         for (Cave cave : smallCaves) {
             if (!caveMap.containsKey(cave)) {
                 caveMap.put(cave, 1);

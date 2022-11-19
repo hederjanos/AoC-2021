@@ -7,8 +7,8 @@ public class Fold {
 
     public Fold(String line) {
         String input = line.replace("fold along ", "");
-        this.mirror = (input.charAt(0) == Mirror.HORIZONTAL.getaChar()) ? Mirror.HORIZONTAL : Mirror.VERTICAL;
-        this.value = Integer.parseInt(input.split("=")[1]);
+        mirror = (input.charAt(0) == Mirror.HORIZONTAL.getaChar()) ? Mirror.HORIZONTAL : Mirror.VERTICAL;
+        value = Integer.parseInt(input.split("=")[1]);
     }
 
     public Mirror getMirror() {

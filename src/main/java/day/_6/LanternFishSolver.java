@@ -12,7 +12,7 @@ public class LanternFishSolver extends Solver<Long> {
 
     protected LanternFishSolver(String filename) {
         super(filename);
-        this.lanternFishAges = parseAges();
+        lanternFishAges = parseAges();
     }
 
     private List<Integer> parseAges() {

@@ -8,8 +8,8 @@ public enum Direction {
 
     private final String dir;
 
-    Direction(String direction) {
-        this.dir = direction;
+    Direction(String dir) {
+        this.dir = dir;
     }
 
     public String getDisplayedDirection() {

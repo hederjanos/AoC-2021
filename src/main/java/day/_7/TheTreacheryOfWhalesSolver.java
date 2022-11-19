@@ -18,7 +18,7 @@ public class TheTreacheryOfWhalesSolver extends Solver<Integer> {
     }
 
     private List<Integer> parseInput() {
-        return this.puzzle.stream()
+        return puzzle.stream()
                 .flatMap(line -> Stream.of(line.split(",")))
                 .map(Integer::parseInt)
                 .sorted()

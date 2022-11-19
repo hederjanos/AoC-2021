@@ -14,8 +14,8 @@ public class GiantSquidSolver extends Solver<Integer> {
 
     public GiantSquidSolver(String filename) {
         super(filename);
-        this.randomNumbers = parseRandomNumbers();
-        this.bingoList = parseBingos();
+        randomNumbers = parseRandomNumbers();
+        bingoList = parseBingos();
     }
 
     private List<Integer> parseRandomNumbers() {

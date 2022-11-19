@@ -7,8 +7,8 @@ public class Command {
 
     public Command(String command) {
         String[] commandParts = command.split(" ");
-        this.direction = Direction.valueOf(commandParts[0].toUpperCase());
-        this.value = Integer.parseInt(commandParts[1]);
+        direction = Direction.valueOf(commandParts[0].toUpperCase());
+        value = Integer.parseInt(commandParts[1]);
     }
 
     public Direction getDirection() {
