@@ -4,12 +4,14 @@ import util.common.Solver;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
-public class ExtendedPolymerizationSolver extends Solver<Integer> {
+public class ExtendedPolymerizationSolver extends Solver<Long> {
 
     private String template;
     private final Map<String, Character> insertionRules = new HashMap<>();
-    private Map<Character, Integer> characterMap;
+    private Map<String, Long> currentPairs = new HashMap<>();
 
     public ExtendedPolymerizationSolver(String filename) {
         super(filename);
@@ -18,67 +20,75 @@ public class ExtendedPolymerizationSolver extends Solver<Integer> {
 
     private void parseInput() {
         template = puzzle.get(0);
-        int i = 2;
-        while (i < puzzle.size()) {
+        initializePairs();
+        IntStream.range(2, puzzle.size()).forEach(i -> {
             String[] rule = puzzle.get(i).split(" -> ");
             insertionRules.putIfAbsent(rule[0], rule[1].charAt(0));
-            i++;
-        }
+        });
+    }
+
+    private void initializePairs() {
+        currentPairs = IntStream.range(0, template.length() - 1)
+                .mapToObj(i -> template.substring(i, i + 2))
+                .collect(Collectors.toMap(pair -> pair, pair -> 1L, (curr, next) -> curr + 1));
     }
 
     @Override
-    protected Integer solvePartOne() {
-        int i = 0;
-        while (i < 10) {
-            step();
-            i++;
+    protected Long solvePartOne() {
+        solve(10);
+        return calculateResult();
+    }
+
+    private void solve(int steps) {
+        IntStream.range(0, steps).forEach(i -> solveOneStep());
+    }
+
+    private void solveOneStep() {
+        Map<String, Long> newPairs = new HashMap<>();
+        currentPairs.entrySet().stream()
+                .filter(entry -> insertionRules.containsKey(entry.getKey()))
+                .forEach(entry -> {
+                    String fractionOne = entry.getKey().charAt(0) + insertionRules.get(entry.getKey()).toString();
+                    putKeyIntoMap(fractionOne, entry.getValue(), newPairs);
+                    String fractionTwo = insertionRules.get(entry.getKey()).toString() + entry.getKey().charAt(1);
+                    putKeyIntoMap(fractionTwo, entry.getValue(), newPairs);
+                });
+        currentPairs = newPairs;
+    }
+
+    private void putKeyIntoMap(String key, Long value, Map<String, Long> map) {
+        if (!map.containsKey(key)) {
+            map.put(key, value);
+        } else {
+            map.put(key, map.get(key) + value);
         }
-        characterMap = countCharacters();
-        return getMostCommonCharacterCount() - getLeastCommonCharacterCount();
     }
 
-    private void step() {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < template.length() - 1; i++) {
-            String current = template.substring(i, i + 2);
-            Character insertion = null;
-            if (insertionRules.containsKey(current)) {
-                insertion = insertionRules.get(current);
-            }
-            if (i == 0) {
-                stringBuilder.append(current.charAt(0));
-            }
-            if (insertion != null) {
-                stringBuilder.append(insertion);
-            }
-            stringBuilder.append(current.charAt(1));
-        }
-        template = stringBuilder.toString();
+    private long calculateResult() {
+        Map<String, Long> characterMap = countCharacters();
+        return getMostCommonCharacterCount(characterMap) - getLeastCommonCharacterCount(characterMap);
     }
 
-    private Map<Character, Integer> countCharacters() {
-        Map<Character, Integer> map = new HashMap<>();
-        for (int i = 0; i < template.length(); i++) {
-            if (!map.containsKey(template.charAt(i))) {
-                map.put(template.charAt(i), 1);
-            } else {
-                map.put(template.charAt(i), map.get(template.charAt(i)) + 1);
-            }
-        }
-        return map;
+    private Map<String, Long> countCharacters() {
+        Map<String, Long> characterMap = currentPairs.entrySet().stream()
+                .collect(Collectors.toMap(entry -> String.valueOf(entry.getKey().charAt(0)), Map.Entry::getValue, Long::sum));
+        putKeyIntoMap(String.valueOf(template.charAt(template.length() - 1)), 1L, characterMap);
+        return characterMap;
     }
 
-    private Integer getMostCommonCharacterCount() {
-        return characterMap.values().stream().max(Integer::compareTo).orElse(null);
+    private Long getMostCommonCharacterCount(Map<String, Long> characterMap) {
+        return characterMap.values().stream().max(Long::compareTo).orElse(null);
     }
 
-    private Integer getLeastCommonCharacterCount() {
-        return characterMap.values().stream().min(Integer::compareTo).orElse(null);
+    private Long getLeastCommonCharacterCount(Map<String, Long> characterMap) {
+        return characterMap.values().stream().min(Long::compareTo).orElse(null);
     }
 
     @Override
-    protected Integer solvePartTwo() {
-      return null;
+    protected Long solvePartTwo() {
+        initializePairs();
+        solve(40);
+        return calculateResult();
     }
 
 }
