@@ -5,14 +5,14 @@ import util.common.Solver;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PacketDecoder extends Solver<Integer> {
+public class PacketDecoder extends Solver<Long> {
 
     private final Packet packet;
 
     protected PacketDecoder(String filename) {
         super(filename);
         String binaryCode = getBinaryString(puzzle.get(0));
-        packet = readPacket(binaryCode);
+        packet = parsePacket(binaryCode);
         System.out.println(packet);
     }
 
@@ -26,13 +26,13 @@ public class PacketDecoder extends Solver<Integer> {
         return stringBuilder.toString();
     }
 
-    private Packet readPacket(String binaryCode) {
+    private Packet parsePacket(String binaryCode) {
         List<Packet> packets = new ArrayList<>();
-        readSubPacket(binaryCode, packets);
+        parseSubPacket(binaryCode, packets);
         return packets.get(0);
     }
 
-    private int readSubPacket(String binaryCode, List<Packet> packets) {
+    private int parseSubPacket(String binaryCode, List<Packet> packets) {
         int pointer = 0;
         int version = Integer.parseInt(binaryCode.substring(pointer, pointer + 3), 2);
         pointer += 3;
@@ -53,7 +53,7 @@ public class PacketDecoder extends Solver<Integer> {
             subPacket.append(group.substring(1));
             pointer += 5;
         } while (group.charAt(0) == '1');
-        packets.add(new LiteralPacket(version, typeId, Integer.parseInt(subPacket.toString(), 2)));
+        packets.add(new LiteralPacket(version, typeId, Long.parseLong(subPacket.toString(), 2)));
         return pointer;
     }
 
@@ -67,7 +67,7 @@ public class PacketDecoder extends Solver<Integer> {
             String subPackets = binaryCode.substring(pointer, pointer + lengthOfSubPackets);
             int localBitCounter = 0;
             while (localBitCounter < lengthOfSubPackets) {
-                int localPointer = readSubPacket(subPackets, subPacketsForOperatorPacket);
+                int localPointer = parseSubPacket(subPackets, subPacketsForOperatorPacket);
                 localBitCounter += localPointer;
                 subPackets = subPackets.substring(localPointer);
             }
@@ -78,7 +78,7 @@ public class PacketDecoder extends Solver<Integer> {
             int numberOfSubPackets = Integer.parseInt(binaryCode.substring(pointer, pointer + 11), 2);
             pointer += 11;
             for (int i = 0; i < numberOfSubPackets; ++i) {
-                pointer += readSubPacket(binaryCode.substring(pointer), subPacketsForOperatorPacket);
+                pointer += parseSubPacket(binaryCode.substring(pointer), subPacketsForOperatorPacket);
             }
             packets.add(new OperatorPacket(version, typeId, subPacketsForOperatorPacket));
         }
@@ -86,12 +86,12 @@ public class PacketDecoder extends Solver<Integer> {
     }
 
     @Override
-    protected Integer solvePartOne() {
-        return packet.sumVersions();
+    protected Long solvePartOne() {
+        return (long) packet.sumVersions();
     }
 
     @Override
-    protected Integer solvePartTwo() {
+    protected Long solvePartTwo() {
         return packet.getValue();
     }
 

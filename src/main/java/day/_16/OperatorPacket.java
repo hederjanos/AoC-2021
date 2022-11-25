@@ -17,29 +17,29 @@ public class OperatorPacket extends Packet {
     }
 
     @Override
-    public int getValue() {
-        int value;
+    public long getValue() {
+        long value;
         switch (typeId) {
             case 0:
-                value = subPackets.stream().mapToInt(Packet::getValue).sum();
+                value = subPackets.stream().mapToLong(Packet::getValue).sum();
                 break;
             case 1:
-                value = subPackets.stream().mapToInt(Packet::getValue).reduce(1, (a, b) -> a * b);
+                value = subPackets.stream().mapToLong(Packet::getValue).reduce(1, (a, b) -> a * b);
                 break;
             case 2:
-                value = subPackets.stream().mapToInt(Packet::getValue).min().orElseThrow();
+                value = subPackets.stream().mapToLong(Packet::getValue).min().orElseThrow();
                 break;
             case 3:
-                value = subPackets.stream().mapToInt(Packet::getValue).max().orElseThrow();
+                value = subPackets.stream().mapToLong(Packet::getValue).max().orElseThrow();
                 break;
             case 5:
-                value = subPackets.get(0).getValue() > subPackets.get(1).getValue() ? 1 : 0;
+                value = subPackets.get(0).getValue() > subPackets.get(1).getValue() ? 1L : 0L;
                 break;
             case 6:
-                value = subPackets.get(0).getValue() < subPackets.get(1).getValue() ? 1 : 0;
+                value = subPackets.get(0).getValue() < subPackets.get(1).getValue() ? 1L : 0L;
                 break;
             case 7:
-                value = subPackets.get(0).getValue() == subPackets.get(1).getValue() ? 1 : 0;
+                value = subPackets.get(0).getValue() == subPackets.get(1).getValue() ? 1L : 0L;
                 break;
             default:
                 throw new IllegalStateException();

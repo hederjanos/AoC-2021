@@ -20,7 +20,7 @@ public abstract class Packet {
 
     public abstract int sumVersions();
 
-    public abstract int getValue();
+    public abstract long getValue();
 
     @Override
     public String toString() {
