@@ -49,19 +49,13 @@ public class ExtendedPolymerizationSolver extends Solver<Long> {
                 .filter(entry -> insertionRules.containsKey(entry.getKey()))
                 .forEach(entry -> {
                     String fractionOne = entry.getKey().charAt(0) + insertionRules.get(entry.getKey()).toString();
-                    putKeyIntoMap(fractionOne, entry.getValue(), newPairs);
+                    long countOfFractionOne = newPairs.getOrDefault(fractionOne, 0L);
+                    newPairs.compute(fractionOne, (k, v) -> v == null ? entry.getValue() : countOfFractionOne + entry.getValue());
                     String fractionTwo = insertionRules.get(entry.getKey()).toString() + entry.getKey().charAt(1);
-                    putKeyIntoMap(fractionTwo, entry.getValue(), newPairs);
+                    long countOfFractionTwo = newPairs.getOrDefault(fractionTwo, 0L);
+                    newPairs.compute(fractionTwo, (k, v) -> v == null ? entry.getValue() : countOfFractionTwo + entry.getValue());
                 });
         currentPairs = newPairs;
-    }
-
-    private void putKeyIntoMap(String key, Long value, Map<String, Long> map) {
-        if (!map.containsKey(key)) {
-            map.put(key, value);
-        } else {
-            map.put(key, map.get(key) + value);
-        }
     }
 
     private long calculateResult() {
@@ -72,7 +66,7 @@ public class ExtendedPolymerizationSolver extends Solver<Long> {
     private Map<String, Long> countCharacters() {
         Map<String, Long> characterMap = currentPairs.entrySet().stream()
                 .collect(Collectors.toMap(entry -> String.valueOf(entry.getKey().charAt(0)), Map.Entry::getValue, Long::sum));
-        putKeyIntoMap(String.valueOf(template.charAt(template.length() - 1)), 1L, characterMap);
+        characterMap.compute(String.valueOf(template.charAt(template.length() - 1)), (k, v) -> v == null ? 1L : v + 1L);
         return characterMap;
     }
 

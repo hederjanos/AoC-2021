@@ -16,7 +16,7 @@ public class PacketDecoder extends Solver<Long> {
         System.out.println(packet);
     }
 
-    private static String getBinaryString(String code) {
+    private String getBinaryString(String code) {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < code.length(); i++) {
             int binary = Integer.parseInt(String.valueOf(code.charAt(i)), 16);

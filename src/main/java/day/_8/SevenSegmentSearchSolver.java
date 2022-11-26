@@ -8,15 +8,15 @@ import java.util.stream.Collectors;
 
 public class SevenSegmentSearchSolver extends Solver<Integer> {
 
-    private List<Note> notes;
+    private final List<Note> notes;
 
     protected SevenSegmentSearchSolver(String filename) {
         super(filename);
-        parseInput();
+        notes = parseInput();
     }
 
-    private void parseInput() {
-        notes = puzzle.stream().map(this::parseNote).collect(Collectors.toList());
+    private List<Note> parseInput() {
+        return puzzle.stream().map(this::parseNote).collect(Collectors.toList());
     }
 
     private Note parseNote(String line) {

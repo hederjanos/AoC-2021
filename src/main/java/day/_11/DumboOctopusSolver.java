@@ -14,7 +14,7 @@ public class DumboOctopusSolver extends Solver<Integer> {
     }
 
     private EnergyMap parseInput() {
-        return new EnergyMap(puzzle, energyMap.convertContiguousIntegersToList(), false);
+        return new EnergyMap(puzzle, IntegerGrid.convertContiguousIntegersToList(), false);
     }
 
     @Override

@@ -18,7 +18,7 @@ public class SmokeBasinSolver extends Solver<Integer> {
     }
 
     private HeightMap parseInput() {
-        return new HeightMap(puzzle, heightMap.convertContiguousIntegersToList());
+        return new HeightMap(puzzle, IntegerGrid.convertContiguousIntegersToList());
     }
 
     @Override
