@@ -47,4 +47,12 @@ public class GridCell<V> {
         this.marked = false;
     }
 
+    @Override
+    public String toString() {
+        return "Cell{" +
+               "c: " + coordinate +
+               ", v: " + value +
+               ", m: " + marked +
+               '}';
+    }
 }
