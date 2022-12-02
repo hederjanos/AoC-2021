@@ -16,6 +16,8 @@ public class ExtendedPolymerizationSolver extends Solver<Long> {
     public ExtendedPolymerizationSolver(String filename) {
         super(filename);
         parseInput();
+        Integer g = 233;
+        System.out.println(g.hashCode());
     }
 
     private void parseInput() {
