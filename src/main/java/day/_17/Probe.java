@@ -12,6 +12,22 @@ public class Probe {
         this.velocity = velocity;
     }
 
+    public void fly() {
+        setPosition(position.add(velocity));
+        setVelocity(getNewVelocity());
+    }
+
+    private Coordinate getNewVelocity() {
+        int vy = velocity.getY() - 1;
+        int vx = 0;
+        if (velocity.getX() > 0) {
+            vx = velocity.getX() - 1;
+        } else if (velocity.getX() < 0) {
+            vx = velocity.getX() + 1;
+        }
+        return new Coordinate(vx, vy);
+    }
+
     public Coordinate getPosition() {
         return position;
     }

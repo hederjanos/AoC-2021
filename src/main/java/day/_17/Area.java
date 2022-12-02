@@ -20,7 +20,7 @@ public class Area {
 
     public boolean isProbeInArea(Probe probe) {
         Coordinate coordinate = probe.getPosition();
-        return coordinate.getX() <= maxX && coordinate.getX() >= minX && coordinate.getY() < maxY && coordinate.getY() >= minY;
+        return coordinate.getX() <= maxX && coordinate.getX() >= minX && coordinate.getY() <= maxY && coordinate.getY() >= minY;
     }
 
     public boolean isProbeOverArea(Probe probe) {

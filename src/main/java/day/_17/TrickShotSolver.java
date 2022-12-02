@@ -9,11 +9,13 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class TrickShotSolver extends Solver<Integer> {
 
     private final Area area;
+    private List<Integer> maxHeightsOfTrajectories;
 
     public TrickShotSolver(String filename) {
         super(filename);
@@ -27,54 +29,48 @@ public class TrickShotSolver extends Solver<Integer> {
         while (matcher.find()) {
             areaBoundaries.add(Integer.parseInt(matcher.group()));
         }
-        System.out.println(areaBoundaries);
         return new Area(areaBoundaries);
     }
 
     @Override
     protected Integer solvePartOne() {
+        maxHeightsOfTrajectories = calculateMaxHeightsOfTrajectories();
+        return maxHeightsOfTrajectories.stream().max(Comparator.naturalOrder()).orElseThrow();
+    }
+
+    private List<Integer> calculateMaxHeightsOfTrajectories() {
         // "https://en.wikipedia.org/wiki/Triangular_number";
         int minX = (int) Math.sqrt(2d * area.getMinX());
-        int maxX = area.getMinX() - 1;
-        int minY = area.getMaxY() + 1;
+        int maxX = area.getMaxX();
+        int minY = area.getMinY();
         int maxY = Math.abs(area.getMinY());
 
-        return IntStream.range(minX, maxX)
-                .mapToObj(i -> IntStream.range(minY, maxY)
+        return IntStream.rangeClosed(minX, maxX)
+                .mapToObj(i -> IntStream.rangeClosed(minY, maxY)
                         .mapToObj(j -> new Probe(new Coordinate(0, 0), new Coordinate(i, j))))
                 .flatMap(Function.identity())
                 .map(this::getHighestPositionOfProbe)
-                .filter(height -> height > 0)
-                .max(Comparator.naturalOrder())
-                .orElseThrow();
+                .filter(height -> height > Integer.MIN_VALUE)
+                .collect(Collectors.toList());
     }
 
     private Integer getHighestPositionOfProbe(Probe probe) {
         int maxHeight = Integer.MIN_VALUE;
+        boolean probeInTarget = false;
         while (!area.isProbeOverArea(probe)) {
-            Coordinate position = probe.getPosition();
-            Coordinate velocity = probe.getVelocity();
-            Coordinate newPosition = position.add(velocity);
-            maxHeight = Math.max(maxHeight, newPosition.getY());
+            probe.fly();
+            maxHeight = Math.max(maxHeight, probe.getPosition().getY());
             if (area.isProbeInArea(probe)) {
+                probeInTarget = true;
                 break;
             }
-            probe.setPosition(newPosition);
-            int vy = velocity.getY() - 1;
-            int vx = 0;
-            if (velocity.getX() > 1) {
-                vx = velocity.getX() - 1;
-            } else if (velocity.getX() < 1) {
-                vx = velocity.getX() + 1;
-            }
-            probe.setVelocity(new Coordinate(vx, vy));
         }
-        return maxHeight;
+        return probeInTarget ? maxHeight : Integer.MIN_VALUE;
     }
 
     @Override
     protected Integer solvePartTwo() {
-        return null;
+        return maxHeightsOfTrajectories.size();
     }
 
 }
