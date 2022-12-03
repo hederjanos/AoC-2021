@@ -10,7 +10,10 @@ import java.util.stream.IntStream;
 
 public abstract class IntegerGrid extends Grid<Integer> {
 
-    protected final boolean fourWayDirection;
+    protected boolean fourWayDirection;
+
+    protected IntegerGrid() {
+    }
 
     protected IntegerGrid(List<String> gridLines, Function<String, List<Integer>> tokenizer) {
         this(gridLines, tokenizer, true);

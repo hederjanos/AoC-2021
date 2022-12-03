@@ -9,13 +9,26 @@ import java.util.function.Function;
 
 public class RiskMap extends IntegerGrid {
 
-    private final GridCell<Integer> start;
-    private final GridCell<Integer> target;
+    private GridCell<Integer> start;
+    private GridCell<Integer> target;
 
     protected RiskMap(List<String> gridLines, Function<String, List<Integer>> tokenizer) {
         super(gridLines, tokenizer);
+        setStartAndTarget();
+    }
+
+    private void setStartAndTarget() {
         start = board.get(calculateCellIndex(0, 0)).copy();
         target = board.get(calculateCellIndex(getWidth() - 1, getHeight() - 1)).copy();
+    }
+
+    protected RiskMap(List<GridCell<Integer>> board, int width, int height) {
+        super();
+        this.fourWayDirection = true;
+        this.width = width;
+        this.height = height;
+        this.board = board;
+        setStartAndTarget();
     }
 
     public PathCell findLowestRiskPath() {
@@ -41,19 +54,24 @@ public class RiskMap extends IntegerGrid {
                     int neighbourRisk = neighbourCell.getValue();
                     if (risks[neighbourIndex] > risks[coordinateIndex] + neighbourRisk) {
                         risks[neighbourIndex] = risks[coordinateIndex] + neighbourRisk;
-                        Optional<PathCell> pathInQueue = paths.stream()
-                                .filter(path -> path.getCoordinate().equals(neighbour))
-                                .findFirst();
-                        if (pathInQueue.isPresent()) {
-                            pathInQueue.get().setSumRisk(risks[neighbourIndex]);
-                        } else {
-                            paths.offer(new PathCell(neighbour, risks[neighbourIndex]));
-                        }
+                        adjustRisks(paths, risks, neighbour);
                     }
                 }
             }
         }
         return solution;
+    }
+
+    private void adjustRisks(Queue<PathCell> paths, int[] risks, Coordinate neighbour) {
+        int neighbourIndex = calculateCellIndex(neighbour.getX(), neighbour.getY());
+        Optional<PathCell> pathInQueue = paths.stream()
+                .filter(path -> path.getCoordinate().equals(neighbour))
+                .findFirst();
+        if (pathInQueue.isPresent()) {
+            pathInQueue.get().setSumRisk(risks[neighbourIndex]);
+        } else {
+            paths.offer(new PathCell(neighbour, risks[neighbourIndex]));
+        }
     }
 
 }

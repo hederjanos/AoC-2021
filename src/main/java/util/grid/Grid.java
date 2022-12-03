@@ -26,4 +26,5 @@ public abstract class Grid<V> {
     public List<GridCell<V>> getBoard() {
         return board;
     }
+
 }
