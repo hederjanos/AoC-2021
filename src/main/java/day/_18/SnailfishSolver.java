@@ -16,6 +16,10 @@ public class SnailfishSolver extends Solver<Integer> {
         numbers = puzzle.stream()
                 .map(this::parseANumber)
                 .collect(Collectors.toList());
+        Number number = numbers.get(0);
+        System.out.println(number);
+        number.explode();
+        System.out.println(number);
     }
 
     private Number parseANumber(String line) {
@@ -29,6 +33,7 @@ public class SnailfishSolver extends Solver<Integer> {
                     stack.push(number);
                     continue;
                 } else {
+                    number.setParent(stack.peek());
                     if (line.charAt(i - 1) != ',') {
                         stack.peek().setLeft(number);
                     } else {
@@ -38,6 +43,7 @@ public class SnailfishSolver extends Solver<Integer> {
                 stack.push(number);
             } else if (Character.isDigit(line.charAt(i))) {
                 Number number = new Number();
+                number.setParent(stack.peek());
                 number.setValue(Integer.parseInt(line.substring(i, i + 1)));
                 if (line.charAt(i + 1) == ',') {
                     stack.peek().setLeft(number);
