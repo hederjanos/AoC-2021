@@ -7,27 +7,27 @@ import java.util.Deque;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SnailfishSolver extends Solver<Integer> {
+public class SnailFishSolver extends Solver<Integer> {
 
-    private List<Number> numbers;
+    private List<SnailFishNumber> numbers;
 
-    public SnailfishSolver(String filename) {
+    public SnailFishSolver(String filename) {
         super(filename);
-        numbers = puzzle.stream()
-                .map(this::parseANumber)
-                .collect(Collectors.toList());
-        Number number = numbers.get(0);
+        numbers = puzzle.stream().map(this::parseANumber).collect(Collectors.toList());
+        SnailFishNumber number = numbers.get(0);
+        System.out.println("_______________NUMBER________________");
         System.out.println(number);
         number.explode();
+        System.out.println("_______________NUMBER________________");
         System.out.println(number);
     }
 
-    private Number parseANumber(String line) {
-        Deque<Number> stack = new ArrayDeque<>();
-        Number root = null;
+    private SnailFishNumber parseANumber(String line) {
+        Deque<SnailFishNumber> stack = new ArrayDeque<>();
+        SnailFishNumber root = null;
         for (int i = 0; i < line.length(); i++) {
             if (line.charAt(i) == '[') {
-                Number number = new Number();
+                SnailFishNumber number = new SnailFishNumber();
                 if (i == 0) {
                     root = number;
                     stack.push(number);
@@ -35,6 +35,7 @@ public class SnailfishSolver extends Solver<Integer> {
                 } else {
                     number.setParent(stack.peek());
                     if (line.charAt(i - 1) != ',') {
+                        number.setLeft(true);
                         stack.peek().setLeft(number);
                     } else {
                         stack.peek().setRight(number);
@@ -42,10 +43,11 @@ public class SnailfishSolver extends Solver<Integer> {
                 }
                 stack.push(number);
             } else if (Character.isDigit(line.charAt(i))) {
-                Number number = new Number();
+                SnailFishNumber number = new SnailFishNumber();
                 number.setParent(stack.peek());
                 number.setValue(Integer.parseInt(line.substring(i, i + 1)));
                 if (line.charAt(i + 1) == ',') {
+                    number.setLeft(true);
                     stack.peek().setLeft(number);
                 } else {
                     stack.peek().setRight(number);
