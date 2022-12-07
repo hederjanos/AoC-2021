@@ -58,29 +58,7 @@ public class SnailFishNumber {
         return newNumber;
     }
 
-    public SnailFishNumber getExploding() {
-        return getExploding(this, -1);
-    }
-
-    private SnailFishNumber getExploding(SnailFishNumber root, int level) {
-        if (root == null) {
-            return null;
-        }
-        if (level > 4) {
-            if (root.getLeft() == null && root.getRight() == null) {
-                return root.getParent();
-            }
-            return root;
-        }
-        SnailFishNumber snailFishNumber = getExploding(root.getLeft(), ++level);
-        if (snailFishNumber != null) {
-            return snailFishNumber;
-        }
-        snailFishNumber = getExploding(root.getRight(), ++level);
-        return snailFishNumber;
-    }
-
-    public void explode() {
+    public void explode(boolean withPrint) {
         SnailFishNumber explodingNumber = getExploding();
         if (explodingNumber != null) {
             SnailFishNumber parentNumber = explodingNumber.getParent();
@@ -88,6 +66,21 @@ public class SnailFishNumber {
             int rightValue = explodingNumber.getRight().getValue();
             SnailFishNumber leftNeighbour = explodingNumber.getLeftNeighbour();
             SnailFishNumber rightNeighbour = explodingNumber.getRightNeighbour();
+
+            if (withPrint) {
+                System.out.println("exploding number: ");
+                System.out.println(explodingNumber);
+                System.out.println("parent: ");
+                System.out.println(parentNumber);
+                System.out.print("leftval: ");
+                System.out.println(leftValue);
+                System.out.print("rightval: ");
+                System.out.println(rightValue);
+                System.out.print("leftneighbour: ");
+                System.out.println(leftNeighbour);
+                System.out.print("rightneighbour: ");
+                System.out.println(rightNeighbour);
+            }
 
             SnailFishNumber newNumber = new SnailFishNumber();
             newNumber.setValue(0);
@@ -110,6 +103,29 @@ public class SnailFishNumber {
                 leftNeighbour.setValue(leftNeighbour.getValue() + leftValue);
             }
         }
+    }
+
+    private SnailFishNumber getExploding() {
+        return getExploding(this, -1);
+    }
+
+    private SnailFishNumber getExploding(SnailFishNumber root, int level) {
+        if (root == null) {
+            return null;
+        }
+        if (level == 4) {
+            if (root.getLeft() == null && root.getRight() == null) {
+                return root.getParent();
+            }
+            return root;
+        }
+        SnailFishNumber snailFishNumber = getExploding(root.getLeft(), ++level);
+        --level;
+        if (snailFishNumber != null) {
+            return snailFishNumber;
+        }
+        snailFishNumber = getExploding(root.getRight(), ++level);
+        return snailFishNumber;
     }
 
     private SnailFishNumber getLeftNeighbour() {

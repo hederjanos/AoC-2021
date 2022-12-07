@@ -9,7 +9,7 @@ class SnailFishNumberTest {
         String number = "[[[[[9,8],1],2],3],4]";
         SnailFishNumber snailFishNumber = SnailFishNumber.parseANumber(number);
         System.out.println(snailFishNumber);
-        snailFishNumber.explode();
+        snailFishNumber.explode(true);
         System.out.println("----------------");
         System.out.println("after exploding:");
         System.out.println("----------------");
@@ -21,7 +21,7 @@ class SnailFishNumberTest {
         String number = "[7,[6,[5,[4,[3,2]]]]]";
         SnailFishNumber snailFishNumber = SnailFishNumber.parseANumber(number);
         System.out.println(snailFishNumber);
-        snailFishNumber.explode();
+        snailFishNumber.explode(true);
         System.out.println("----------------");
         System.out.println("after exploding:");
         System.out.println("----------------");
@@ -33,7 +33,7 @@ class SnailFishNumberTest {
         String number = "[[6,[5,[4,[3,2]]]],1]";
         SnailFishNumber snailFishNumber = SnailFishNumber.parseANumber(number);
         System.out.println(snailFishNumber);
-        snailFishNumber.explode();
+        snailFishNumber.explode(true);
         System.out.println("----------------");
         System.out.println("after exploding:");
         System.out.println("----------------");
@@ -45,7 +45,7 @@ class SnailFishNumberTest {
         String number = "[[3,[2,[1,[7,3]]]],[6,[5,[4,[3,2]]]]]";
         SnailFishNumber snailFishNumber = SnailFishNumber.parseANumber(number);
         System.out.println(snailFishNumber);
-        snailFishNumber.explode();
+        snailFishNumber.explode(true);
         System.out.println("----------------");
         System.out.println("after exploding:");
         System.out.println("----------------");
@@ -57,7 +57,7 @@ class SnailFishNumberTest {
         String number = "[[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]]";
         SnailFishNumber snailFishNumber = SnailFishNumber.parseANumber(number);
         System.out.println(snailFishNumber);
-        snailFishNumber.explode();
+        snailFishNumber.explode(true);
         System.out.println("----------------");
         System.out.println("after exploding:");
         System.out.println("----------------");
@@ -76,12 +76,12 @@ class SnailFishNumberTest {
         System.out.println("after add:");
         System.out.println("----------------");
         System.out.println(add);
-        add.explode();
+        add.explode(true);
         System.out.println("----------------");
         System.out.println("after exploding 1:");
         System.out.println("----------------");
         System.out.println(add);
-        add.explode();
+        add.explode(true);
         System.out.println("----------------");
         System.out.println("after exploding 2:");
         System.out.println("----------------");
