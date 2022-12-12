@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 public class SnailFishSolver extends Solver<Long> {
 
     private final List<SnailFishNumber> numbers;
+    private SnailFishNumber result;
 
     public SnailFishSolver(String filename) {
         super(filename);
@@ -16,7 +17,7 @@ public class SnailFishSolver extends Solver<Long> {
 
     @Override
     protected Long solvePartOne() {
-        SnailFishNumber result = numbers.get(0).add(numbers.get(1));
+        result = numbers.get(0).add(numbers.get(1));
         result.reduce();
         for (int i = 2; i < numbers.size(); i++) {
             result = result.add(numbers.get(i));
@@ -30,4 +31,7 @@ public class SnailFishSolver extends Solver<Long> {
         return null;
     }
 
+    public SnailFishNumber getResult() {
+        return result;
+    }
 }

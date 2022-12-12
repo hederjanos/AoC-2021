@@ -218,17 +218,14 @@ public class SnailFishNumber {
     }
 
     private long magnitude(SnailFishNumber root, long magnitude) {
+        if (root.getLeft() == null && root.getRight() == null && root.getValue() >= 0) {
+            return root.getValue();
+        }
         if (root.getLeft() != null && root.getLeft().getValue() >= 0 && root.getRight() != null && root.getRight().getValue() >= 0) {
             return 3L * root.getLeft().getValue() + 2L * root.getRight().getValue();
         }
         if (root.getValue() == -1) {
-            return 3L * magnitude(root.getLeft(), magnitude) + 2L * magnitude(root.getRight(), magnitude);
-        }
-        if (root.getLeft() != null) {
-            magnitude += magnitude(root.getLeft(), magnitude);
-        }
-        if (root.getRight() != null) {
-            magnitude += magnitude(root.getRight(), magnitude);
+            magnitude += 3L * magnitude(root.getLeft(), magnitude) + 2L * magnitude(root.getRight(), magnitude);
         }
         return magnitude;
     }

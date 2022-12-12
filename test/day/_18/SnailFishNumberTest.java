@@ -2,6 +2,8 @@ package day._18;
 
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 class SnailFishNumberTest {
 
     @Test
@@ -101,6 +103,62 @@ class SnailFishNumberTest {
         System.out.println("after exploding 3:");
         System.out.println("----------------");
         System.out.println(add);
+    }
+
+    @Test
+    void test7() {
+        String string = "[[[[8,7],[7,7]],[[8,6],[7,7]]],[[[0,7],[6,6]],[8,7]]]";
+        SnailFishNumber snailFishNumber = SnailFishNumber.parseANumber(string);
+        assertEquals(3488, snailFishNumber.magnitude());
+    }
+
+    @Test
+    void test8() {
+        String string = "[[[[5,0],[7,4]],[5,5]],[6,6]]";
+        SnailFishNumber snailFishNumber = SnailFishNumber.parseANumber(string);
+        assertEquals(1137, snailFishNumber.magnitude());
+    }
+
+    @Test
+    void test9() {
+        String string = "[[[[3,0],[5,3]],[4,4]],[5,5]]";
+        SnailFishNumber snailFishNumber = SnailFishNumber.parseANumber(string);
+        assertEquals(791, snailFishNumber.magnitude());
+    }
+
+    @Test
+    void test10() {
+        String string = "[[[[1,1],[2,2]],[3,3]],[4,4]]";
+        SnailFishNumber snailFishNumber = SnailFishNumber.parseANumber(string);
+        assertEquals(445, snailFishNumber.magnitude());
+    }
+
+    @Test
+    void test11() {
+        String string = "[[[[0,7],4],[[7,8],[6,0]]],[8,1]]";
+        SnailFishNumber snailFishNumber = SnailFishNumber.parseANumber(string);
+        assertEquals(1384, snailFishNumber.magnitude());
+    }
+
+    @Test
+    void test12() {
+        String string = "[[1,2],[[3,4],5]]";
+        SnailFishNumber snailFishNumber = SnailFishNumber.parseANumber(string);
+        assertEquals(143, snailFishNumber.magnitude());
+    }
+
+    @Test
+    void test13() {
+        String string = "[[9,1],[1,9]]";
+        SnailFishNumber snailFishNumber = SnailFishNumber.parseANumber(string);
+        assertEquals(129, snailFishNumber.magnitude());
+    }
+
+    @Test
+    void test14() {
+        String string = "[[[[8,7],[7,7]],[[8,6],[7,7]]],[[[0,7],[6,6]],[8,7]]]";
+        SnailFishNumber snailFishNumber = SnailFishNumber.parseANumber(string);
+        assertEquals(3488, snailFishNumber.magnitude());
     }
 
 }
