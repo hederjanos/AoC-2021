@@ -86,6 +86,21 @@ class SnailFishNumberTest {
         System.out.println("after exploding 2:");
         System.out.println("----------------");
         System.out.println(add);
+        add.split();
+        System.out.println("----------------");
+        System.out.println("after splitting 1:");
+        System.out.println("----------------");
+        System.out.println(add);
+        add.split();
+        System.out.println("----------------");
+        System.out.println("after splitting 2:");
+        System.out.println("----------------");
+        System.out.println(add);
+        add.explode(true);
+        System.out.println("----------------");
+        System.out.println("after exploding 3:");
+        System.out.println("----------------");
+        System.out.println(add);
     }
 
 }

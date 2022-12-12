@@ -5,9 +5,9 @@ import util.common.Solver;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SnailFishSolver extends Solver<Integer> {
+public class SnailFishSolver extends Solver<Long> {
 
-    private List<SnailFishNumber> numbers;
+    private final List<SnailFishNumber> numbers;
 
     public SnailFishSolver(String filename) {
         super(filename);
@@ -15,12 +15,18 @@ public class SnailFishSolver extends Solver<Integer> {
     }
 
     @Override
-    protected Integer solvePartOne() {
-        return null;
+    protected Long solvePartOne() {
+        SnailFishNumber result = numbers.get(0).add(numbers.get(1));
+        result.reduce();
+        for (int i = 2; i < numbers.size(); i++) {
+            result = result.add(numbers.get(i));
+            result.reduce();
+        }
+        return result.magnitude();
     }
 
     @Override
-    protected Integer solvePartTwo() {
+    protected Long solvePartTwo() {
         return null;
     }
 
