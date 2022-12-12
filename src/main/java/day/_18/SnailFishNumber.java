@@ -230,6 +230,23 @@ public class SnailFishNumber {
         return magnitude;
     }
 
+    public SnailFishNumber copy() {
+        return copy(this);
+    }
+
+    private SnailFishNumber copy(SnailFishNumber root) {
+        if (root.getLeft() != null && root.getRight() != null) {
+            return root;
+        }
+        SnailFishNumber copy = new SnailFishNumber();
+        copy.setValue(root.getValue());
+        copy.setParent(root.getParent());
+        copy.setLeft(root.isLeft());
+        copy.setLeft(copy(root.getLeft()));
+        copy.setRight(copy(root.getRight()));
+        return copy;
+    }
+
     public int getDepth() {
         return getDepth(this);
     }
