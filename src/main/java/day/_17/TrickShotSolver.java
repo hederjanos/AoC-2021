@@ -39,7 +39,9 @@ public class TrickShotSolver extends Solver<Integer> {
     }
 
     private List<Integer> calculateMaxHeightsOfTrajectories() {
-        // "https://en.wikipedia.org/wiki/Triangular_number";
+        /*
+          https://en.wikipedia.org/wiki/Triangular_number
+         */
         int minX = (int) Math.sqrt(2d * area.getMinX());
         int maxX = area.getMaxX();
         int minY = area.getMinY();

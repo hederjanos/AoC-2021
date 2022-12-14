@@ -16,36 +16,44 @@ public class SnailFishNumber {
         SnailFishNumber root = null;
         for (int i = 0; i < numberString.length(); i++) {
             if (numberString.charAt(i) == '[') {
-                SnailFishNumber number = new SnailFishNumber();
-                if (i == 0) {
-                    root = number;
-                    stack.push(number);
-                    continue;
-                } else {
-                    number.setParent(stack.peek());
-                    if (numberString.charAt(i - 1) != ',') {
-                        number.setLeft(true);
-                        stack.peek().setLeft(number);
-                    } else {
-                        stack.peek().setRight(number);
-                    }
-                }
-                stack.push(number);
+                root = parseParent(numberString, stack, root, i);
             } else if (Character.isDigit(numberString.charAt(i))) {
-                SnailFishNumber number = new SnailFishNumber();
-                number.setParent(stack.peek());
-                number.setValue(Integer.parseInt(numberString.substring(i, i + 1)));
-                if (numberString.charAt(i + 1) == ',') {
-                    number.setLeft(true);
-                    stack.peek().setLeft(number);
-                } else {
-                    stack.peek().setRight(number);
-                }
+                parseDigit(numberString, stack, i);
             } else if (numberString.charAt(i) == ']') {
                 root = stack.pop();
             }
         }
         return root;
+    }
+
+    private static SnailFishNumber parseParent(String numberString, Deque<SnailFishNumber> stack, SnailFishNumber root, int i) {
+        SnailFishNumber number = new SnailFishNumber();
+        if (i == 0) {
+            root = number;
+            stack.push(number);
+        } else {
+            number.setParent(stack.peek());
+            if (numberString.charAt(i - 1) != ',') {
+                number.setLeft(true);
+                stack.peek().setLeft(number);
+            } else {
+                stack.peek().setRight(number);
+            }
+        }
+        stack.push(number);
+        return root;
+    }
+
+    private static void parseDigit(String numberString, Deque<SnailFishNumber> stack, int i) {
+        SnailFishNumber number = new SnailFishNumber();
+        number.setParent(stack.peek());
+        number.setValue(Integer.parseInt(numberString.substring(i, i + 1)));
+        if (numberString.charAt(i + 1) == ',') {
+            number.setLeft(true);
+            stack.peek().setLeft(number);
+        } else {
+            stack.peek().setRight(number);
+        }
     }
 
     public SnailFishNumber add(SnailFishNumber number) {
@@ -93,11 +101,11 @@ public class SnailFishNumber {
             }
             leftNeighbour.setValue(leftNeighbour.getValue() + leftValue);
             rightNeighbour.setValue(rightNeighbour.getValue() + rightValue);
-        } else if (leftNeighbour == null) {
+        } else if (leftNeighbour == null && rightNeighbour != null) {
             parentNumber.setLeft(newNumber);
             newNumber.setLeft(true);
             rightNeighbour.setValue(rightNeighbour.getValue() + rightValue);
-        } else {
+        } else if (leftNeighbour != null) {
             parentNumber.setRight(newNumber);
             leftNeighbour.setValue(leftNeighbour.getValue() + leftValue);
         }

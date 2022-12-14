@@ -2,7 +2,7 @@ package day._18;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class SnailFishNumberTest {
 
@@ -16,6 +16,7 @@ class SnailFishNumberTest {
         System.out.println("after exploding:");
         System.out.println("----------------");
         System.out.println(snailFishNumber);
+        assertTrue(snailFishNumber.toString().contains("0"));
     }
 
     @Test
@@ -28,6 +29,7 @@ class SnailFishNumberTest {
         System.out.println("after exploding:");
         System.out.println("----------------");
         System.out.println(snailFishNumber);
+        assertTrue(snailFishNumber.toString().contains("0"));
     }
 
     @Test
@@ -40,6 +42,7 @@ class SnailFishNumberTest {
         System.out.println("after exploding:");
         System.out.println("----------------");
         System.out.println(snailFishNumber);
+        assertTrue(snailFishNumber.toString().contains("0"));
     }
 
     @Test
@@ -52,6 +55,7 @@ class SnailFishNumberTest {
         System.out.println("after exploding:");
         System.out.println("----------------");
         System.out.println(snailFishNumber);
+        assertTrue(snailFishNumber.toString().contains("0"));
     }
 
     @Test
@@ -64,6 +68,7 @@ class SnailFishNumberTest {
         System.out.println("after exploding:");
         System.out.println("----------------");
         System.out.println(snailFishNumber);
+        assertTrue(snailFishNumber.toString().contains("0"));
     }
 
     @Test
@@ -83,21 +88,28 @@ class SnailFishNumberTest {
         System.out.println("after exploding 1:");
         System.out.println("----------------");
         System.out.println(add);
+        assertTrue(add.toString().contains("0"));
         add.explode(true);
         System.out.println("----------------");
         System.out.println("after exploding 2:");
         System.out.println("----------------");
         System.out.println(add);
+        assertTrue(add.toString().contains("15"));
+        assertTrue(add.toString().contains("13"));
         add.split();
         System.out.println("----------------");
         System.out.println("after splitting 1:");
         System.out.println("----------------");
         System.out.println(add);
+        assertFalse(add.toString().contains("15"));
+        assertTrue(add.toString().contains("13"));
         add.split();
         System.out.println("----------------");
         System.out.println("after splitting 2:");
         System.out.println("----------------");
         System.out.println(add);
+        assertFalse(add.toString().contains("15"));
+        assertFalse(add.toString().contains("13"));
         add.explode(true);
         System.out.println("----------------");
         System.out.println("after exploding 3:");

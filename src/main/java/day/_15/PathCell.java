@@ -2,6 +2,8 @@ package day._15;
 
 import util.coordinate.Coordinate;
 
+import java.util.Objects;
+
 public final class PathCell implements Comparable<PathCell> {
 
     private final Coordinate coordinate;
@@ -22,6 +24,19 @@ public final class PathCell implements Comparable<PathCell> {
 
     public void setSumRisk(Integer sumRisk) {
         this.sumRisk = sumRisk;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PathCell)) return false;
+        PathCell pathCell = (PathCell) o;
+        return Objects.equals(getCoordinate(), pathCell.getCoordinate()) && Objects.equals(getSumRisk(), pathCell.getSumRisk());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getCoordinate(), getSumRisk());
     }
 
     @Override
