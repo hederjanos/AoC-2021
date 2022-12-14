@@ -31,6 +31,10 @@ public class RiskMap extends IntegerGrid {
         setStartAndTarget();
     }
 
+    public int getRiskAt(int x, int y) {
+        return board.get(calculateCellIndex(x, y)).getValue();
+    }
+
     public PathCell findLowestRiskPath() {
         int[] risks = new int[board.size()];
         Arrays.fill(risks, Integer.MAX_VALUE);

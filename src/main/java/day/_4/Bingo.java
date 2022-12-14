@@ -3,25 +3,27 @@ package day._4;
 import util.grid.GridCell;
 import util.grid.IntegerGrid;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class Bingo extends IntegerGrid {
 
     private boolean isAlreadyWon;
+    private Set<GridCell<Integer>> markedCells = new HashSet<>();
 
     public Bingo(List<String> gridLines, Function<String, List<Integer>> tokenizer) {
         super(gridLines, tokenizer);
     }
 
     public void markRandomNumberInBingoIfExists(Integer randomNumber) {
-        board.forEach(gridCell -> {
-            if (Objects.equals(gridCell.getValue(), randomNumber)) {
-                gridCell.setMarked();
-            }
-        });
+        board.stream()
+                .filter(bingoCell -> Objects.equals(bingoCell.getValue(), randomNumber))
+                .forEach(bingoCell -> markedCells.add(bingoCell));
+    }
+
+    public void clearMarkedCells() {
+        markedCells = new HashSet<>();
     }
 
     public boolean isWin() {
@@ -35,7 +37,7 @@ public class Bingo extends IntegerGrid {
                 horizontalCounter++;
             }
             int verticalCounter = i % height;
-            if (board.get(i).isMarked()) {
+            if (markedCells.contains(board.get(i))) {
                 horizontalCounters[horizontalCounter]++;
                 verticalCounters[verticalCounter]++;
             }
@@ -52,7 +54,7 @@ public class Bingo extends IntegerGrid {
 
     public Integer getSumOfUnMarkedNumbers() {
         return board.stream()
-                .filter(bingoCell -> !bingoCell.isMarked())
+                .filter(bingoCell -> !markedCells.contains(bingoCell))
                 .map(GridCell::getValue)
                 .reduce(0, Integer::sum);
     }

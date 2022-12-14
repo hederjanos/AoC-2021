@@ -2,11 +2,12 @@ package util.grid;
 
 import util.coordinate.Coordinate;
 
+import java.util.Objects;
+
 public class GridCell<V> {
 
     private final Coordinate coordinate;
     private V value;
-    private boolean marked;
 
     public GridCell(Coordinate coordinate, V value) {
         this.coordinate = coordinate;
@@ -16,7 +17,6 @@ public class GridCell<V> {
     public GridCell(GridCell<V> cell) {
         coordinate = cell.getCoordinate().copy();
         value = cell.getValue();
-        marked = cell.isMarked();
     }
 
     public GridCell<V> copy() {
@@ -35,16 +35,17 @@ public class GridCell<V> {
         this.value = value;
     }
 
-    public boolean isMarked() {
-        return marked;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof GridCell)) return false;
+        GridCell<?> gridCell = (GridCell<?>) o;
+        return Objects.equals(getCoordinate(), gridCell.getCoordinate()) && Objects.equals(getValue(), gridCell.getValue());
     }
 
-    public void setMarked() {
-        this.marked = true;
-    }
-
-    public void setUnMarked() {
-        this.marked = false;
+    @Override
+    public int hashCode() {
+        return Objects.hash(getCoordinate(), getValue());
     }
 
     @Override
@@ -52,7 +53,7 @@ public class GridCell<V> {
         return "Cell{" +
                "c: " + coordinate +
                ", v: " + value +
-               ", m: " + marked +
                '}';
     }
+
 }

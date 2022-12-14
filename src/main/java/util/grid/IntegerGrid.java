@@ -48,12 +48,14 @@ public abstract class IntegerGrid extends Grid<Integer> {
                 .collect(Collectors.toList());
     }
 
-    public boolean isFourWayDirection() {
-        return fourWayDirection;
+    public static Function<String, List<Integer>> convertContiguousCharactersToList() {
+        return s -> s.chars()
+                .boxed()
+                .collect(Collectors.toList());
     }
 
-    public void reset() {
-        board.forEach(GridCell::setUnMarked);
+    public boolean isFourWayDirection() {
+        return fourWayDirection;
     }
 
     public boolean isCoordinateInBounds(Coordinate coordinate) {

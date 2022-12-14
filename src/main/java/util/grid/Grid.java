@@ -23,7 +23,7 @@ public abstract class Grid<V> {
         return height;
     }
 
-    public List<GridCell<V>> getBoard() {
+    protected List<GridCell<V>> getBoard() {
         return board;
     }
 

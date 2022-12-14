@@ -67,7 +67,7 @@ public class GiantSquidSolver extends Solver<Integer> {
 
     @Override
     protected Integer solvePartTwo() {
-        bingoList.forEach(IntegerGrid::reset);
+        bingoList.forEach(grid -> ((Bingo) grid).clearMarkedCells());
         return getResultByLastWinner().orElse(null);
     }
 

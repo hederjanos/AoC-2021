@@ -33,7 +33,6 @@ public class ChitonSolver extends Solver<Integer> {
     }
 
     private RiskMap expandMap() {
-        List<GridCell<Integer>> board = riskMap.getBoard();
         List<GridCell<Integer>> newBoard = new ArrayList<>();
         int newHeight = riskMap.getHeight() * 5;
         int newWidth = riskMap.getWidth() * 5;
@@ -45,7 +44,7 @@ public class ChitonSolver extends Solver<Integer> {
                                 int innerAdd = j / riskMap.getWidth();
                                 int x = j % riskMap.getWidth();
                                 int y = i % riskMap.getHeight();
-                                int boardValue = board.get(riskMap.calculateCellIndex(x, y)).getValue();
+                                int boardValue = riskMap.getRiskAt(x, y);
                                 int newValue = boardValue + outerAdd + innerAdd;
                                 if (newValue > 9) {
                                     newValue -= 9;

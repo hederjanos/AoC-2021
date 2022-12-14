@@ -48,7 +48,7 @@ public class HydrothermalVentureSolver extends Solver<Integer> {
     private Stream<Coordinate> getCoordinatesInLineStream(List<Coordinate> line) {
         Coordinate start = line.get(0);
         Coordinate end = line.get(1);
-        return start.getCoordinatesInLineBetweenCoordinates(end).stream();
+        return start.getCoordinatesInLineBetweenWith(end).stream();
     }
 
     private int getNumberOfOverlappingCoordinates(List<Coordinate> coordinates) {

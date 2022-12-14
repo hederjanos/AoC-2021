@@ -4,10 +4,7 @@ import util.coordinate.Coordinate;
 import util.grid.GridCell;
 import util.grid.IntegerGrid;
 
-import java.util.ArrayDeque;
-import java.util.List;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -46,9 +43,10 @@ public class HeightMap extends IntegerGrid {
     }
 
     public int getSizeOfABasin(GridCell<Integer> gridCell) {
+        Set<GridCell<Integer>> visitedCells = new HashSet<>();
         int size = 0;
         Queue<GridCell<Integer>> queue = new ArrayDeque<>();
-        gridCell.setMarked();
+        visitedCells.add(gridCell);
         queue.offer(gridCell);
         size++;
         while (!queue.isEmpty()) {
@@ -56,8 +54,8 @@ public class HeightMap extends IntegerGrid {
             for (Coordinate coordinate : lastCell.getCoordinate().getOrthogonalAdjacentCoordinates()) {
                 if (isCoordinateInBounds(coordinate)) {
                     GridCell<Integer> currentNeighbour = board.get(calculateCellIndex(coordinate.getX(), coordinate.getY()));
-                    if (!currentNeighbour.isMarked() && currentNeighbour.getValue() != MAX_HEIGHT) {
-                        currentNeighbour.setMarked();
+                    if (!visitedCells.contains(currentNeighbour) && currentNeighbour.getValue() != MAX_HEIGHT) {
+                        visitedCells.add(currentNeighbour);
                         size++;
                         queue.offer(currentNeighbour);
                     }
