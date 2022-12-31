@@ -20,6 +20,10 @@ public class PassagePathingSolver extends Solver<Integer> {
 
     @Override
     protected Integer solvePartOne() {
+       return solve(true);
+    }
+
+    private Integer solve(boolean withRulesPartOne) {
         int numberOfPath = 0;
         Deque<List<Cave>> stack = new ArrayDeque<>();
         Cave start = caveSystem.getStart();
@@ -35,7 +39,7 @@ public class PassagePathingSolver extends Solver<Integer> {
                     numberOfPath++;
                     continue;
                 }
-                if (cave.isBig() || !copy.contains(cave)) {
+                if (withRulesPartOne ? compliesWithRulesPartOne(cave, copy) : compliesWithRulesPartTwo(cave, copy)) {
                     copy.add(cave);
                     stack.push(copy);
                 }
@@ -44,31 +48,13 @@ public class PassagePathingSolver extends Solver<Integer> {
         return numberOfPath;
     }
 
-    @Override
-    protected Integer solvePartTwo() {
-        int numberOfPath = 0;
-        Deque<List<Cave>> stack = new ArrayDeque<>();
-        Cave start = caveSystem.getStart();
-        List<Cave> startList = new ArrayList<>();
-        startList.add(start);
-        stack.push(startList);
-        while (!stack.isEmpty()) {
-            List<Cave> caves = stack.pop();
-            List<Cave> neighbours = caveSystem.getNeighboursOfCave(caves.get(caves.size() - 1).hashCode());
-            for (Cave cave : neighbours) {
-                List<Cave> copy = new ArrayList<>(caves);
-                if (caveSystem.getEnd().equals(cave)) {
-                    numberOfPath++;
-                    continue;
-                }
-                if (!caveSystem.getStart().equals(cave) &&
-                    (cave.isBig() || !copy.contains(cave) || (isCaveOnceIn(cave, copy) && areAllSmallCavesOnceIn(copy)))) {
-                    copy.add(cave);
-                    stack.push(copy);
-                }
-            }
-        }
-        return numberOfPath;
+    private boolean compliesWithRulesPartOne(Cave cave, List<Cave> copy) {
+        return cave.isBig() || !copy.contains(cave);
+    }
+
+    private boolean compliesWithRulesPartTwo(Cave cave, List<Cave> copy) {
+        return !caveSystem.getStart().equals(cave) &&
+               (cave.isBig() || !copy.contains(cave) || (isCaveOnceIn(cave, copy) && areAllSmallCavesOnceIn(copy)));
     }
 
     private boolean isCaveOnceIn(Cave cave, List<Cave> copy) {
@@ -88,6 +74,11 @@ public class PassagePathingSolver extends Solver<Integer> {
             }
         }
         return areAllSmallCavesOnceIn;
+    }
+
+    @Override
+    protected Integer solvePartTwo() {
+        return solve(false);
     }
 
 }

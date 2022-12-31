@@ -32,7 +32,7 @@ public class Probe {
         return position;
     }
 
-    public void setPosition(Coordinate position) {
+    private void setPosition(Coordinate position) {
         this.position = position;
     }
 
@@ -40,7 +40,7 @@ public class Probe {
         return velocity;
     }
 
-    public void setVelocity(Coordinate velocity) {
+    private void setVelocity(Coordinate velocity) {
         this.velocity = velocity;
     }
 
