@@ -5,7 +5,6 @@ import util.grid.IntegerGrid;
 
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class Bingo extends IntegerGrid {
 
@@ -55,15 +54,15 @@ public class Bingo extends IntegerGrid {
     public Integer getSumOfUnMarkedNumbers() {
         return board.stream()
                 .filter(bingoCell -> !markedCells.contains(bingoCell))
-                .map(GridCell::getValue)
-                .reduce(0, Integer::sum);
+                .mapToInt(GridCell::getValue)
+                .sum();
     }
 
     public boolean isAlreadyWon() {
         return isAlreadyWon;
     }
 
-    public void setAlreadyWon() {
+    void setAlreadyWon() {
         isAlreadyWon = true;
     }
 

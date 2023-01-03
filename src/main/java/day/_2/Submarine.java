@@ -10,24 +10,8 @@ public class Submarine {
         return horizontal;
     }
 
-    public void setHorizontal(int horizontal) {
-        this.horizontal = horizontal;
-    }
-
     public int getDepth() {
         return depth;
-    }
-
-    public void setDepth(int depth) {
-        this.depth = depth;
-    }
-
-    public int getAim() {
-        return aim;
-    }
-
-    public void setAim(int aim) {
-        this.aim = aim;
     }
 
     public void sink(int value) {

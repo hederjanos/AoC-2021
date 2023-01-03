@@ -14,7 +14,7 @@ public class Origami {
     public Origami(Set<Coordinate> dots) {
         initialDots = dots;
         currentDots = dots.stream()
-                .map(Coordinate::new)
+                .map(Coordinate::copy)
                 .collect(Collectors.toSet());
     }
 
@@ -32,13 +32,13 @@ public class Origami {
         Coordinate newCoordinate;
         if (Fold.Mirror.HORIZONTAL.equals(fold.getMirror())) {
             if (coordinate.getY() <= fold.getValue()) {
-                newCoordinate = new Coordinate(coordinate);
+                newCoordinate = coordinate.copy();
             } else {
                 newCoordinate = coordinate.subtract(new Coordinate(0, 2 * (coordinate.getY() - fold.getValue())));
             }
         } else {
             if (coordinate.getX() <= fold.getValue()) {
-                newCoordinate = new Coordinate(coordinate);
+                newCoordinate = coordinate.copy();
             } else {
                 newCoordinate = coordinate.subtract(new Coordinate(2 * (coordinate.getX() - fold.getValue()), 0));
             }
@@ -48,7 +48,7 @@ public class Origami {
 
     public void reset() {
         currentDots = initialDots.stream()
-                .map(Coordinate::new)
+                .map(Coordinate::copy)
                 .collect(Collectors.toSet());
     }
 
@@ -66,11 +66,11 @@ public class Origami {
     }
 
     private Integer getWidth() {
-        return currentDots.stream().map(Coordinate::getX).max(Integer::compareTo).orElse(0) + 1;
+        return currentDots.stream().mapToInt(Coordinate::getX).max().orElse(0) + 1;
     }
 
     private Integer getHeight() {
-        return currentDots.stream().map(Coordinate::getY).max(Integer::compareTo).orElse(0) + 1;
+        return currentDots.stream().mapToInt(Coordinate::getY).max().orElse(0) + 1;
     }
 
 }

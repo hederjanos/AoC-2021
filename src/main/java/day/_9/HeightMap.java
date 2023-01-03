@@ -19,7 +19,7 @@ public class HeightMap extends IntegerGrid {
     public List<GridCell<Integer>> getLowestLocations() {
         return board.stream()
                 .filter(this::isALocalMinimum)
-                .collect(Collectors.toList());
+                .collect(Collectors.toUnmodifiableList());
     }
 
     private boolean isALocalMinimum(GridCell<Integer> currentLocation) {

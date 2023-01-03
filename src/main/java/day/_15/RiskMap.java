@@ -18,8 +18,8 @@ public class RiskMap extends IntegerGrid {
     }
 
     private void setStartAndTarget() {
-        start = board.get(calculateCellIndex(0, 0)).copy();
-        target = board.get(calculateCellIndex(getWidth() - 1, getHeight() - 1)).copy();
+        start = board.get(calculateCellIndex(0, 0));
+        target = board.get(calculateCellIndex(getWidth() - 1, getHeight() - 1));
     }
 
     protected RiskMap(List<GridCell<Integer>> board, int width, int height) {

@@ -15,7 +15,7 @@ public class GridCell<V> {
     }
 
     public GridCell(GridCell<V> cell) {
-        coordinate = cell.getCoordinate().copy();
+        coordinate = cell.getCoordinate();
         value = cell.getValue();
     }
 
@@ -29,10 +29,6 @@ public class GridCell<V> {
 
     public V getValue() {
         return value;
-    }
-
-    public void setValue(V value) {
-        this.value = value;
     }
 
     @Override
@@ -54,6 +50,10 @@ public class GridCell<V> {
                "c: " + coordinate +
                ", v: " + value +
                '}';
+    }
+
+    void setValue(V value) {
+        this.value = value;
     }
 
 }

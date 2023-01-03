@@ -10,19 +10,19 @@ public final class PathCell implements Comparable<PathCell> {
     private Integer sumRisk;
 
     public PathCell(Coordinate coordinate, Integer sumRisk) {
-        this.coordinate = coordinate.copy();
+        this.coordinate = coordinate;
         this.sumRisk = sumRisk;
     }
 
     public Coordinate getCoordinate() {
-        return coordinate.copy();
+        return coordinate;
     }
 
     public Integer getSumRisk() {
         return sumRisk;
     }
 
-    public void setSumRisk(Integer sumRisk) {
+    void setSumRisk(Integer sumRisk) {
         this.sumRisk = sumRisk;
     }
 

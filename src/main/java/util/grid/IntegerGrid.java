@@ -66,6 +66,10 @@ public abstract class IntegerGrid extends Grid<Integer> {
         return x + y * width;
     }
 
+    protected void setValueOfCell(GridCell<Integer> cell, int newValue) {
+        cell.setValue(newValue);
+    }
+
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();

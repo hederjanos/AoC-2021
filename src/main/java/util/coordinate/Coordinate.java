@@ -12,7 +12,7 @@ public class Coordinate {
         this.y = y;
     }
 
-    public Coordinate(Coordinate coordinate) {
+    private Coordinate(Coordinate coordinate) {
         if (coordinate == null) {
             throw new IllegalArgumentException();
         }

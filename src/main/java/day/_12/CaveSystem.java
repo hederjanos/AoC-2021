@@ -27,7 +27,7 @@ public class CaveSystem {
         caves.values().forEach(this::setNotables);
     }
 
-    boolean isABigCave(String cave) {
+    private boolean isABigCave(String cave) {
         boolean areAllCharsUpperCase = true;
         for (int i = 0; i < cave.length(); i++) {
             if (!Character.isUpperCase(cave.charAt(i))) {
@@ -57,7 +57,7 @@ public class CaveSystem {
         if (cave == null) {
             throw new IllegalArgumentException();
         } else {
-            return connections.get(hashCode).stream().map(caves::get).collect(Collectors.toList());
+            return connections.get(hashCode).stream().map(caves::get).collect(Collectors.toUnmodifiableList());
         }
     }
 

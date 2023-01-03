@@ -24,7 +24,7 @@ public class EnergyMap extends IntegerGrid {
     }
 
     public void increase(int increment) {
-        board.forEach(gridCell -> gridCell.setValue(gridCell.getValue() + increment));
+        board.forEach(gridCell -> setValueOfCell(gridCell, gridCell.getValue() + increment));
     }
 
     public boolean flash(int increment) {
@@ -32,7 +32,7 @@ public class EnergyMap extends IntegerGrid {
         board.forEach(gridCell -> {
             if (gridCell.getValue() > MAX_ENERGY) {
                 flashCounter++;
-                gridCell.setValue(0);
+                setValueOfCell(gridCell, 0);
                 Set<Coordinate> neighbourCoordinates;
                 if (fourWayDirection) {
                     neighbourCoordinates = gridCell.getCoordinate().getOrthogonalAdjacentCoordinates();
@@ -50,7 +50,7 @@ public class EnergyMap extends IntegerGrid {
             if (isCoordinateInBounds(coordinate)) {
                 GridCell<Integer> currentNeighbour = board.get(calculateCellIndex(coordinate.getX(), coordinate.getY()));
                 if (currentNeighbour.getValue() != MIN_ENERGY) {
-                    currentNeighbour.setValue(currentNeighbour.getValue() + increment);
+                    setValueOfCell(currentNeighbour, currentNeighbour.getValue() + increment);
                     if (currentNeighbour.getValue() > MAX_ENERGY) {
                         nextFlash.set(true);
                     }

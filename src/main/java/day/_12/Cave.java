@@ -7,7 +7,6 @@ public class Cave {
 
     private final String label;
     private final boolean isBig;
-    private int visitCounter;
 
     public Cave(String label, Predicate<String> predicate) {
         this.label = label;
@@ -20,14 +19,6 @@ public class Cave {
 
     public boolean isBig() {
         return isBig;
-    }
-
-    public int getVisitCounter() {
-        return visitCounter;
-    }
-
-    public void setVisitCounter(int visitCounter) {
-        this.visitCounter = visitCounter;
     }
 
     @Override

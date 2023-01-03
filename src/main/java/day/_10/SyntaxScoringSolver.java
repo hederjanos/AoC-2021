@@ -12,12 +12,8 @@ public class SyntaxScoringSolver extends Solver<Integer> {
 
     public SyntaxScoringSolver(String filename) {
         super(filename);
-        openers = Arrays.stream(ChunkBoundaries.values())
-                .map(ChunkBoundaries::getOpener)
-                .collect(Collectors.toList());
-        closers = Arrays.stream(ChunkBoundaries.values())
-                .map(ChunkBoundaries::getCloser)
-                .collect(Collectors.toList());
+        openers = Arrays.stream(ChunkBoundaries.values()).map(ChunkBoundaries::getOpener).collect(Collectors.toList());
+        closers = Arrays.stream(ChunkBoundaries.values()).map(ChunkBoundaries::getCloser).collect(Collectors.toList());
     }
 
     @Override
@@ -25,8 +21,8 @@ public class SyntaxScoringSolver extends Solver<Integer> {
         return puzzle.stream()
                 .map(this::processLine)
                 .filter(tuple -> tuple.getFirstElement() != null)
-                .map(tuple -> ChunkBoundaries.values()[tuple.getFirstElement()].getPenalty())
-                .reduce(0, Integer::sum);
+                .mapToInt(tuple -> ChunkBoundaries.values()[tuple.getFirstElement()].getPenalty())
+                .sum();
     }
 
     private CustomTuple processLine(String codeLine) {
@@ -56,7 +52,7 @@ public class SyntaxScoringSolver extends Solver<Integer> {
                 boundariesList.add(ChunkBoundaries.get(stack.pop()));
             }
         }
-        return new CustomTuple(boundaries, boundariesList);
+        return new CustomTuple(boundaries, Collections.unmodifiableList(boundariesList));
     }
 
     @Override
