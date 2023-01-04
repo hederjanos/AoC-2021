@@ -18,8 +18,8 @@ public class Origami {
                 .collect(Collectors.toSet());
     }
 
-    public Set<Coordinate> getCurrentDots() {
-        return currentDots;
+    public int getNumberOfDots() {
+        return currentDots.size();
     }
 
     public void fold(Fold fold) {
