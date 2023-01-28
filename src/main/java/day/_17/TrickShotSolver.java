@@ -4,9 +4,9 @@ import util.common.Solver;
 import util.coordinate.Coordinate;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -46,13 +46,17 @@ public class TrickShotSolver extends Solver<Integer> {
         int maxX = area.getMaxX();
         int minY = area.getMinY();
         int maxY = Math.abs(area.getMinY());
-
         return IntStream.rangeClosed(minX, maxX)
-                .mapToObj(i -> IntStream.rangeClosed(minY, maxY)
-                        .mapToObj(j -> new Probe(new Coordinate(0, 0), new Coordinate(i, j))))
-                .flatMap(Function.identity())
+                .mapToObj(i -> createProbes(minY, maxY, i))
+                .flatMap(Collection::stream)
                 .map(this::getHighestPositionOfProbe)
                 .filter(height -> height > Integer.MIN_VALUE)
+                .collect(Collectors.toList());
+    }
+
+    private List<Probe> createProbes(int minY, int maxY, int i) {
+        return IntStream.rangeClosed(minY, maxY)
+                .mapToObj(j -> new Probe(new Coordinate(0, 0), new Coordinate(i, j)))
                 .collect(Collectors.toList());
     }
 

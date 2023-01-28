@@ -29,7 +29,7 @@ public class EnergyMap extends IntegerGrid {
 
     public boolean flash(int increment) {
         AtomicBoolean nextFlash = new AtomicBoolean(false);
-        board.forEach(gridCell -> {
+        for (GridCell<Integer> gridCell : board) {
             if (gridCell.getValue() > MAX_ENERGY) {
                 flashCounter++;
                 setValueOfCell(gridCell, 0);
@@ -41,7 +41,7 @@ public class EnergyMap extends IntegerGrid {
                 }
                 increaseNeighbours(increment, nextFlash, neighbourCoordinates);
             }
-        });
+        }
         return nextFlash.get();
     }
 

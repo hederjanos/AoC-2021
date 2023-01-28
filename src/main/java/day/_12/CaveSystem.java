@@ -12,19 +12,17 @@ public class CaveSystem {
     private final Map<Integer, Set<Integer>> connections = new HashMap<>();
 
     public CaveSystem(List<String> gridLines, Function<String, List<String>> tokenizer) {
-
-        gridLines.forEach(line -> {
-            List<Cave> cavePair = tokenizer.apply(line).stream()
-                    .map(cave -> new Cave(cave, this::isABigCave))
-                    .collect(Collectors.toList());
-            int leftHash = insertCave(cavePair.get(0));
-            int rightHash = insertCave(cavePair.get(1));
-            connections.putIfAbsent(leftHash, new HashSet<>());
-            connections.putIfAbsent(rightHash, new HashSet<>());
-            connections.get(leftHash).add(rightHash);
-            connections.get(rightHash).add(leftHash);
-        });
+        for (String line : gridLines) {
+            List<Cave> cavePair = parseCavePair(tokenizer, line);
+            refreshConnections(cavePair);
+        }
         caves.values().forEach(this::setNotables);
+    }
+
+    private List<Cave> parseCavePair(Function<String, List<String>> tokenizer, String line) {
+        return tokenizer.apply(line).stream()
+                .map(cave -> new Cave(cave, this::isABigCave))
+                .collect(Collectors.toList());
     }
 
     private boolean isABigCave(String cave) {
@@ -36,6 +34,15 @@ public class CaveSystem {
             }
         }
         return areAllCharsUpperCase;
+    }
+
+    private void refreshConnections(List<Cave> cavePair) {
+        int leftHash = insertCave(cavePair.get(0));
+        int rightHash = insertCave(cavePair.get(1));
+        connections.putIfAbsent(leftHash, new HashSet<>());
+        connections.putIfAbsent(rightHash, new HashSet<>());
+        connections.get(leftHash).add(rightHash);
+        connections.get(rightHash).add(leftHash);
     }
 
     private void setNotables(Cave cave) {

@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public abstract class IntegerGrid extends Grid<Integer> {
 
@@ -23,12 +22,12 @@ public abstract class IntegerGrid extends Grid<Integer> {
         super(gridLines);
         width = tokenizer.apply(gridLines.get(0)).size();
         board = new ArrayList<>();
-        IntStream.range(0, height)
-                .forEach(i -> {
-                    List<Integer> numbers = new ArrayList<>(tokenizer.apply(gridLines.get(i)));
-                    IntStream.range(0, width)
-                            .forEach(j -> board.add(new GridCell<>(new Coordinate(j, i), numbers.get(j))));
-                });
+        for (int i = 0; i < height; i++) {
+            List<Integer> numbers = new ArrayList<>(tokenizer.apply(gridLines.get(i)));
+            for (int j = 0; j < width; j++) {
+                board.add(new GridCell<>(new Coordinate(j, i), numbers.get(j)));
+            }
+        }
         this.fourWayDirection = fourWayDirection;
     }
 

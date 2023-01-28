@@ -60,9 +60,7 @@ public class TheTreacheryOfWhalesSolver extends Solver<Integer> {
 
     private Integer getMeanOfPositions() {
         Integer mean = null;
-        OptionalDouble optionalAverage = positions.stream()
-                .mapToInt(Integer::intValue)
-                .average();
+        OptionalDouble optionalAverage = positions.stream().mapToInt(Integer::intValue).average();
         if (optionalAverage.isPresent()) {
             mean = (int) Math.floor(optionalAverage.getAsDouble());
         }

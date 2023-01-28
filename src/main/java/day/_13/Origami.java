@@ -13,9 +13,7 @@ public class Origami {
 
     public Origami(Set<Coordinate> dots) {
         initialDots = dots;
-        currentDots = dots.stream()
-                .map(Coordinate::copy)
-                .collect(Collectors.toSet());
+        currentDots = dots.stream().map(Coordinate::copy).collect(Collectors.toSet());
     }
 
     public int getNumberOfDots() {
@@ -57,12 +55,15 @@ public class Origami {
         int height = getHeight();
         int width = getWidth();
         return IntStream.range(0, height)
-                .mapToObj(i ->
-                        IntStream.range(0, width)
-                                .mapToObj(j -> new Coordinate(j, i))
-                                .map(coordinate -> currentDots.contains(coordinate) ? "#" : ".")
-                                .collect(Collectors.joining()))
+                .mapToObj(i -> createLine(width, i))
                 .collect(Collectors.joining(System.lineSeparator()));
+    }
+
+    private String createLine(int width, int i) {
+        return IntStream.range(0, width)
+                .mapToObj(j -> new Coordinate(j, i))
+                .map(coordinate -> currentDots.contains(coordinate) ? "#" : ".")
+                .collect(Collectors.joining());
     }
 
     private Integer getWidth() {

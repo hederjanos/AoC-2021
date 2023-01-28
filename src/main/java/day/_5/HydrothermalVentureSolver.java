@@ -18,13 +18,15 @@ public class HydrothermalVentureSolver extends Solver<Integer> {
 
     private List<List<Coordinate>> parseCoordinates() {
         return puzzle.stream()
-                .map(line -> {
-                    String[] lineParts = line.split(" -> ");
-                    return Arrays.stream(lineParts)
-                            .filter(linePart -> Character.isDigit(linePart.charAt(0)))
-                            .map(Coordinate::new)
-                            .collect(Collectors.toList());
-                }).collect(Collectors.toList());
+                .map(this::parseCoordinatesInLine).collect(Collectors.toList());
+    }
+
+    private List<Coordinate> parseCoordinatesInLine(String line) {
+        String[] lineParts = line.split(" -> ");
+        return Arrays.stream(lineParts)
+                .filter(linePart -> Character.isDigit(linePart.charAt(0)))
+                .map(Coordinate::new)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -36,13 +38,15 @@ public class HydrothermalVentureSolver extends Solver<Integer> {
 
     private List<Coordinate> getCoordinatesInHorizontalOrVerticalLines() {
         return listOfCoordinatePairs.stream()
-                .filter(lines -> {
-                    Coordinate start = lines.get(0);
-                    Coordinate end = lines.get(1);
-                    return start.isInHorizontalOrVerticalLineWith(end);
-                })
+                .filter(this::testIfCoordinatesInLine)
                 .flatMap(this::getCoordinatesInLineStream)
                 .collect(Collectors.toList());
+    }
+
+    private boolean testIfCoordinatesInLine(List<Coordinate> coordinatePair) {
+        Coordinate start = coordinatePair.get(0);
+        Coordinate end = coordinatePair.get(1);
+        return start.isInHorizontalOrVerticalLineWith(end);
     }
 
     private Stream<Coordinate> getCoordinatesInLineStream(List<Coordinate> line) {

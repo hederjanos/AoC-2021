@@ -47,15 +47,17 @@ public class ExtendedPolymerizationSolver extends Solver<Long> {
         Map<String, Long> newPairs = new HashMap<>();
         currentPairs.entrySet().stream()
                 .filter(entry -> insertionRules.containsKey(entry.getKey()))
-                .forEach(entry -> {
-                    String fractionOne = entry.getKey().charAt(0) + insertionRules.get(entry.getKey()).toString();
-                    long countOfFractionOne = newPairs.getOrDefault(fractionOne, 0L);
-                    newPairs.compute(fractionOne, (k, v) -> v == null ? entry.getValue() : countOfFractionOne + entry.getValue());
-                    String fractionTwo = insertionRules.get(entry.getKey()).toString() + entry.getKey().charAt(1);
-                    long countOfFractionTwo = newPairs.getOrDefault(fractionTwo, 0L);
-                    newPairs.compute(fractionTwo, (k, v) -> v == null ? entry.getValue() : countOfFractionTwo + entry.getValue());
-                });
+                .forEach(entry -> updateNewPairs(newPairs, entry));
         currentPairs = newPairs;
+    }
+
+    private void updateNewPairs(Map<String, Long> newPairs, Map.Entry<String, Long> entry) {
+        String fractionOne = entry.getKey().charAt(0) + insertionRules.get(entry.getKey()).toString();
+        long countOfFractionOne = newPairs.getOrDefault(fractionOne, 0L);
+        newPairs.compute(fractionOne, (k, v) -> v == null ? entry.getValue() : countOfFractionOne + entry.getValue());
+        String fractionTwo = insertionRules.get(entry.getKey()).toString() + entry.getKey().charAt(1);
+        long countOfFractionTwo = newPairs.getOrDefault(fractionTwo, 0L);
+        newPairs.compute(fractionTwo, (k, v) -> v == null ? entry.getValue() : countOfFractionTwo + entry.getValue());
     }
 
     private long calculateResult() {
