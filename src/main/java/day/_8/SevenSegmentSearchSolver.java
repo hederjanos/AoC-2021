@@ -37,7 +37,6 @@ public class SevenSegmentSearchSolver extends Solver<Integer> {
         return note;
     }
 
-
     @Override
     protected Integer solvePartOne() {
         return solve(this::getNumberOfUniqueDigits);

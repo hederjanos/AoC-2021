@@ -46,7 +46,7 @@ public class EnergyMap extends IntegerGrid {
     }
 
     private void increaseNeighbours(int increment, AtomicBoolean nextFlash, Set<Coordinate> neighbourCoordinates) {
-        neighbourCoordinates.forEach(coordinate -> {
+        for (Coordinate coordinate : neighbourCoordinates) {
             if (isCoordinateInBounds(coordinate)) {
                 GridCell<Integer> currentNeighbour = board.get(calculateCellIndex(coordinate.getX(), coordinate.getY()));
                 if (currentNeighbour.getValue() != MIN_ENERGY) {
@@ -56,7 +56,7 @@ public class EnergyMap extends IntegerGrid {
                     }
                 }
             }
-        });
+        }
     }
 
     public boolean areAllFlashed() {

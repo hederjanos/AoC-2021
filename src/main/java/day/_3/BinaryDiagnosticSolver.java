@@ -22,22 +22,26 @@ public class BinaryDiagnosticSolver extends Solver<Integer> {
 
     private int[] getMostCommonBitsByPosition(List<String> puzzle) {
         int[] countArray = new int[puzzle.get(0).length()];
-        puzzle.forEach(line -> addBitsFromLineToCountArray(line, countArray));
+        for (String line : puzzle) {
+            addBitsFromLineToCountArray(line, countArray);
+        }
         return Arrays.stream(countArray).map(sumOfBits -> (puzzle.size() - sumOfBits <= sumOfBits) ? 1 : 0).toArray();
     }
 
     private void addBitsFromLineToCountArray(String line, int[] countArray) {
-        IntStream.range(0, line.length()).forEach(index -> countArray[index] += Character.getNumericValue(line.charAt(index)));
+        for (int index = 0; index < line.length(); index++) {
+            countArray[index] += Character.getNumericValue(line.charAt(index));
+        }
     }
 
     private List<String> getRatingsForConsumption(int[] mostCommonBits) {
         List<String> ratings = new ArrayList<>();
         StringBuilder gammaRate = new StringBuilder();
         StringBuilder epsilonRate = new StringBuilder();
-        Arrays.stream(mostCommonBits).forEach(number -> {
-            gammaRate.append(number);
-            epsilonRate.append((number == 1) ? 0 : 1);
-        });
+        for (int bit : mostCommonBits) {
+            gammaRate.append(bit);
+            epsilonRate.append((bit == 1) ? 0 : 1);
+        }
         ratings.add(gammaRate.toString());
         ratings.add(epsilonRate.toString());
         return ratings;

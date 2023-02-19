@@ -20,10 +20,11 @@ public class ExtendedPolymerizationSolver extends Solver<Long> {
 
     private void parseInput() {
         template = puzzle.get(0);
-        IntStream.range(2, puzzle.size()).forEach(i -> {
+        int bound = puzzle.size();
+        for (int i = 2; i < bound; i++) {
             String[] rule = puzzle.get(i).split(" -> ");
             insertionRules.putIfAbsent(rule[0], rule[1].charAt(0));
-        });
+        }
     }
 
     private void initializePairs() {

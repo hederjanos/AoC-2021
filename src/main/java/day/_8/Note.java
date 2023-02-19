@@ -40,11 +40,9 @@ public class Note {
     }
 
     private SortedSet<Character> getSortedCharsOfAPattern(String pattern) {
-        SortedSet<Character> characters = new TreeSet<>();
-        pattern.chars()
+        return pattern.chars()
                 .mapToObj(character -> (char) character)
-                .forEach(characters::add);
-        return characters;
+                .collect(Collectors.toCollection(TreeSet::new));
     }
 
 }

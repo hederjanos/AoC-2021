@@ -36,8 +36,7 @@ public abstract class IntegerGrid extends Grid<Integer> {
         fourWayDirection = grid.isFourWayDirection();
         width = grid.getWidth();
         height = grid.getHeight();
-        board = new ArrayList<>();
-        grid.getBoard().forEach(gridCell -> board.add(gridCell.copy()));
+        board = grid.getBoard().stream().map(GridCell::copy).collect(Collectors.toList());
     }
 
     public static Function<String, List<Integer>> convertContiguousIntegersToList() {

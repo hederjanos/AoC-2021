@@ -81,10 +81,10 @@ public class CaveSystem {
         StringBuilder stringBuilder = new StringBuilder();
         for (Map.Entry<Integer, Set<Integer>> entry : connections.entrySet()) {
             stringBuilder.append(caves.get(entry.getKey()).getLabel()).append(": ");
-            entry.getValue().forEach(integer -> {
-                stringBuilder.append(caves.get(integer).getLabel());
+            for (Integer hash : entry.getValue()) {
+                stringBuilder.append(caves.get(hash).getLabel());
                 stringBuilder.append(" ");
-            });
+            }
             stringBuilder.append("\n");
         }
         return stringBuilder.toString().trim();

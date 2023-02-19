@@ -1,6 +1,7 @@
 package day._8;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 public class Decoder {
 
@@ -45,8 +46,12 @@ public class Decoder {
 
     public Long getNumberOfUniqueDigits() {
         return note.getOutputs().stream()
-                .filter(pattern -> pattern.size() == 2 || pattern.size() == 3 || pattern.size() == 4 || pattern.size() == 7)
+                .filter(isUniquePattern())
                 .count();
+    }
+
+    private Predicate<SortedSet<Character>> isUniquePattern() {
+        return pattern -> pattern.size() == 2 || pattern.size() == 3 || pattern.size() == 4 || pattern.size() == 7;
     }
 
     private void handleSixSegmentPatterns() {

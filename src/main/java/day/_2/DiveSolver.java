@@ -11,7 +11,8 @@ public class DiveSolver extends Solver<Integer> {
     @Override
     public Integer solvePartOne() {
         Submarine submarine = new Submarine();
-        puzzle.stream().map(Command::new).forEach(command -> {
+        for (String line : puzzle) {
+            Command command = new Command(line);
             switch (command.getDirection()) {
                 case UP:
                     submarine.rise(command.getValue());
@@ -23,14 +24,15 @@ public class DiveSolver extends Solver<Integer> {
                     submarine.moveForward(command.getValue());
                     break;
             }
-        });
+        }
         return submarine.getHorizontal() * submarine.getDepth();
     }
 
     @Override
     protected Integer solvePartTwo() {
         Submarine submarine = new Submarine();
-        puzzle.stream().map(Command::new).forEach(command -> {
+        for (String line : puzzle) {
+            Command command = new Command(line);
             switch (command.getDirection()) {
                 case UP:
                     submarine.aimUp(command.getValue());
@@ -42,7 +44,7 @@ public class DiveSolver extends Solver<Integer> {
                     submarine.moveForwardWithAim(command.getValue());
                     break;
             }
-        });
+        }
         return submarine.getHorizontal() * submarine.getDepth();
     }
 
